@@ -152,200 +152,251 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="page vacancy-preparation-page">
-    <section class="card">
-      <button class="secondary back-btn" @click="router.push('/vacancies')">← Назад к вакансиям</button>
+  <div class="prep-page">
 
-      <div v-if="loading" class="muted">Загрузка...</div>
-      <div v-else-if="error" class="error">{{ error }}</div>
+    <!-- Top Section -->
+    <section class="section-card">
+      <button class="btn-back" @click="router.push('/vacancies')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        Назад к вакансиям
+      </button>
+
+      <div v-if="loading" class="state-view">
+        <span class="loader" />
+        <p>Загрузка...</p>
+      </div>
+      <div v-else-if="error" class="state-view">
+        <p class="error-text">{{ error }}</p>
+      </div>
 
       <template v-else-if="vacancy">
         <h1>{{ vacancy.title }}</h1>
-        <p class="vacancy-head-sub">
-          {{ vacancy.company }} · {{ vacancy.location }} · Направление: {{ vacancy.preparation.direction }}
-        </p>
-        <div class="prep-mode-switch">
+        <p class="head-sub">{{ vacancy.company }} · {{ vacancy.location }} · {{ vacancy.preparation.direction }}</p>
+
+        <div class="mode-tabs">
           <button
-            class="secondary"
             :class="{ active: prepMode === 'overview' }"
             @click="prepMode = 'overview'"
-          >
-            Обзор
-          </button>
+          >Обзор</button>
           <button
-            class="secondary"
             :class="{ active: prepMode === 'questions' }"
             @click="prepMode = 'questions'"
-          >
-            Вопросы
-          </button>
+          >Вопросы</button>
           <button
-            class="secondary"
             :class="{ active: prepMode === 'tasks' }"
             @click="prepMode = 'tasks'"
-          >
-            Реальные задачи
-          </button>
+          >Реальные задачи</button>
           <button
-            class="secondary"
             :class="{ active: prepMode === 'test' }"
             @click="prepMode = 'test'"
-          >
-            Тест
-          </button>
+          >Тест</button>
         </div>
       </template>
     </section>
 
-    <section v-if="vacancy && prepMode === 'overview'" class="card">
-      <h3>План подготовки</h3>
+    <!-- Overview -->
+    <section v-if="vacancy && prepMode === 'overview'" class="section-card">
+      <h3 class="section-title">План подготовки</h3>
       <div class="overview-grid">
-        <article class="overview-item">
-          <span>1. Изучите вопросы</span>
-          <strong>{{ vacancy.preparation.questions.length }} шт.</strong>
-          <button class="secondary" @click="prepMode = 'questions'">Открыть вопросы</button>
+        <article class="overview-item" @click="prepMode = 'questions'">
+          <span class="overview-step">01</span>
+          <div>
+            <strong>Изучите вопросы</strong>
+            <p>{{ vacancy.preparation.questions.length }} вопросов</p>
+          </div>
+          <svg class="arrow" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </article>
-        <article class="overview-item">
-          <span>2. Выполните реальные задачи</span>
-          <strong>{{ vacancy.realTasks.length }} шт.</strong>
-          <button class="secondary" @click="prepMode = 'tasks'">Открыть задачи</button>
+        <article class="overview-item" @click="prepMode = 'tasks'">
+          <span class="overview-step">02</span>
+          <div>
+            <strong>Выполните задачи</strong>
+            <p>{{ vacancy.realTasks.length }} задач</p>
+          </div>
+          <svg class="arrow" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </article>
-        <article class="overview-item">
-          <span>3. Пройдите мини-тест</span>
-          <strong>{{ testQuestions.length }} шт.</strong>
-          <button class="secondary" @click="prepMode = 'test'">Открыть тест</button>
+        <article class="overview-item" @click="prepMode = 'test'">
+          <span class="overview-step">03</span>
+          <div>
+            <strong>Пройдите тест</strong>
+            <p>{{ testQuestions.length }} вопросов</p>
+          </div>
+          <svg class="arrow" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </article>
       </div>
-      <p class="muted">Рекомендуемый порядок: вопросы → реальные задачи → тест.</p>
+      <p class="hint">Рекомендуемый порядок: вопросы, задачи, тест.</p>
     </section>
 
-    <section v-if="vacancy && prepMode === 'questions'" class="card">
-      <h3>Частые вопросы для подготовки</h3>
+    <!-- Questions -->
+    <section v-if="vacancy && prepMode === 'questions'" class="section-card">
+      <h3 class="section-title">Частые вопросы</h3>
       <div class="qa-list">
         <article v-for="item in vacancy.preparation.questions" :key="item.id" class="qa-item">
-          <button class="qa-question" @click="toggleAnswer(item.id)">
+          <button class="qa-toggle" @click="toggleAnswer(item.id)">
             <span>{{ item.question }}</span>
-            <strong>{{ openedAnswerId === item.id ? "−" : "+" }}</strong>
+            <svg
+              class="qa-chevron"
+              :class="{ open: openedAnswerId === item.id }"
+              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            ><path d="m6 9 6 6 6-6"/></svg>
           </button>
-          <p v-if="openedAnswerId === item.id" class="qa-answer">{{ item.answer }}</p>
+          <transition name="expand">
+            <p v-if="openedAnswerId === item.id" class="qa-answer">{{ item.answer }}</p>
+          </transition>
         </article>
       </div>
-      <div class="section-actions">
-        <button class="secondary" @click="prepMode = 'overview'">К обзору</button>
-        <button class="primary" @click="prepMode = 'tasks'">Перейти к задачам</button>
+      <div class="nav-actions">
+        <button class="btn-secondary" @click="prepMode = 'overview'">К обзору</button>
+        <button class="btn-primary" @click="prepMode = 'tasks'">
+          Перейти к задачам
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
       </div>
     </section>
 
-    <section v-if="vacancy && prepMode === 'tasks'" class="card">
-      <h3>Реальные задачи от компании</h3>
-      <p class="muted">Пока работает на mock-данных. В будущем компании смогут проверять отправленные решения.</p>
+    <!-- Tasks -->
+    <section v-if="vacancy && prepMode === 'tasks'" class="section-card">
+      <h3 class="section-title">Реальные задачи</h3>
+      <p class="hint">Пока работает на mock-данных. В будущем компании смогут проверять решения.</p>
 
-      <div v-if="tasksLoading" class="muted">Загрузка задач...</div>
-      <div v-else-if="!taskItems.length" class="muted">По этой вакансии пока нет задач.</div>
+      <div v-if="tasksLoading" class="hint">Загрузка задач...</div>
+      <div v-else-if="!taskItems.length" class="hint">По этой вакансии пока нет задач.</div>
+
       <div v-else class="task-list">
-        <article v-for="item in taskItems" :key="item.task.id" class="task-item">
+        <article v-for="item in taskItems" :key="item.task.id" class="task-card">
           <div class="task-head">
             <h4>{{ item.task.title }}</h4>
-            <span class="task-hours">{{ item.task.estimatedHours }} ч</span>
+            <span class="hours-pill">{{ item.task.estimatedHours }} ч</span>
           </div>
           <p class="task-brief">{{ item.task.brief }}</p>
 
           <div class="task-cols">
             <div>
-              <p class="task-subtitle">Требования</p>
+              <p class="col-label">Требования</p>
               <ul>
                 <li v-for="req in item.task.requirements" :key="req">{{ req }}</li>
               </ul>
             </div>
             <div>
-              <p class="task-subtitle">Что отправить</p>
+              <p class="col-label">Что отправить</p>
               <ul>
                 <li v-for="deliverable in item.task.deliverables" :key="deliverable">{{ deliverable }}</li>
               </ul>
             </div>
           </div>
 
-          <div class="task-submit">
+          <div class="task-form">
             <input
               v-model="taskDrafts[item.task.id].solutionUrl"
-              placeholder="Ссылка на решение (GitHub/Drive)"
+              placeholder="Ссылка на решение (GitHub / Drive)"
             />
             <textarea
               v-model="taskDrafts[item.task.id].comment"
               rows="3"
               placeholder="Комментарий к решению"
             />
-            <div class="section-actions">
-              <button class="primary" :disabled="taskSubmitting[item.task.id]" @click="submitTask(item.task.id)">
+            <div class="form-actions">
+              <button class="btn-primary" :disabled="taskSubmitting[item.task.id]" @click="submitTask(item.task.id)">
+                <span v-if="taskSubmitting[item.task.id]" class="spinner" />
                 {{ taskSubmitting[item.task.id] ? "Отправка..." : "Отправить решение" }}
               </button>
-              <span v-if="item.submission" class="submitted-pill">Отправлено: {{ new Date(item.submission.submittedAt).toLocaleDateString("ru-RU") }}</span>
+              <span v-if="item.submission" class="sent-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                {{ new Date(item.submission.submittedAt).toLocaleDateString("ru-RU") }}
+              </span>
             </div>
-            <p v-if="taskErrors[item.task.id]" class="error">{{ taskErrors[item.task.id] }}</p>
+            <p v-if="taskErrors[item.task.id]" class="error-text">{{ taskErrors[item.task.id] }}</p>
           </div>
         </article>
       </div>
-      <div class="section-actions">
-        <button class="secondary" @click="prepMode = 'questions'">К вопросам</button>
-        <button class="primary" @click="prepMode = 'test'">Перейти к тесту</button>
+
+      <div class="nav-actions">
+        <button class="btn-secondary" @click="prepMode = 'questions'">К вопросам</button>
+        <button class="btn-primary" @click="prepMode = 'test'">
+          Перейти к тесту
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
       </div>
 
-      <div v-if="taskLeadersTop.length" class="task-leaders-box">
-        <h4>Лидеры по этой вакансии</h4>
-        <div class="task-leader-list">
-          <article v-for="leader in taskLeadersTop" :key="`task-leader-${leader.userId}`" class="task-leader-row">
-            <div class="task-leader-rank">#{{ leader.rank }}</div>
-            <div class="task-leader-main">
+      <!-- Leaders -->
+      <div v-if="taskLeadersTop.length" class="leaders-box">
+        <h4 class="section-title">Лидеры по вакансии</h4>
+        <div class="leaders-list">
+          <article
+            v-for="leader in taskLeadersTop"
+            :key="`task-leader-${leader.userId}`"
+            class="leader-row"
+          >
+            <span
+              class="leader-rank"
+              :class="{ gold: leader.rank === 1, silver: leader.rank === 2, bronze: leader.rank === 3 }"
+            >{{ leader.rank }}</span>
+            <div class="leader-info">
               <strong>{{ leader.fullName }}</strong>
               <p>{{ leader.tasksSubmitted }} задач · {{ verdictLabel[leader.aiVerdict] }}</p>
             </div>
-            <div class="task-leader-score">{{ leader.averageQualityScore }}/100</div>
-            <div class="task-leader-status" :class="{ sent: leader.sentToHr }">
+            <span class="leader-score">{{ leader.averageQualityScore }}<small>/100</small></span>
+            <span class="hr-status" :class="{ sent: leader.sentToHr }">
               {{ leader.sentToHr ? "Отправлено HR" : "В обработке" }}
-            </div>
+            </span>
           </article>
         </div>
 
-        <div v-if="taskLeaderboard?.currentUser" class="task-leader-me">
+        <div v-if="taskLeaderboard?.currentUser" class="my-rank">
           <span>Ваше место: <strong>#{{ taskLeaderboard.currentUser.rank }}</strong></span>
           <span>Качество: <strong>{{ taskLeaderboard.currentUser.averageQualityScore }}/100</strong></span>
         </div>
       </div>
     </section>
 
-    <section v-if="vacancy && prepMode === 'test'" class="card">
-      <h3>Мини-тест по вакансии</h3>
+    <!-- Test -->
+    <section v-if="vacancy && prepMode === 'test'" class="section-card">
+      <h3 class="section-title">Мини-тест</h3>
 
       <div v-if="!testFinished && currentQuestion" class="test-block">
         <p class="test-progress">
-          Вопрос {{ currentQuestionIndex + 1 }} из {{ testQuestions.length }} · Отвечено: {{ answeredQuestions }}
+          Вопрос {{ currentQuestionIndex + 1 }} из {{ testQuestions.length }}
+          <span class="test-dot" />
+          Отвечено: {{ answeredQuestions }}
         </p>
+
+        <div class="progress-track">
+          <span :style="{ width: `${((currentQuestionIndex + 1) / testQuestions.length) * 100}%` }" />
+        </div>
+
         <p class="test-question">{{ currentQuestion.question }}</p>
 
         <div class="test-options">
           <button
             v-for="(option, index) in currentQuestion.options"
             :key="`${currentQuestion.id}-${option}`"
-            class="secondary test-option"
+            class="test-option"
             :class="{ selected: selectedAnswer === index }"
             @click="selectOption(index)"
           >
+            <span class="option-marker">{{ String.fromCharCode(65 + index) }}</span>
             {{ option }}
           </button>
         </div>
 
-        <button class="primary" :disabled="selectedAnswer === null" @click="nextQuestion">
-          {{ currentQuestionIndex === testQuestions.length - 1 ? "Завершить тест" : "Следующий вопрос" }}
-        </button>
-        <button class="secondary" @click="prepMode = 'tasks'">Вернуться к задачам</button>
+        <div class="nav-actions">
+          <button class="btn-secondary" @click="prepMode = 'tasks'">Вернуться к задачам</button>
+          <button class="btn-primary" :disabled="selectedAnswer === null" @click="nextQuestion">
+            {{ currentQuestionIndex === testQuestions.length - 1 ? "Завершить тест" : "Следующий вопрос" }}
+          </button>
+        </div>
       </div>
 
       <div v-else class="test-result">
-        <p>Результат: <strong>{{ score }} / {{ testQuestions.length }}</strong></p>
-        <p class="muted">Подготовка завершена. Повторите тест для закрепления.</p>
-        <div class="section-actions">
-          <button class="secondary" @click="restartTest">Пройти заново</button>
-          <button class="secondary" @click="prepMode = 'overview'">К обзору</button>
+        <div class="result-score">
+          <span class="score-num">{{ score }}</span>
+          <span class="score-sep">/</span>
+          <span class="score-total">{{ testQuestions.length }}</span>
+        </div>
+        <p>Подготовка завершена. Повторите тест для закрепления.</p>
+        <div class="nav-actions">
+          <button class="btn-secondary" @click="restartTest">Пройти заново</button>
+          <button class="btn-secondary" @click="prepMode = 'overview'">К обзору</button>
         </div>
       </div>
     </section>
@@ -353,296 +404,727 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.vacancy-preparation-page {
+.prep-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 20px 80px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #111;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.back-btn {
-  margin-bottom: 10px;
+/* Section Card */
+.section-card {
+  border: 1px solid #eee;
+  border-radius: 14px;
+  background: #fff;
+  padding: 24px;
 }
 
-.vacancy-head-sub {
-  margin: 0;
-  color: #52647f;
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #999;
+  margin: 0 0 16px;
 }
 
-.prep-mode-switch {
-  margin-top: 12px;
+/* States */
+.state-view {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 0;
+  gap: 10px;
+}
+
+.state-view p {
+  font-size: 15px;
+  color: #999;
+  margin: 0;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 14px;
+  margin: 4px 0 0;
+}
+
+.loader {
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid #e5e5e5;
+  border-top-color: #111;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Back Button */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  margin-bottom: 18px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.btn-back:hover {
+  color: #333;
+}
+
+/* Header */
+.section-card h1 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+  color: #0a0a0a;
+}
+
+.head-sub {
+  margin: 0;
+  font-size: 14px;
+  color: #888;
+}
+
+/* Mode Tabs */
+.mode-tabs {
+  margin-top: 18px;
+  display: flex;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
-.prep-mode-switch .active {
-  border-color: #8ea8e8;
-  background: #eef3ff;
-  color: #1f2f4f;
+.mode-tabs button {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  background: #fff;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
+.mode-tabs button:hover {
+  border-color: #ccc;
+  color: #555;
+}
+
+.mode-tabs button.active {
+  background: #0a0a0a;
+  color: #fff;
+  border-color: #0a0a0a;
+}
+
+/* Overview */
 .overview-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .overview-item {
-  border: 1px solid #dbe6f7;
-  border-radius: 10px;
-  background: #fff;
-  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 16px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: #fafafa;
 }
 
-.overview-item span {
-  color: #50627f;
+.overview-item:hover {
+  border-color: #ddd;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px);
+}
+
+.overview-step {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #0a0a0a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.overview-item div {
+  flex: 1;
+  min-width: 0;
 }
 
 .overview-item strong {
-  color: #213350;
-  font-size: 18px;
+  display: block;
+  font-size: 14px;
+  color: #111;
+  margin-bottom: 2px;
 }
 
+.overview-item p {
+  margin: 0;
+  font-size: 12px;
+  color: #999;
+}
+
+.overview-item .arrow {
+  color: #ccc;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.overview-item:hover .arrow {
+  color: #555;
+}
+
+.hint {
+  font-size: 13px;
+  color: #999;
+  margin: 0;
+}
+
+/* Q&A */
 .qa-list {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
+  margin-bottom: 16px;
 }
 
 .qa-item {
-  border: 1px solid #dbe6f7;
-  border-radius: 10px;
-  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #fafafa;
+  overflow: hidden;
 }
 
-.qa-question {
+.qa-toggle {
   width: 100%;
-  background: transparent;
-  border: 0;
-  padding: 10px 12px;
+  background: none;
+  border: none;
+  padding: 14px 16px;
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
   text-align: left;
-  color: #233350;
+  font-family: inherit;
+  font-size: 14px;
   font-weight: 600;
+  color: #111;
   cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.qa-toggle:hover {
+  color: #333;
+}
+
+.qa-chevron {
+  color: #bbb;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.qa-chevron.open {
+  transform: rotate(180deg);
 }
 
 .qa-answer {
   margin: 0;
-  padding: 0 12px 12px;
-  color: #54657f;
-  line-height: 1.45;
+  padding: 0 16px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #666;
 }
 
-.test-block {
+/* Expand transition */
+.expand-enter-active,
+.expand-leave-active {
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  opacity: 0;
+  max-height: 0;
+  padding-bottom: 0;
+}
+
+/* Tasks */
+.task-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.test-progress {
-  margin: 0;
-  font-size: 13px;
-  color: #60708a;
-}
-
-.test-question {
-  margin: 0;
-  font-size: 18px;
-  color: #1f2f4f;
-}
-
-.test-options {
-  display: grid;
-  gap: 8px;
-}
-
-.test-option {
-  text-align: left;
-}
-
-.test-option.selected {
-  border-color: #8ea8e8;
-  background: #eef3ff;
-}
-
-.test-result p {
-  margin: 0 0 8px;
-}
-
-.task-list {
-  display: grid;
-  gap: 10px;
-}
-
-.task-item {
-  border: 1px solid #dbe6f7;
-  border-radius: 10px;
-  background: #fff;
-  padding: 12px;
+.task-card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #fafafa;
+  padding: 18px 16px;
 }
 
 .task-head {
   display: flex;
   justify-content: space-between;
-  gap: 8px;
   align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
 .task-head h4 {
+  font-size: 15px;
+  font-weight: 700;
   margin: 0;
-  color: #203151;
+  color: #0a0a0a;
 }
 
-.task-hours {
-  font-size: 12px;
-  border: 1px solid #d9e5f8;
-  border-radius: 999px;
-  padding: 3px 8px;
-  background: #f6f9ff;
-  color: #436187;
+.hours-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: #f0f0f0;
+  color: #555;
+  border: 1px solid #e5e5e5;
+  flex-shrink: 0;
 }
 
 .task-brief {
-  margin: 8px 0;
-  color: #4e607d;
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #666;
 }
 
 .task-cols {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
-.task-subtitle {
-  margin: 0 0 4px;
-  font-size: 12px;
+.col-label {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #4f6488;
+  letter-spacing: 0.05em;
+  color: #999;
 }
 
 .task-cols ul {
   margin: 0;
-  padding-left: 18px;
-  color: #495a77;
+  padding-left: 16px;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
 }
 
-.task-submit {
-  margin-top: 10px;
-  display: grid;
+/* Task Form */
+.task-form {
+  border-top: 1px solid #eee;
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.task-submit input,
-.task-submit textarea {
+.task-form input,
+.task-form textarea {
   width: 100%;
-  border: 1px solid #d2e0f4;
+  border: 1px solid #e5e5e5;
   border-radius: 10px;
-  padding: 9px 10px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #111;
   background: #fff;
-  color: #1e2f4b;
+  transition: border-color 0.15s ease;
+  resize: vertical;
 }
 
-.submitted-pill {
+.task-form input:focus,
+.task-form textarea:focus {
+  outline: none;
+  border-color: #0a0a0a;
+}
+
+.task-form input::placeholder,
+.task-form textarea::placeholder {
+  color: #bbb;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sent-badge {
   display: inline-flex;
   align-items: center;
-  border: 1px solid #cae5d3;
-  background: #eefbf3;
-  color: #2f7550;
-  border-radius: 999px;
-  padding: 4px 9px;
+  gap: 5px;
   font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 100px;
+  background: #f5f5f5;
+  color: #555;
+  border: 1px solid #eee;
 }
 
-.task-leaders-box {
-  margin-top: 14px;
-  border: 1px solid #dbe6f7;
-  border-radius: 10px;
-  background: #f8fbff;
-  padding: 10px;
+/* Leaders Box */
+.leaders-box {
+  margin-top: 20px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 16px;
+  background: #fafafa;
 }
 
-.task-leaders-box h4 {
-  margin: 0 0 8px;
-  color: #1f2f4f;
-}
-
-.task-leader-list {
-  display: grid;
+.leaders-list {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.task-leader-row {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  gap: 10px;
-  align-items: center;
-  border: 1px solid #d9e5f8;
-  border-radius: 9px;
-  background: #fff;
-  padding: 8px 9px;
-}
-
-.task-leader-rank {
-  min-width: 30px;
-  text-align: center;
-  font-weight: 700;
-  color: #2d4588;
-}
-
-.task-leader-main strong {
-  color: #213352;
-}
-
-.task-leader-main p {
-  margin: 2px 0 0;
-  color: #5b6f8e;
-  font-size: 12px;
-}
-
-.task-leader-score {
-  font-weight: 700;
-  color: #26407c;
-}
-
-.task-leader-status {
-  border: 1px solid #d9e5f8;
-  border-radius: 999px;
-  padding: 4px 8px;
-  background: #f5f8ff;
-  color: #556a8d;
-  font-size: 12px;
-}
-
-.task-leader-status.sent {
-  border-color: #cae5d3;
-  background: #edf9f1;
-  color: #2f7150;
-}
-
-.task-leader-me {
-  margin-top: 8px;
+.leader-row {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 12px;
-  color: #405473;
-  font-size: 13px;
+  padding: 10px 12px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #fff;
 }
 
-.section-actions {
+.leader-rank {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #555;
+  background: #f0f0f0;
+  flex-shrink: 0;
+}
+
+.leader-rank.gold { background: #0a0a0a; color: #fff; }
+.leader-rank.silver { background: #333; color: #fff; }
+.leader-rank.bronze { background: #666; color: #fff; }
+
+.leader-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.leader-info strong {
+  display: block;
+  font-size: 14px;
+  color: #111;
+}
+
+.leader-info p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #999;
+}
+
+.leader-score {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0a0a0a;
+  flex-shrink: 0;
+}
+
+.leader-score small {
+  font-weight: 500;
+  color: #bbb;
+}
+
+.hr-status {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: #f5f5f5;
+  color: #888;
+  border: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+.hr-status.sent {
+  background: #f0fdf4;
+  color: #16a34a;
+  border-color: #bbf7d0;
+}
+
+.my-rank {
   margin-top: 10px;
   display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 13px;
+  color: #888;
+}
+
+.my-rank strong {
+  color: #111;
+}
+
+/* Test */
+.test-block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.test-progress {
+  margin: 0;
+  font-size: 13px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.test-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ccc;
+}
+
+.progress-track {
+  width: 100%;
+  height: 4px;
+  border-radius: 100px;
+  background: #eee;
+  overflow: hidden;
+}
+
+.progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #0a0a0a;
+  transition: width 0.3s ease;
+}
+
+.test-question {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #0a0a0a;
+  line-height: 1.4;
+}
+
+.test-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.test-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #eee;
+  border-radius: 12px;
+  background: #fafafa;
+  font-family: inherit;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.test-option:hover {
+  border-color: #ddd;
+  background: #f5f5f5;
+}
+
+.test-option.selected {
+  border-color: #0a0a0a;
+  background: #fafafa;
+}
+
+.option-marker {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.test-option.selected .option-marker {
+  background: #0a0a0a;
+  color: #fff;
+}
+
+/* Test Result */
+.test-result {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.result-score {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.score-num {
+  font-size: 48px;
+  font-weight: 800;
+  color: #0a0a0a;
+  letter-spacing: -0.03em;
+}
+
+.score-sep {
+  font-size: 28px;
+  color: #ccc;
+}
+
+.score-total {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ccc;
+}
+
+.test-result p {
+  font-size: 14px;
+  color: #888;
+  margin: 0 0 16px;
+}
+
+/* Navigation Actions */
+.nav-actions {
+  margin-top: 16px;
+  display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-@media (max-width: 840px) {
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border: none;
+  border-radius: 10px;
+  background: #0a0a0a;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #222;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  background: #fff;
+  color: #555;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+  border-color: #ccc;
+  background: #fafafa;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .prep-page {
+    padding: 32px 16px 60px;
+  }
+
+  .section-card {
+    padding: 18px 16px;
+  }
+
+  .section-card h1 {
+    font-size: 20px;
+  }
+
   .overview-grid {
     grid-template-columns: 1fr;
   }
@@ -651,8 +1133,22 @@ onMounted(() => {
     grid-template-columns: 1fr;
   }
 
-  .task-leader-row {
-    grid-template-columns: auto 1fr;
+  .leader-row {
+    flex-wrap: wrap;
+  }
+
+  .hr-status {
+    width: 100%;
+    text-align: center;
+  }
+
+  .mode-tabs {
+    gap: 4px;
+  }
+
+  .mode-tabs button {
+    padding: 7px 12px;
+    font-size: 12px;
   }
 }
 </style>

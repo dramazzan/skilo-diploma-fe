@@ -159,8 +159,8 @@ const activityChartData = computed(() => {
       .map((key) => {
         const weekStart = new Date(key)
         return {
-        label: `${pad(weekStart.getDate())}.${pad(weekStart.getMonth() + 1)}`,
-        value: byWeek[key] ?? 0
+          label: `${pad(weekStart.getDate())}.${pad(weekStart.getMonth() + 1)}`,
+          value: byWeek[key] ?? 0
         }
       })
   }
@@ -178,8 +178,8 @@ const activityChartData = computed(() => {
         const [year, month] = key.split("-").map(Number)
         const monthDate = new Date(year, month - 1, 1)
         return {
-        label: monthDate.toLocaleString("ru-RU", { month: "short" }),
-        value: byMonth[key] ?? 0
+          label: monthDate.toLocaleString("ru-RU", { month: "short" }),
+          value: byMonth[key] ?? 0
         }
       })
   }
@@ -290,17 +290,17 @@ onMounted(fetchProfile)
 </script>
 
 <template>
-  <div class="profile-card card">
+  <div class="profile-page">
 
     <!-- Loading -->
     <div v-if="loading" class="state-view">
       <span class="loader" />
-      <p class="state-text">Загрузка профиля…</p>
+      <p>Загрузка профиля...</p>
     </div>
 
     <!-- Error -->
     <div v-else-if="error" class="state-view">
-      <p class="state-text error">{{ error }}</p>
+      <p class="error-text">{{ error }}</p>
     </div>
 
     <!-- Content -->
@@ -309,40 +309,36 @@ onMounted(fetchProfile)
       <!-- Header -->
       <div class="profile-header">
         <div class="avatar">{{ profile.fullName?.charAt(0) }}</div>
-        <div class="profile-title">
-          <h2 class="full-name">{{ profile.fullName }}</h2>
-          <span class="email">{{ profile.email }}</span>
+        <div>
+          <h1>{{ profile.fullName }}</h1>
+          <p class="email">{{ profile.email }}</p>
         </div>
       </div>
 
-      <div class="divider" />
-
-      <!-- Meta -->
+      <!-- Meta Stats -->
       <div class="meta-grid">
-        <div class="meta-item">
-          <span class="meta-label">Дата регистрации</span>
-          <span class="meta-value">{{ profile.joinedAt }}</span>
+        <div class="meta-card">
+          <span>Дата регистрации</span>
+          <strong>{{ profile.joinedAt }}</strong>
         </div>
-        <div class="meta-item">
-          <span class="meta-label">Пройдено тестов</span>
-          <span class="meta-value accent">{{ profile.completedTests }}</span>
+        <div class="meta-card">
+          <span>Пройдено тестов</span>
+          <strong>{{ profile.completedTests }}</strong>
         </div>
-        <div class="meta-item">
-          <span class="meta-label">Очки</span>
-          <span class="meta-value trophy-value">
+        <div class="meta-card">
+          <span>Очки</span>
+          <strong class="trophy-value">
             <svg class="trophy-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M8 4h8v2h3a1 1 0 0 1 1 1v1a5 5 0 0 1-5 5h-.17A6.01 6.01 0 0 1 13 16.92V19h3v2H8v-2h3v-2.08A6.01 6.01 0 0 1 9.17 13H9a5 5 0 0 1-5-5V7a1 1 0 0 1 1-1h3V4Zm-2 4a3 3 0 0 0 3 3h.03A6.03 6.03 0 0 1 8 8V8H6Zm12 0v0a6.03 6.03 0 0 1-1.03 3H17a3 3 0 0 0 3-3h-2Z" fill="currentColor"/>
             </svg>
-            {{ profilePoints ?? "—" }}
-          </span>
+            {{ profilePoints ?? "---" }}
+          </strong>
         </div>
       </div>
 
-      <div class="divider" />
-
       <!-- Skills -->
       <section class="section">
-        <h3 class="section-title">Навыки</h3>
+        <h2 class="section-title">Навыки</h2>
         <div class="tag-list">
           <span v-for="skill in profile.skills" :key="skill" class="tag">{{ skill }}</span>
         </div>
@@ -350,184 +346,178 @@ onMounted(fetchProfile)
 
       <!-- Achievements -->
       <section class="section">
-        <h3 class="section-title">Достижения</h3>
+        <h2 class="section-title">Достижения</h2>
         <ul class="ach-list">
-          <li v-for="ach in profile.achievements" :key="ach" class="ach-item">
+          <li v-for="ach in profile.achievements" :key="ach">
             <span class="ach-dot" />
             {{ ach }}
           </li>
         </ul>
       </section>
 
-      <section class="section user-details-section">
-        <h3 class="section-title">Данные пользователя</h3>
+      <!-- User Details -->
+      <section class="section">
+        <h2 class="section-title">Данные пользователя</h2>
         <p v-if="!userDetails.length" class="muted">Данные пользователя не загружены.</p>
-        <div v-else class="user-details-grid">
-          <div v-for="item in userDetails" :key="item.label" class="user-details-item">
-            <span class="user-details-label">{{ item.label }}</span>
-            <strong class="user-details-value">{{ item.value }}</strong>
+        <div v-else class="details-grid">
+          <div v-for="item in userDetails" :key="item.label" class="detail-item">
+            <span>{{ item.label }}</span>
+            <strong>{{ item.value }}</strong>
           </div>
         </div>
       </section>
 
       <!-- Activity -->
-      <section class="section activity-section">
-        <div class="activity-head">
-          <h3 class="section-title">Активность за год</h3>
-          <p class="activity-note">Активность рассчитывается автоматически по действиям пользователя (результаты тестов).</p>
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Активность за год</h2>
+          <p class="section-note">Рассчитывается автоматически по результатам тестов.</p>
         </div>
 
-        <div class="activity-meta">
+        <div class="activity-stats">
           <span>Активных дней: <strong>{{ activityStats.totalActiveDays }}</strong></span>
-          <span>Сумма активности: <strong>{{ activityStats.totalPoints }}</strong></span>
+          <span>Сумма: <strong>{{ activityStats.totalPoints }}</strong></span>
         </div>
 
-        <div class="activity-controls">
-          <div class="view-toggle">
+        <div class="toggle-bar">
+          <div class="toggle-group">
             <button
-              type="button"
-              class="secondary"
               :class="{ active: activityViewMode === 'heatmap' }"
               @click="activityViewMode = 'heatmap'"
-            >
-              Тепловая карта
-            </button>
+            >Тепловая карта</button>
             <button
-              type="button"
-              class="secondary"
               :class="{ active: activityViewMode === 'chart' }"
               @click="activityViewMode = 'chart'"
-            >
-              Диаграмма
-            </button>
+            >Диаграмма</button>
           </div>
 
-          <div v-if="activityViewMode === 'chart'" class="range-toggle">
-            <button type="button" class="secondary" :class="{ active: activityChartRange === 'day' }" @click="activityChartRange = 'day'">Дни</button>
-            <button type="button" class="secondary" :class="{ active: activityChartRange === 'week' }" @click="activityChartRange = 'week'">Недели</button>
-            <button type="button" class="secondary" :class="{ active: activityChartRange === 'month' }" @click="activityChartRange = 'month'">Месяцы</button>
-            <button type="button" class="secondary" :class="{ active: activityChartRange === 'year' }" @click="activityChartRange = 'year'">Годы</button>
+          <div v-if="activityViewMode === 'chart'" class="toggle-group">
+            <button :class="{ active: activityChartRange === 'day' }" @click="activityChartRange = 'day'">Дни</button>
+            <button :class="{ active: activityChartRange === 'week' }" @click="activityChartRange = 'week'">Недели</button>
+            <button :class="{ active: activityChartRange === 'month' }" @click="activityChartRange = 'month'">Месяцы</button>
+            <button :class="{ active: activityChartRange === 'year' }" @click="activityChartRange = 'year'">Годы</button>
           </div>
         </div>
 
         <div v-if="activityLoading" class="muted">Загрузка активности...</div>
-        <div v-else-if="activityViewMode === 'heatmap'" class="activity-grid-wrap">
-          <div class="activity-grid" aria-label="Годовая активность">
-            <div v-for="(week, weekIndex) in activityWeeks" :key="`week-${weekIndex}`" class="activity-week">
+
+        <!-- Heatmap -->
+        <div v-else-if="activityViewMode === 'heatmap'" class="heatmap-wrap">
+          <div class="heatmap" aria-label="Годовая активность">
+            <div v-for="(week, wi) in activityWeeks" :key="`w-${wi}`" class="heatmap-week">
               <span
-                v-for="(day, dayIndex) in week"
-                :key="`day-${weekIndex}-${dayIndex}`"
-                class="activity-day"
+                v-for="(day, di) in week"
+                :key="`d-${wi}-${di}`"
+                class="heatmap-day"
                 :class="day ? `level-${day.level}` : 'level-empty'"
-                :title="day ? `${toRuDate(day.date)} · уровень ${day.level}` : ''"
+                :title="day ? `${toRuDate(day.date)} - уровень ${day.level}` : ''"
               />
             </div>
           </div>
-
-          <div class="activity-legend">
+          <div class="heatmap-legend">
             <span>Меньше</span>
-            <i class="activity-day level-0" />
-            <i class="activity-day level-1" />
-            <i class="activity-day level-2" />
-            <i class="activity-day level-3" />
-            <i class="activity-day level-4" />
+            <i class="heatmap-day level-0" />
+            <i class="heatmap-day level-1" />
+            <i class="heatmap-day level-2" />
+            <i class="heatmap-day level-3" />
+            <i class="heatmap-day level-4" />
             <span>Больше</span>
           </div>
         </div>
 
-        <div v-else class="activity-chart-wrap">
-          <div class="activity-chart">
-            <div v-for="(item, index) in activityChartData" :key="`${item.label}-${index}`" class="activity-bar-col">
-              <div class="activity-bar-shell">
-                <span class="activity-bar" :style="{ height: `${Math.max(4, (item.value / activityChartMax) * 100)}%` }" />
+        <!-- Chart -->
+        <div v-else class="chart-wrap">
+          <div class="chart">
+            <div v-for="(item, index) in activityChartData" :key="`${item.label}-${index}`" class="bar-col">
+              <div class="bar-shell">
+                <span class="bar-fill" :style="{ height: `${Math.max(4, (item.value / activityChartMax) * 100)}%` }" />
               </div>
-              <span class="activity-bar-label">{{ item.label }}</span>
-              <span class="activity-bar-value">{{ item.value }}</span>
+              <span class="bar-label">{{ item.label }}</span>
+              <span class="bar-value">{{ item.value }}</span>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Resume Generator -->
-      <section class="section resume-section">
-        <div class="resume-head">
-          <h3 class="section-title">Генерация сертификата (MVP)</h3>
-          <p class="resume-note">
-            Пока используется mock-генерация на основе навыков и прогресса. Позже сертификат будет формироваться ИИ по данным пользователя.
-          </p>
+      <!-- Certificate -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Сертификат</h2>
+          <p class="section-note">Генерация сертификата на основе навыков и прогресса.</p>
         </div>
 
-        <button class="primary" :disabled="generatingResume" @click="generateResume">
+        <button class="btn-primary" :disabled="generatingResume" @click="generateResume">
+          <span v-if="generatingResume" class="spinner" />
           {{ generatingResume ? "Генерация..." : "Сгенерировать сертификат" }}
         </button>
 
-        <div v-if="generatedCertificate" class="resume-result">
-          <h4>Предпросмотр сертификата</h4>
+        <div v-if="generatedCertificate" class="certificate-container">
+          <h3 class="cert-preview-title">Предпросмотр сертификата</h3>
 
-          <article class="certificate-paper">
-            <header class="certificate-head">
-              <p class="certificate-subtitle">{{ generatedCertificate.issuedBy }}</p>
-              <h5>{{ generatedCertificate.title }}</h5>
-              <p class="certificate-id">ID: {{ generatedCertificate.certificateId }}</p>
+          <article class="certificate">
+            <header class="cert-header">
+              <p class="cert-issuer">{{ generatedCertificate.issuedBy }}</p>
+              <h4 class="cert-title">{{ generatedCertificate.title }}</h4>
+              <p class="cert-id">ID: {{ generatedCertificate.certificateId }}</p>
             </header>
 
-            <section class="certificate-main">
-              <p class="certificate-text">Настоящим подтверждается, что</p>
-              <h6 class="certificate-name">{{ generatedCertificate.fullName }}</h6>
-              <p class="certificate-text">успешно проходит обучение по дорожным картам платформы и демонстрирует уровень:</p>
-              <p class="certificate-level">{{ generatedCertificate.overallLevel }}</p>
+            <section class="cert-body">
+              <p>Настоящим подтверждается, что</p>
+              <h5 class="cert-name">{{ generatedCertificate.fullName }}</h5>
+              <p>успешно проходит обучение по дорожным картам платформы и демонстрирует уровень:</p>
+              <p class="cert-level">{{ generatedCertificate.overallLevel }}</p>
             </section>
 
-            <section class="certificate-grid">
+            <section class="cert-meta-grid">
               <div>
-                <p class="certificate-meta-label">Email</p>
-                <p class="certificate-meta-value">{{ generatedCertificate.email }}</p>
+                <span>Email</span>
+                <strong>{{ generatedCertificate.email }}</strong>
               </div>
               <div>
-                <p class="certificate-meta-label">Дата выдачи</p>
-                <p class="certificate-meta-value">{{ generatedCertificate.issueDate }}</p>
+                <span>Дата выдачи</span>
+                <strong>{{ generatedCertificate.issueDate }}</strong>
               </div>
               <div>
-                <p class="certificate-meta-label">Код проверки</p>
-                <p class="certificate-meta-value">{{ generatedCertificate.verificationCode }}</p>
+                <span>Код проверки</span>
+                <strong>{{ generatedCertificate.verificationCode }}</strong>
               </div>
             </section>
 
-            <section class="certificate-section">
+            <section class="cert-section">
               <h6>Подтверждённые навыки</h6>
-              <div class="resume-skill-list">
+              <div class="cert-skills">
                 <span v-for="skill in generatedCertificate.skills" :key="skill">{{ skill }}</span>
               </div>
             </section>
 
-            <section class="certificate-section">
+            <section class="cert-section">
               <h6>Результаты по направлениям</h6>
-              <div v-if="generatedCertificate.roadmapResults.length" class="resume-progress-list">
-                <div v-for="item in generatedCertificate.roadmapResults" :key="item.title" class="resume-progress-item">
-                  <div class="resume-progress-head">
+              <div v-if="generatedCertificate.roadmapResults.length" class="cert-progress-list">
+                <div v-for="item in generatedCertificate.roadmapResults" :key="item.title" class="cert-progress-item">
+                  <div class="cert-progress-head">
                     <strong>{{ item.title }}</strong>
-                    <span>{{ item.percent }}% · {{ item.status }}</span>
+                    <span>{{ item.percent }}% - {{ item.status }}</span>
                   </div>
-                  <div class="resume-progress-track">
+                  <div class="cert-progress-track">
                     <span :style="{ width: `${item.percent}%` }" />
                   </div>
                 </div>
               </div>
-              <p v-else class="resume-empty">Нет данных по направлениям.</p>
+              <p v-else class="muted">Нет данных по направлениям.</p>
             </section>
 
-            <footer class="certificate-footer">
+            <footer class="cert-footer">
               <p>Пройдено тестов: <strong>{{ generatedCertificate.completedTests }}</strong></p>
-              <p>Статус: Сертификат учебного прогресса (MVP)</p>
+              <p>Статус: Сертификат учебного прогресса</p>
             </footer>
           </article>
 
-          <div class="resume-actions">
-            <button class="secondary" disabled>Скачать PDF (скоро)</button>
-            <button class="secondary" disabled>Скачать DOCX (скоро)</button>
-            <button class="secondary" disabled>Скачать TXT (скоро)</button>
-            <button class="secondary" disabled>Поделиться LinkedIn (скоро)</button>
-            <button class="secondary" disabled>Поделиться Telegram (скоро)</button>
+          <div class="cert-actions">
+            <button class="btn-secondary" disabled>Скачать PDF (скоро)</button>
+            <button class="btn-secondary" disabled>Скачать DOCX (скоро)</button>
+            <button class="btn-secondary" disabled>Скачать TXT (скоро)</button>
+            <button class="btn-secondary" disabled>LinkedIn (скоро)</button>
+            <button class="btn-secondary" disabled>Telegram (скоро)</button>
           </div>
         </div>
       </section>
@@ -537,6 +527,113 @@ onMounted(fetchProfile)
 </template>
 
 <style scoped>
+.profile-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 20px 80px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #111;
+}
+
+/* States */
+.state-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 0;
+  gap: 12px;
+}
+
+.state-view p {
+  font-size: 15px;
+  color: #999;
+  margin: 0;
+}
+
+.error-text {
+  color: #dc2626;
+}
+
+.loader {
+  width: 24px;
+  height: 24px;
+  border: 2.5px solid #e5e5e5;
+  border-top-color: #111;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Header */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.profile-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 2px;
+  color: #0a0a0a;
+}
+
+.email {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+
+/* Meta Grid */
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.meta-card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 16px;
+  background: #fff;
+  text-align: center;
+}
+
+.meta-card span {
+  display: block;
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+.meta-card strong {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0a0a0a;
+}
+
 .trophy-value {
   display: inline-flex;
   align-items: center;
@@ -544,439 +641,557 @@ onMounted(fetchProfile)
 }
 
 .trophy-icon {
-  width: 16px;
-  height: 16px;
-  color: #c48b00;
+  width: 18px;
+  height: 18px;
+  color: #d4a000;
 }
 
-.user-details-section {
-  margin-top: 10px;
-  border-top: 1px solid #e4ecf8;
-  padding-top: 14px;
+/* Sections */
+.section {
+  padding: 24px 0;
+  border-top: 1px solid #eee;
 }
 
-.user-details-grid {
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #999;
+  margin: 0 0 16px;
+}
+
+.section-header {
+  margin-bottom: 16px;
+}
+
+.section-header .section-title {
+  margin-bottom: 4px;
+}
+
+.section-note {
+  font-size: 13px;
+  color: #999;
+  margin: 0;
+}
+
+.muted {
+  font-size: 14px;
+  color: #999;
+}
+
+/* Tags */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 100px;
+  background: #f5f5f5;
+  color: #444;
+  border: 1px solid #eee;
+}
+
+/* Achievements */
+.ach-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ach-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.ach-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  flex-shrink: 0;
+}
+
+/* User Details */
+.details-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
 }
 
-.user-details-item {
-  border: 1px solid #dbe6f7;
+.detail-item {
+  border: 1px solid #eee;
   border-radius: 10px;
-  background: #f8fbff;
-  padding: 10px;
+  padding: 12px 14px;
+  background: #fafafa;
 }
 
-.user-details-label {
+.detail-item span {
   display: block;
   font-size: 12px;
-  color: #5f6f89;
+  color: #999;
+  margin-bottom: 4px;
 }
 
-.user-details-value {
-  margin-top: 4px;
+.detail-item strong {
   display: block;
-  color: #233353;
   font-size: 14px;
+  color: #111;
 }
 
-.resume-section {
-  margin-top: 10px;
-  border-top: 1px solid #e4ecf8;
-  padding-top: 14px;
-}
-
-.activity-section {
-  margin-top: 10px;
-  border-top: 1px solid #e4ecf8;
-  padding-top: 14px;
-}
-
-.activity-head {
-  margin-bottom: 8px;
-}
-
-.activity-note {
-  margin: 0;
-  color: #51627f;
-  font-size: 13px;
-}
-
-.activity-meta {
+/* Activity */
+.activity-stats {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 10px;
-  color: #425370;
+  gap: 16px;
+  margin-bottom: 14px;
   font-size: 13px;
+  color: #888;
 }
 
-.activity-controls {
+.activity-stats strong {
+  color: #111;
+}
+
+.toggle-bar {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 
-.view-toggle,
-.range-toggle {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.activity-controls .secondary {
-  padding: 6px 10px;
-  font-size: 12px;
-}
-
-.activity-controls .active {
-  border-color: #2a2f8f;
-  color: #2a2f8f;
-  background: #eef1ff;
-}
-
-.activity-grid-wrap {
-  border: 1px solid #dbe6f7;
-  border-radius: 10px;
-  background: #f8fbff;
-  padding: 10px;
-}
-
-.activity-grid {
+.toggle-group {
   display: flex;
   gap: 4px;
+}
+
+.toggle-group button {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background: #fff;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toggle-group button:hover {
+  border-color: #ccc;
+  color: #555;
+}
+
+.toggle-group button.active {
+  background: #0a0a0a;
+  color: #fff;
+  border-color: #0a0a0a;
+}
+
+/* Heatmap */
+.heatmap-wrap {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #fafafa;
+  padding: 14px;
+}
+
+.heatmap {
+  display: flex;
+  gap: 3px;
   overflow-x: auto;
   padding-bottom: 6px;
 }
 
-.activity-week {
+.heatmap-week {
   display: grid;
   grid-template-rows: repeat(7, 12px);
-  gap: 4px;
+  gap: 3px;
 }
 
-.activity-day {
+.heatmap-day {
   width: 12px;
   height: 12px;
-  padding: 0;
   border-radius: 3px;
-  border: 1px solid #d6e1f3;
-  background: #eef2f9;
-  box-shadow: none;
+  border: none;
+  background: #eee;
 }
 
-.activity-day:hover {
-  transform: none;
-}
-
-.activity-day.level-empty {
+.heatmap-day.level-empty {
   opacity: 0;
   pointer-events: none;
 }
 
-.activity-day.level-0 {
-  background: #e9eef7;
-}
+.heatmap-day.level-0 { background: #eee; }
+.heatmap-day.level-1 { background: #ccc; }
+.heatmap-day.level-2 { background: #999; }
+.heatmap-day.level-3 { background: #555; }
+.heatmap-day.level-4 { background: #0a0a0a; }
 
-.activity-day.level-1 {
-  background: #c8dcff;
-  border-color: #bbd2fb;
-}
-
-.activity-day.level-2 {
-  background: #9dc2ff;
-  border-color: #8db6fa;
-}
-
-.activity-day.level-3 {
-  background: #6ea3f6;
-  border-color: #5f94ea;
-}
-
-.activity-day.level-4 {
-  background: #2f70dc;
-  border-color: #2a66c9;
-}
-
-.activity-legend {
+.heatmap-legend {
   margin-top: 8px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #64748b;
+  gap: 4px;
+  font-size: 11px;
+  color: #999;
 }
 
-.activity-chart-wrap {
-  border: 1px solid #dbe6f7;
-  border-radius: 10px;
-  background: #f8fbff;
-  padding: 10px;
+.heatmap-legend .heatmap-day {
+  width: 10px;
+  height: 10px;
 }
 
-.activity-chart {
-  min-height: 220px;
+/* Chart */
+.chart-wrap {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #fafafa;
+  padding: 14px;
+}
+
+.chart {
+  min-height: 200px;
   display: flex;
   align-items: flex-end;
-  gap: 6px;
+  gap: 5px;
   overflow-x: auto;
   padding-bottom: 8px;
 }
 
-.activity-bar-col {
-  min-width: 34px;
+.bar-col {
+  min-width: 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
 }
 
-.activity-bar-shell {
-  width: 20px;
+.bar-shell {
+  width: 18px;
   height: 140px;
-  border-radius: 999px;
-  background: #e3ebf8;
+  border-radius: 100px;
+  background: #e5e5e5;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
 }
 
-.activity-bar {
+.bar-fill {
   width: 100%;
   border-radius: inherit;
-  background: linear-gradient(180deg, #7aa9f3 0%, #2f70dc 100%);
+  background: #0a0a0a;
+  transition: height 0.3s ease;
 }
 
-.activity-bar-label {
+.bar-label {
   font-size: 10px;
-  color: #596b87;
-  max-width: 34px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  color: #999;
 }
 
-.activity-bar-value {
+.bar-value {
   font-size: 11px;
   font-weight: 700;
-  color: #334155;
+  color: #333;
 }
 
-.resume-head {
-  margin-bottom: 10px;
-}
-
-.resume-note {
-  margin: 0;
-  color: #51627f;
-  font-size: 13px;
-}
-
-.resume-result {
-  margin-top: 12px;
-  border: 1px solid #dbe6f7;
-  border-radius: 12px;
-  background: #f5f9ff;
-  padding: 12px;
-}
-
-.resume-result h4 {
-  margin: 0 0 8px;
-}
-
-.resume-actions {
-  margin-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
-}
-
-.certificate-paper {
-  border: 1px solid #d7e3f4;
+  padding: 12px 24px;
+  border: none;
   border-radius: 10px;
-  background:
-    radial-gradient(500px 180px at 50% 0%, rgba(214, 228, 255, 0.35), transparent 55%),
-    #ffffff;
-  padding: 16px;
+  background: #0a0a0a;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.certificate-head {
+.btn-primary:hover {
+  background: #222;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  padding: 8px 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background: #fff;
+  color: #555;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+  border-color: #ccc;
+  background: #fafafa;
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+/* Certificate */
+.certificate-container {
+  margin-top: 20px;
+}
+
+.cert-preview-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 14px;
+}
+
+.certificate {
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  background: #fff;
+  padding: 28px 24px;
+}
+
+.cert-header {
   text-align: center;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e2eaf7;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee;
 }
 
-.certificate-head h5 {
-  margin: 4px 0;
-  font-size: 24px;
-  line-height: 1.2;
-  color: #1e3a8a;
-}
-
-.certificate-subtitle {
+.cert-issuer {
   margin: 0;
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #5a6f95;
+  color: #999;
 }
 
-.certificate-id {
+.cert-title {
+  margin: 6px 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0a0a0a;
+}
+
+.cert-id {
   margin: 0;
   font-size: 12px;
-  color: #5c6f90;
+  color: #bbb;
 }
 
-.certificate-main {
+.cert-body {
   text-align: center;
-  margin-top: 14px;
+  padding: 20px 0;
 }
 
-.certificate-text {
+.cert-body p {
   margin: 0;
-  color: #40516f;
+  font-size: 14px;
+  color: #888;
 }
 
-.certificate-name {
-  margin: 8px 0;
-  font-size: 28px;
-  line-height: 1.2;
-  color: #1f3f85;
+.cert-name {
+  margin: 10px 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #0a0a0a;
+  letter-spacing: -0.02em;
 }
 
-.certificate-level {
-  margin: 8px 0 0;
+.cert-level {
+  margin: 10px 0 0;
   font-size: 18px;
   font-weight: 700;
-  color: #173e87;
+  color: #333;
 }
 
-.certificate-grid {
-  margin-top: 14px;
+.cert-meta-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
+  padding: 16px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
 
-.certificate-meta-label {
-  margin: 0;
+.cert-meta-grid div {
+  text-align: center;
+}
+
+.cert-meta-grid span {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #999;
+  margin-bottom: 4px;
+}
+
+.cert-meta-grid strong {
+  font-size: 13px;
+  color: #111;
+}
+
+.cert-section {
+  padding-top: 16px;
+}
+
+.cert-section h6 {
+  margin: 0 0 10px;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #5d7198;
-}
-
-.certificate-meta-value {
-  margin: 3px 0 0;
-  font-size: 13px;
-  color: #243b63;
+  color: #999;
   font-weight: 600;
 }
 
-.certificate-section {
-  margin-top: 12px;
-}
-
-.certificate-section h6 {
-  margin: 0 0 6px;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #48618f;
-}
-
-.resume-skill-list {
+.cert-skills {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.resume-skill-list span {
-  border: 1px solid #d8e4f6;
-  border-radius: 999px;
-  padding: 3px 8px;
+.cert-skills span {
+  border: 1px solid #eee;
+  border-radius: 100px;
+  padding: 4px 12px;
   font-size: 12px;
-  background: #f8fbff;
+  color: #555;
+  background: #fafafa;
 }
 
-.resume-progress-list {
-  display: grid;
+.cert-progress-list {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.resume-progress-item {
-  border: 1px solid #e1e9f7;
-  border-radius: 8px;
-  background: #fbfdff;
-  padding: 8px;
+.cert-progress-item {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #fafafa;
+  padding: 10px 12px;
 }
 
-.resume-progress-head {
+.cert-progress-head {
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-size: 13px;
 }
 
-.resume-progress-head span {
-  color: #536480;
+.cert-progress-head strong {
+  color: #111;
+}
+
+.cert-progress-head span {
+  color: #999;
   font-size: 12px;
 }
 
-.resume-progress-track {
+.cert-progress-track {
   width: 100%;
-  height: 7px;
-  border-radius: 999px;
-  background: #dce5f4;
+  height: 6px;
+  border-radius: 100px;
+  background: #e5e5e5;
   overflow: hidden;
 }
 
-.resume-progress-track span {
+.cert-progress-track span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #3b82f6 0%, #4f46e5 100%);
+  background: #0a0a0a;
+  transition: width 0.3s ease;
 }
 
-.resume-progress-item p {
-  margin-top: 6px;
-  font-size: 12px;
-  color: #55657f;
-}
-
-.resume-empty {
-  color: #64748b;
-}
-
-.certificate-footer {
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid #e4ebf8;
+.cert-footer {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #eee;
   display: flex;
   justify-content: space-between;
   gap: 10px;
 }
 
-.certificate-footer p {
+.cert-footer p {
   margin: 0;
   font-size: 12px;
-  color: #425370;
+  color: #888;
 }
 
-@media (max-width: 760px) {
-  .user-details-grid {
+.cert-footer strong {
+  color: #333;
+}
+
+.cert-actions {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .profile-page {
+    padding: 32px 16px 60px;
+  }
+
+  .meta-grid {
     grid-template-columns: 1fr;
   }
 
-  .certificate-grid {
+  .details-grid {
     grid-template-columns: 1fr;
   }
 
-  .certificate-footer {
+  .cert-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cert-footer {
+    flex-direction: column;
+  }
+
+  .toggle-bar {
     flex-direction: column;
   }
 }

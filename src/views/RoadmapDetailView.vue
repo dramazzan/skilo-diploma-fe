@@ -62,29 +62,34 @@ watch(viewMode, (value) => {
 
 <template>
   <div class="page roadmap-page">
-    <button class="secondary" @click="$router.push('/roadmaps')">← Назад к дорожным картам</button>
+    <button class="btn btn--ghost" @click="$router.push('/roadmaps')">
+      ← Назад к дорожным картам
+    </button>
 
-    <div v-if="!roadmap">
+    <div v-if="!roadmap" class="empty-state">
       <h2>Roadmap не найден</h2>
     </div>
 
     <div v-else>
-      <h1>{{ roadmap.title }}</h1>
-      <p>{{ roadmap.description }}</p>
+      <div class="roadmap-header">
+        <h1 class="roadmap-title">{{ roadmap.title }}</h1>
+        <p class="roadmap-description">{{ roadmap.description }}</p>
+      </div>
 
+      <div class="section-label">Режим отображения</div>
       <div class="view-switcher" role="tablist" aria-label="Режим отображения roadmap">
         <button
           type="button"
-          class="secondary"
-          :class="{ active: viewMode === 'skill_tree' }"
+          class="btn"
+          :class="viewMode === 'skill_tree' ? 'btn--primary' : 'btn--ghost'"
           @click="viewMode = 'skill_tree'"
         >
           Дерево навыков
         </button>
         <button
           type="button"
-          class="secondary"
-          :class="{ active: viewMode === 'classic_list' }"
+          class="btn"
+          :class="viewMode === 'classic_list' ? 'btn--primary' : 'btn--ghost'"
           @click="viewMode = 'classic_list'"
         >
           Классический список
@@ -96,15 +101,15 @@ watch(viewMode, (value) => {
         <div v-else class="legacy-list-wrap">
           <div class="classic-progress">
             <div class="classic-progress-head">
-              <span>Прогресс</span>
-              <span>{{ listProgress.percent }}%</span>
+              <span class="section-label">Прогресс</span>
+              <span class="progress-badge">{{ listProgress.percent }}%</span>
             </div>
             <div class="classic-progress-track">
               <span class="classic-progress-fill" :style="{ width: `${listProgress.percent}%` }" />
             </div>
             <p class="classic-progress-meta">
-              {{ listProgress.completed }}/{{ listProgress.total }} завершено
-              · {{ listProgress.inProgress }} в процессе
+              <span class="badge">{{ listProgress.completed }}/{{ listProgress.total }} завершено</span>
+              <span class="badge">{{ listProgress.inProgress }} в процессе</span>
             </p>
           </div>
 
@@ -112,7 +117,7 @@ watch(viewMode, (value) => {
         </div>
       </div>
 
-      <div v-else>
+      <div v-else class="empty-state">
         Тем пока нет.
       </div>
     </div>
@@ -120,52 +125,132 @@ watch(viewMode, (value) => {
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ── Base ── */
 .roadmap-page {
   max-width: 1280px;
+  font-family: 'Inter', sans-serif;
+  color: #0a0a0a;
 }
 
+/* ── Header ── */
+.roadmap-header {
+  margin: 24px 0 20px;
+}
+
+.roadmap-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0a0a0a;
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.roadmap-description {
+  font-size: 15px;
+  color: #888;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Section label ── */
+.section-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn--primary {
+  background: #0a0a0a;
+  color: #fff;
+  border-color: #0a0a0a;
+}
+
+.btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10, 10, 10, 0.18);
+}
+
+.btn--ghost {
+  background: #fff;
+  color: #0a0a0a;
+  border-color: #eee;
+}
+
+.btn--ghost:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10, 10, 10, 0.07);
+}
+
+/* ── View Switcher ── */
 .view-switcher {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
-.view-switcher .active {
-  border-color: #2a2f8f;
-  color: #2a2f8f;
-  background: #eef1ff;
-}
-
+/* ── Classic list wrap ── */
 .legacy-list-wrap {
-  border: 1px solid #dbe3ef;
+  border: 1px solid #eee;
   border-radius: 14px;
-  background: linear-gradient(180deg, #ffffff 0%, #fcfdff 100%);
-  padding: 12px;
+  background: #fff;
+  padding: 16px;
 }
 
+/* ── Classic Progress ── */
 .classic-progress {
-  border: 1px solid #dde6f3;
-  border-radius: 10px;
-  background: #f8fbff;
-  padding: 10px;
-  margin-bottom: 12px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #f5f5f5;
+  padding: 14px 16px;
+  margin-bottom: 16px;
 }
 
 .classic-progress-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.progress-badge {
+  font-size: 13px;
   font-weight: 700;
-  color: #334155;
-  margin-bottom: 6px;
+  color: #0a0a0a;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 100px;
+  padding: 2px 10px;
 }
 
 .classic-progress-track {
   width: 100%;
-  height: 8px;
-  border-radius: 999px;
-  background: #dbe3ef;
+  height: 6px;
+  border-radius: 100px;
+  background: #eee;
   overflow: hidden;
 }
 
@@ -173,12 +258,63 @@ watch(viewMode, (value) => {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #2f3599 0%, #3f2f88 100%);
+  background: #0a0a0a;
+  transition: width 0.4s ease;
 }
 
 .classic-progress-meta {
-  margin: 6px 0 0;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 10px 0 0;
+}
+
+/* ── Badge / pill ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
   font-size: 12px;
-  color: #526079;
+  font-weight: 500;
+  color: #888;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 100px;
+  padding: 3px 10px;
+}
+
+/* ── Empty State ── */
+.empty-state {
+  padding: 40px 0;
+  color: #999;
+  font-size: 15px;
+}
+
+/* ── Adaptive ── */
+@media (max-width: 640px) {
+  .roadmap-title {
+    font-size: 22px;
+  }
+
+  .roadmap-description {
+    font-size: 14px;
+  }
+
+  .view-switcher {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .legacy-list-wrap {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .classic-progress {
+    padding: 12px;
+  }
 }
 </style>

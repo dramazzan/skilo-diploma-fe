@@ -36,16 +36,16 @@ const pathD = computed(() => {
 <style scoped>
 .connection {
   fill: none;
-  stroke: rgba(116, 171, 192, 0.45);
-  stroke-width: 2;
+  stroke: #eee;
+  stroke-width: 1.5;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
-  transition: stroke 0.3s ease;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
 }
 
 .connection.active {
-  stroke: rgba(82, 190, 255, 0.85);
-  stroke-width: 2.4;
+  stroke: #0a0a0a;
+  stroke-width: 2;
   animation: draw-connection 0.7s ease;
 }
 
