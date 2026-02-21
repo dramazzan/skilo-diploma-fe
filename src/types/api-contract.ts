@@ -209,7 +209,7 @@ export interface Vacancy {
 }
 
 export type VacancyListResponse = Vacancy[]
-export type VacancyResponse = Vacancy
+export type VacancyResponse = Vacancy | null
 export type VacancyTaskListResponse = Array<{
   task: VacancyTask
   submission: VacancyTaskSubmission | null
@@ -250,6 +250,9 @@ export interface UserRoadmapCollectionResponse {
   userId: number
   roadmapIds: string[]
 }
+
+// Frontend store currently expects `string[]` in collection methods.
+export type UserRoadmapIdsResponse = string[]
 
 export type RoadmapListResponse = Roadmap[]
 export type RoadmapTreeResponse = Record<string, RoadmapNode[]>
@@ -477,21 +480,21 @@ export const MVP_API_ENDPOINTS: EndpointDoc[] = [
   {
     method: "GET",
     path: "/users/:userId/roadmaps",
-    response: "UserRoadmapCollectionResponse",
-    purpose: "Get user roadmap collection ids"
+    response: "UserRoadmapIdsResponse",
+    purpose: "Get user roadmap collection ids (frontend currently expects plain string[])"
   },
   {
     method: "PUT",
     path: "/users/:userId/roadmaps",
     request: "UpdateUserRoadmapCollectionRequest",
-    response: "UserRoadmapCollectionResponse",
-    purpose: "Replace user roadmap collection"
+    response: "UserRoadmapIdsResponse",
+    purpose: "Replace user roadmap collection (frontend currently expects plain string[])"
   },
   {
     method: "DELETE",
     path: "/users/:userId/roadmaps/:roadmapId",
-    response: "RemoveRoadmapFromCollectionResponse",
-    purpose: "Remove roadmap from user collection"
+    response: "UserRoadmapIdsResponse",
+    purpose: "Remove roadmap from user collection (frontend currently expects plain string[])"
   },
   {
     method: "GET",
@@ -530,6 +533,45 @@ export const MVP_API_ENDPOINTS: EndpointDoc[] = [
     response: "TopicInterviewQuestionsResponse",
     purpose: "Get interview Q&A list for topic"
   }
+]
+
+// =========================
+// Mock -> API alignment
+// =========================
+
+export interface MockToApiContractItem {
+  mockSourceFile: string
+  mockExport: string
+  endpoint: string
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
+  responseModel: string
+}
+
+/**
+ * Backend checklist:
+ * all data currently taken from mocks must be returned by these endpoints.
+ */
+export const MOCK_TO_API_CONTRACT: MockToApiContractItem[] = [
+  { mockSourceFile: "src/mocks/mockData.ts", mockExport: "mockLoginResponse", endpoint: "/auth/login", method: "POST", responseModel: "AuthResponse" },
+  { mockSourceFile: "src/mocks/mockData.ts", mockExport: "mockDefaultRoadmapCollection", endpoint: "/users/:userId/roadmaps", method: "GET", responseModel: "UserRoadmapIdsResponse" },
+  { mockSourceFile: "src/mocks/mockData.ts", mockExport: "mockRoadmapProgressResponse", endpoint: "/users/:userId/roadmap-progress", method: "GET", responseModel: "RoadmapProgressResponse" },
+
+  { mockSourceFile: "src/mocks/mockProfile.ts", mockExport: "mockProfileData", endpoint: "/profile", method: "GET", responseModel: "ProfileResponse" },
+
+  { mockSourceFile: "src/mocks/mockRoadmaps.ts", mockExport: "mockRoadmaps", endpoint: "/roadmaps", method: "GET", responseModel: "RoadmapListResponse" },
+  { mockSourceFile: "src/mocks/mockRoadmaps.ts", mockExport: "mockRoadmapTrees", endpoint: "/roadmaps/tree", method: "GET", responseModel: "RoadmapTreeResponse" },
+  { mockSourceFile: "src/mocks/mockRoadmaps.ts", mockExport: "mockRoadmapAssessments", endpoint: "/roadmaps/:roadmapId/assessment", method: "GET", responseModel: "RoadmapAssessment" },
+
+  { mockSourceFile: "src/mocks/mockRoadmap.ts", mockExport: "mockRoadmap", endpoint: "/topics", method: "GET", responseModel: "TopicListResponse" },
+  { mockSourceFile: "src/mocks/mockRoadmap.ts", mockExport: "mockTopicContent", endpoint: "/topics/:topicId/content", method: "GET", responseModel: "TopicContentResponse" },
+  { mockSourceFile: "src/mocks/mockRoadmap.ts", mockExport: "mockTests", endpoint: "/topics/:topicId/test", method: "GET", responseModel: "TopicTestsResponse" },
+
+  { mockSourceFile: "src/mocks/mockInterviewQuestions.ts", mockExport: "mockInterviewQuestionsByTopic", endpoint: "/topics/:topicId/interview-questions", method: "GET", responseModel: "TopicInterviewQuestionsResponse" },
+
+  { mockSourceFile: "src/mocks/mockVacancies.ts", mockExport: "mockVacancies", endpoint: "/vacancies", method: "GET", responseModel: "VacancyListResponse" },
+  { mockSourceFile: "src/mocks/mockVacancies.ts", mockExport: "mockVacancies[vacancyId]", endpoint: "/vacancies/:vacancyId", method: "GET", responseModel: "VacancyResponse" },
+  { mockSourceFile: "src/mocks/mockVacancies.ts", mockExport: "mockVacancies[vacancyId].realTasks + submissions", endpoint: "/vacancies/:vacancyId/tasks", method: "GET", responseModel: "VacancyTaskListResponse" },
+  { mockSourceFile: "src/mocks/mockVacancies.ts", mockExport: "mock vacancy task leaderboard", endpoint: "/vacancies/:vacancyId/tasks/leaderboard", method: "GET", responseModel: "VacancyTaskLeaderboardResponse" }
 ]
 
 // =========================
