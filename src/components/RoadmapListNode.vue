@@ -177,7 +177,7 @@ const getNodeClass = (node: RoadmapNode) => ({
 .list-name {
   font-size: 14px;
   font-weight: 600;
-  color: #0a0a0a;
+  color: #334155;
   flex: 1;
   line-height: 1.4;
 }
@@ -198,9 +198,9 @@ const getNodeClass = (node: RoadmapNode) => ({
 }
 
 .list-status--completed {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 .list-status--progress {

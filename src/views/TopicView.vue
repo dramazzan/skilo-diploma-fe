@@ -303,7 +303,7 @@ onBeforeUnmount(() => {
 /* ── Base ── */
 .topic-page {
   font-family: 'Inter', sans-serif;
-  color: #0a0a0a;
+  color: #334155;
   max-width: 820px;
   display: flex;
   flex-direction: column;
@@ -334,9 +334,9 @@ onBeforeUnmount(() => {
 }
 
 .btn--primary {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 .btn--primary:hover {
@@ -346,7 +346,7 @@ onBeforeUnmount(() => {
 
 .btn--ghost {
   background: #fff;
-  color: #0a0a0a;
+  color: #334155;
   border-color: #eee;
 }
 
@@ -378,12 +378,12 @@ onBeforeUnmount(() => {
 }
 
 .topic-tab:hover {
-  color: #0a0a0a;
+  color: #334155;
   background: #fff;
 }
 
 .topic-tab.router-link-active {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
   box-shadow: 0 2px 8px rgba(10, 10, 10, 0.15);
 }
@@ -407,7 +407,7 @@ onBeforeUnmount(() => {
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #0a0a0a;
+  color: #334155;
   margin: 0;
   line-height: 1.2;
 }
@@ -432,9 +432,9 @@ onBeforeUnmount(() => {
 }
 
 .status--pass {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 .status--fail {
@@ -530,7 +530,7 @@ onBeforeUnmount(() => {
 .meta-value {
   font-size: 16px;
   font-weight: 700;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .timer {
@@ -562,7 +562,7 @@ onBeforeUnmount(() => {
 .test-progress-fill {
   display: block;
   height: 100%;
-  background: #0a0a0a;
+  background: #1f2d7a;
   border-radius: inherit;
   transition: width 0.3s ease;
 }
@@ -578,7 +578,7 @@ onBeforeUnmount(() => {
 .question-text {
   font-size: 15px;
   font-weight: 600;
-  color: #0a0a0a;
+  color: #334155;
   line-height: 1.5;
   margin: 0 0 16px;
 }
@@ -607,7 +607,7 @@ onBeforeUnmount(() => {
 }
 
 .option-item--selected {
-  border-color: #0a0a0a;
+  border-color: #334155;
   background: #f5f5f5;
 }
 
@@ -627,8 +627,8 @@ onBeforeUnmount(() => {
 }
 
 .option-item--selected .option-marker {
-  border-color: #0a0a0a;
-  background: #0a0a0a;
+  border-color: #334155;
+  background: #1f2d7a;
 }
 
 .option-item--selected .option-marker::after {
@@ -645,7 +645,7 @@ onBeforeUnmount(() => {
 
 .option-text {
   font-size: 14px;
-  color: #0a0a0a;
+  color: #334155;
   line-height: 1.4;
 }
 
@@ -664,7 +664,7 @@ onBeforeUnmount(() => {
   font-size: 48px;
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: #0a0a0a;
+  color: #334155;
   line-height: 1;
 }
 
@@ -699,7 +699,7 @@ onBeforeUnmount(() => {
 }
 
 .result-fill--pass {
-  background: #0a0a0a;
+  background: #1f2d7a;
 }
 
 .result-fill--fail {
@@ -712,7 +712,7 @@ onBeforeUnmount(() => {
   top: -4px;
   width: 2px;
   height: 16px;
-  background: #0a0a0a;
+  background: #1f2d7a;
   border-radius: 100px;
 }
 
@@ -733,7 +733,7 @@ onBeforeUnmount(() => {
 
 .result-verdict--pass {
   background: #f5f5f5;
-  color: #0a0a0a;
+  color: #334155;
   border-color: #ddd;
 }
 

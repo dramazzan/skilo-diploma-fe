@@ -44,7 +44,7 @@ const pathD = computed(() => {
 }
 
 .connection.active {
-  stroke: #0a0a0a;
+  stroke: #1f2d7a;
   stroke-width: 2;
   animation: draw-connection 0.7s ease;
 }

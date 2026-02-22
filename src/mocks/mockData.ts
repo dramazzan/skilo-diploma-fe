@@ -8,8 +8,8 @@ export const mockLoginResponse: AuthResponse = {
     email: "test@example.com",
     firstLogin: true,
     createdAt: new Date().toISOString(),
-    country: "Kazakhstan",
-    city: "Almaty",
+    country: "Казахстан",
+    city: "Алматы",
     university: "Satbayev University"
   }
 }

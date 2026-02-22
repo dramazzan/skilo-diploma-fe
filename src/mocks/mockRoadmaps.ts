@@ -42,35 +42,35 @@ export interface RoadmapAssessment {
 export const mockRoadmaps: Roadmap[] = [
   {
     id: "ai",
-    title: "Artificial Intelligence",
-    description: "Complete AI engineering path",
+    title: "Искусственный интеллект",
+    description: "Полный путь обучения AI-инженерии",
     level: "Intermediate",
     recommended: true
   },
   {
     id: "frontend",
-    title: "Frontend Development",
-    description: "Modern UI engineering",
+    title: "Фронтенд-разработка",
+    description: "Современная разработка пользовательских интерфейсов",
     level: "Beginner",
     recommended: true
   },
   {
     id: "backend",
-    title: "Backend Development",
-    description: "Server-side & APIs",
+    title: "Бэкенд-разработка",
+    description: "Серверная разработка и API",
     level: "Intermediate",
     recommended: true
   },
   {
     id: "devops",
-    title: "DevOps Engineering",
-    description: "CI/CD, Docker, Cloud",
+    title: "DevOps-инженерия",
+    description: "CI/CD, Docker, облако",
     level: "Advanced",
     recommended: false
   },
   {
     id: "mobile",
-    title: "Mobile Development",
+    title: "Мобильная разработка",
     description: "Flutter / React Native",
     level: "Beginner",
     recommended: false
@@ -88,62 +88,62 @@ const defaultOptions: AssessmentOption[] = [
 export const mockRoadmapAssessments: Record<string, RoadmapAssessment> = {
   ai: {
     roadmapId: "ai",
-    title: "AI assessment",
+    title: "Оценка уровня по AI",
     questions: [
-      { id: "ai_math", text: "How would you rate your math skills for ML?", options: defaultOptions },
-      { id: "ai_models", text: "Do you have experience training models?", options: defaultOptions },
-      { id: "ai_frameworks", text: "How confident are you with ML frameworks?", options: defaultOptions },
-      { id: "ai_data", text: "How comfortable are you preparing and cleaning datasets?", options: defaultOptions },
-      { id: "ai_metrics", text: "How well do you understand evaluation metrics (precision/recall/F1)?", options: defaultOptions },
-      { id: "ai_deploy", text: "Have you deployed ML/AI models to real environments?", options: defaultOptions }
+      { id: "ai_math", text: "Как вы оцениваете свои знания математики для ML?", options: defaultOptions },
+      { id: "ai_models", text: "Есть ли у вас опыт обучения моделей?", options: defaultOptions },
+      { id: "ai_frameworks", text: "Насколько уверенно вы работаете с ML-фреймворками?", options: defaultOptions },
+      { id: "ai_data", text: "Насколько уверенно вы подготавливаете и очищаете датасеты?", options: defaultOptions },
+      { id: "ai_metrics", text: "Насколько хорошо вы понимаете метрики оценки (precision/recall/F1)?", options: defaultOptions },
+      { id: "ai_deploy", text: "Разворачивали ли вы ML/AI-модели в реальных окружениях?", options: defaultOptions }
     ]
   },
   frontend: {
     roadmapId: "frontend",
-    title: "Frontend assessment",
+    title: "Оценка уровня по фронтенду",
     questions: [
-      { id: "fe_layout", text: "How confident are you with responsive layouts?", options: defaultOptions },
-      { id: "fe_js", text: "What is your current JavaScript level?", options: defaultOptions },
-      { id: "fe_framework", text: "Do you have experience with modern UI frameworks?", options: defaultOptions },
-      { id: "fe_accessibility", text: "How often do you apply accessibility best practices?", options: defaultOptions },
-      { id: "fe_state", text: "How confident are you with state management patterns?", options: defaultOptions },
-      { id: "fe_perf", text: "How comfortable are you optimizing frontend performance?", options: defaultOptions }
+      { id: "fe_layout", text: "Насколько уверенно вы работаете с адаптивной версткой?", options: defaultOptions },
+      { id: "fe_js", text: "Какой у вас текущий уровень JavaScript?", options: defaultOptions },
+      { id: "fe_framework", text: "Есть ли у вас опыт работы с современными UI-фреймворками?", options: defaultOptions },
+      { id: "fe_accessibility", text: "Как часто вы применяете лучшие практики доступности (a11y)?", options: defaultOptions },
+      { id: "fe_state", text: "Насколько уверенно вы используете паттерны управления состоянием?", options: defaultOptions },
+      { id: "fe_perf", text: "Насколько уверенно вы оптимизируете производительность фронтенда?", options: defaultOptions }
     ]
   },
   backend: {
     roadmapId: "backend",
-    title: "Backend assessment",
+    title: "Оценка уровня по бэкенду",
     questions: [
-      { id: "be_api", text: "How confident are you designing REST APIs?", options: defaultOptions },
-      { id: "be_db", text: "Do you have experience with SQL/NoSQL databases?", options: defaultOptions },
-      { id: "be_auth", text: "How would you rate your experience with auth and security?", options: defaultOptions },
-      { id: "be_scaling", text: "How comfortable are you with scaling backend services?", options: defaultOptions },
-      { id: "be_cache", text: "Do you use caching strategies (Redis/CDN/in-memory)?", options: defaultOptions },
-      { id: "be_observability", text: "How confident are you with logs, metrics, and tracing?", options: defaultOptions }
+      { id: "be_api", text: "Насколько уверенно вы проектируете REST API?", options: defaultOptions },
+      { id: "be_db", text: "Есть ли у вас опыт работы с SQL/NoSQL базами данных?", options: defaultOptions },
+      { id: "be_auth", text: "Как вы оцениваете свой опыт в аутентификации и безопасности?", options: defaultOptions },
+      { id: "be_scaling", text: "Насколько уверенно вы масштабируете бэкенд-сервисы?", options: defaultOptions },
+      { id: "be_cache", text: "Используете ли вы стратегии кеширования (Redis/CDN/in-memory)?", options: defaultOptions },
+      { id: "be_observability", text: "Насколько уверенно вы работаете с логами, метриками и трассировкой?", options: defaultOptions }
     ]
   },
   devops: {
     roadmapId: "devops",
-    title: "DevOps assessment",
+    title: "Оценка уровня по DevOps",
     questions: [
-      { id: "devops_ci", text: "How familiar are you with CI/CD pipelines?", options: defaultOptions },
-      { id: "devops_containers", text: "Do you have experience with Docker/Kubernetes?", options: defaultOptions },
-      { id: "devops_cloud", text: "How confident are you with cloud providers?", options: defaultOptions },
-      { id: "devops_iac", text: "How comfortable are you with Infrastructure as Code?", options: defaultOptions },
-      { id: "devops_monitoring", text: "Do you set up monitoring and alerting in projects?", options: defaultOptions },
-      { id: "devops_security", text: "How confident are you with DevSecOps practices?", options: defaultOptions }
+      { id: "devops_ci", text: "Насколько хорошо вы знакомы с CI/CD пайплайнами?", options: defaultOptions },
+      { id: "devops_containers", text: "Есть ли у вас опыт работы с Docker/Kubernetes?", options: defaultOptions },
+      { id: "devops_cloud", text: "Насколько уверенно вы работаете с облачными провайдерами?", options: defaultOptions },
+      { id: "devops_iac", text: "Насколько уверенно вы используете Infrastructure as Code?", options: defaultOptions },
+      { id: "devops_monitoring", text: "Настраиваете ли вы мониторинг и алертинг в проектах?", options: defaultOptions },
+      { id: "devops_security", text: "Насколько уверенно вы применяете практики DevSecOps?", options: defaultOptions }
     ]
   },
   mobile: {
     roadmapId: "mobile",
-    title: "Mobile assessment",
+    title: "Оценка уровня по мобильной разработке",
     questions: [
-      { id: "mobile_ui", text: "Do you have experience building mobile UIs?", options: defaultOptions },
-      { id: "mobile_state", text: "How confident are you managing app state?", options: defaultOptions },
-      { id: "mobile_release", text: "Do you have experience publishing apps to stores?", options: defaultOptions },
-      { id: "mobile_arch", text: "How comfortable are you with mobile architecture patterns?", options: defaultOptions },
-      { id: "mobile_perf", text: "How confident are you with mobile performance optimization?", options: defaultOptions },
-      { id: "mobile_testing", text: "Do you write automated tests for mobile apps?", options: defaultOptions }
+      { id: "mobile_ui", text: "Есть ли у вас опыт разработки мобильных интерфейсов?", options: defaultOptions },
+      { id: "mobile_state", text: "Насколько уверенно вы управляете состоянием приложения?", options: defaultOptions },
+      { id: "mobile_release", text: "Есть ли у вас опыт публикации приложений в сторах?", options: defaultOptions },
+      { id: "mobile_arch", text: "Насколько уверенно вы используете архитектурные паттерны мобильной разработки?", options: defaultOptions },
+      { id: "mobile_perf", text: "Насколько уверенно вы оптимизируете производительность мобильных приложений?", options: defaultOptions },
+      { id: "mobile_testing", text: "Пишете ли вы автоматизированные тесты для мобильных приложений?", options: defaultOptions }
     ]
   }
 }
@@ -152,39 +152,39 @@ export const mockRoadmapTrees: Record<string, RoadmapNode[]> = {
   ai: [
     {
       id: "ai-foundations",
-      title: "AI Foundations",
+      title: "Основы AI",
       status: "completed",
       children: [
         {
           id: "ai-history-track",
-          title: "Historical Context",
+          title: "Исторический контекст",
           status: "completed",
           children: [
             {
               id: "history-of-ai",
-              title: "History of AI",
+              title: "История AI",
               status: "completed"
             },
             {
               id: "data-preprocessing",
-              title: "Data Preprocessing",
+              title: "Предобработка данных",
               status: "in_progress"
             }
           ]
         },
         {
           id: "ai-ml-track",
-          title: "Machine Learning Basics",
+          title: "Основы машинного обучения",
           status: "in_progress",
           children: [
             {
               id: "ml-intro",
-              title: "Machine Learning Intro",
+              title: "Введение в машинное обучение",
               status: "in_progress"
             },
             {
               id: "model-evaluation",
-              title: "Model Evaluation",
+              title: "Оценка моделей",
               status: "not_started"
             }
           ]
@@ -193,29 +193,29 @@ export const mockRoadmapTrees: Record<string, RoadmapNode[]> = {
     },
     {
       id: "ai-deep-learning",
-      title: "Deep Learning",
+      title: "Глубокое обучение",
       status: "not_started",
       children: [
         {
           id: "ai-nn-track",
-          title: "Neural Network Core",
+          title: "Основы нейронных сетей",
           status: "not_started",
           children: [
             {
               id: "neural-networks",
-              title: "Neural Networks",
+              title: "Нейронные сети",
               status: "not_started"
             },
             {
               id: "optimization-basics",
-              title: "Optimization Basics",
+              title: "Основы оптимизации",
               status: "locked"
             }
           ]
         },
         {
           id: "ai-cnn-track",
-          title: "Computer Vision Path",
+          title: "Путь компьютерного зрения",
           status: "locked",
           children: [
             {
@@ -225,7 +225,7 @@ export const mockRoadmapTrees: Record<string, RoadmapNode[]> = {
             },
             {
               id: "transformers-basics",
-              title: "Transformers Basics",
+              title: "Основы трансформеров",
               status: "locked"
             }
           ]
@@ -237,25 +237,25 @@ export const mockRoadmapTrees: Record<string, RoadmapNode[]> = {
   frontend: [
     {
       id: "fe-layout-foundation",
-      title: "HTML & CSS Foundation",
+      title: "Основы HTML и CSS",
       status: "completed",
       children: [
         {
           id: "fe-flex-layout",
-          title: "One-dimensional Layout",
+          title: "Одномерная верстка",
           status: "completed",
           children: [
-            { id: "flexbox", title: "Flexbox", status: "completed" },
-            { id: "responsive-design", title: "Responsive Design", status: "in_progress" }
+            { id: "flexbox", title: "Флексбокс", status: "completed" },
+            { id: "responsive-design", title: "Адаптивный дизайн", status: "in_progress" }
           ]
         },
         {
           id: "fe-grid-layout",
-          title: "Two-dimensional Layout",
+          title: "Двумерная верстка",
           status: "in_progress",
           children: [
             { id: "grid", title: "CSS Grid", status: "in_progress" },
-            { id: "css-architecture", title: "CSS Architecture", status: "not_started" }
+            { id: "css-architecture", title: "Архитектура CSS", status: "not_started" }
           ]
         }
       ]
@@ -267,20 +267,20 @@ export const mockRoadmapTrees: Record<string, RoadmapNode[]> = {
       children: [
         {
           id: "fe-comp-api",
-          title: "Component Architecture",
+          title: "Компонентная архитектура",
           status: "not_started",
           children: [
             { id: "composition-api", title: "Composition API", status: "not_started" },
-            { id: "vue-lifecycle", title: "Vue Lifecycle", status: "locked" }
+            { id: "vue-lifecycle", title: "Жизненный цикл Vue", status: "locked" }
           ]
         },
         {
           id: "fe-state-layer",
-          title: "State Layer",
+          title: "Слой состояния",
           status: "locked",
           children: [
-            { id: "pinia", title: "State Management (Pinia)", status: "locked" },
-            { id: "vue-router-basics", title: "Vue Router Basics", status: "locked" }
+            { id: "pinia", title: "Управление состоянием (Pinia)", status: "locked" },
+            { id: "vue-router-basics", title: "Основы Vue Router", status: "locked" }
           ]
         }
       ]
@@ -295,28 +295,28 @@ export const mockRoadmapTrees: Record<string, RoadmapNode[]> = {
       children: [
         {
           id: "be-api-layer",
-          title: "API Layer",
+          title: "Слой API",
           status: "not_started",
           children: [
             { id: "express", title: "Express", status: "not_started" },
-            { id: "rest-design", title: "REST Design", status: "locked" }
+            { id: "rest-design", title: "Проектирование REST API", status: "locked" }
           ]
         },
         {
           id: "be-security-layer",
-          title: "Security Layer",
+          title: "Слой безопасности",
           status: "locked",
           children: [
-            { id: "auth", title: "Authentication", status: "locked" },
-            { id: "role-based-access", title: "Role-Based Access", status: "locked" }
+            { id: "auth", title: "Аутентификация", status: "locked" },
+            { id: "role-based-access", title: "Ролевой доступ", status: "locked" }
           ]
         },
         {
           id: "be-data-layer",
-          title: "Data Layer",
+          title: "Слой данных",
           status: "locked",
           children: [
-            { id: "database-indexing", title: "Database Indexing", status: "locked" }
+            { id: "database-indexing", title: "Индексация баз данных", status: "locked" }
           ]
         }
       ]
@@ -326,25 +326,25 @@ export const mockRoadmapTrees: Record<string, RoadmapNode[]> = {
   devops: [
     {
       id: "devops-containers",
-      title: "Containers",
+      title: "Контейнеры",
       status: "not_started",
       children: [
         {
           id: "devops-docker-path",
-          title: "Docker Fundamentals",
+          title: "Основы Docker",
           status: "not_started",
           children: [
-            { id: "docker-basics", title: "Docker Basics", status: "not_started" },
-            { id: "docker-networking", title: "Docker Networking", status: "locked" }
+            { id: "docker-basics", title: "Базовый Docker", status: "not_started" },
+            { id: "docker-networking", title: "Сетевое взаимодействие в Docker", status: "locked" }
           ]
         },
         {
           id: "devops-cicd-path",
-          title: "Automation Path",
+          title: "Путь автоматизации",
           status: "locked",
           children: [
-            { id: "cicd-pipelines", title: "CI/CD Pipelines", status: "locked" },
-            { id: "monitoring-basics", title: "Monitoring Basics", status: "locked" }
+            { id: "cicd-pipelines", title: "CI/CD пайплайны", status: "locked" },
+            { id: "monitoring-basics", title: "Основы мониторинга", status: "locked" }
           ]
         }
       ]
@@ -354,12 +354,12 @@ export const mockRoadmapTrees: Record<string, RoadmapNode[]> = {
   mobile: [
     {
       id: "mobile-core",
-      title: "Mobile Core",
+      title: "Основы мобильной разработки",
       status: "not_started",
       children: [
         {
           id: "mobile-flutter-track",
-          title: "Flutter Track",
+          title: "Путь Flutter",
           status: "not_started",
           children: [
             {
@@ -369,17 +369,17 @@ export const mockRoadmapTrees: Record<string, RoadmapNode[]> = {
             },
             {
               id: "dart-basics",
-              title: "Dart Basics",
+              title: "Основы Dart",
               status: "locked"
             },
             {
               id: "state-management-mobile",
-              title: "State Management",
+              title: "Управление состоянием",
               status: "locked"
             },
             {
               id: "app-deployment",
-              title: "App Deployment",
+              title: "Публикация приложения",
               status: "locked"
             }
           ]

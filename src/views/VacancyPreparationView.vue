@@ -409,7 +409,7 @@ onMounted(() => {
   margin: 0 auto;
   padding: 48px 20px 80px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #111;
+  color: #334155;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -457,7 +457,7 @@ onMounted(() => {
   width: 22px;
   height: 22px;
   border: 2.5px solid #e5e5e5;
-  border-top-color: #111;
+  border-top-color: #334155;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -493,7 +493,7 @@ onMounted(() => {
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0 0 6px;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .head-sub {
@@ -529,9 +529,9 @@ onMounted(() => {
 }
 
 .mode-tabs button.active {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 /* Overview */
@@ -564,7 +564,7 @@ onMounted(() => {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
   font-size: 13px;
   font-weight: 700;
@@ -582,7 +582,7 @@ onMounted(() => {
 .overview-item strong {
   display: block;
   font-size: 14px;
-  color: #111;
+  color: #334155;
   margin-bottom: 2px;
 }
 
@@ -636,7 +636,7 @@ onMounted(() => {
   font-family: inherit;
   font-size: 14px;
   font-weight: 600;
-  color: #111;
+  color: #334155;
   cursor: pointer;
   transition: color 0.15s ease;
 }
@@ -704,7 +704,7 @@ onMounted(() => {
   font-size: 15px;
   font-weight: 700;
   margin: 0;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .hours-pill {
@@ -766,7 +766,7 @@ onMounted(() => {
   padding: 10px 12px;
   font-family: inherit;
   font-size: 14px;
-  color: #111;
+  color: #334155;
   background: #fff;
   transition: border-color 0.15s ease;
   resize: vertical;
@@ -775,7 +775,7 @@ onMounted(() => {
 .task-form input:focus,
 .task-form textarea:focus {
   outline: none;
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 .task-form input::placeholder,
@@ -842,7 +842,7 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
-.leader-rank.gold { background: #0a0a0a; color: #fff; }
+.leader-rank.gold { background: #1f2d7a; color: #fff; }
 .leader-rank.silver { background: #333; color: #fff; }
 .leader-rank.bronze { background: #666; color: #fff; }
 
@@ -854,7 +854,7 @@ onMounted(() => {
 .leader-info strong {
   display: block;
   font-size: 14px;
-  color: #111;
+  color: #334155;
 }
 
 .leader-info p {
@@ -866,7 +866,7 @@ onMounted(() => {
 .leader-score {
   font-size: 15px;
   font-weight: 700;
-  color: #0a0a0a;
+  color: #334155;
   flex-shrink: 0;
 }
 
@@ -902,7 +902,7 @@ onMounted(() => {
 }
 
 .my-rank strong {
-  color: #111;
+  color: #334155;
 }
 
 /* Test */
@@ -940,7 +940,7 @@ onMounted(() => {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #0a0a0a;
+  background: #1f2d7a;
   transition: width 0.3s ease;
 }
 
@@ -948,7 +948,7 @@ onMounted(() => {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #0a0a0a;
+  color: #334155;
   line-height: 1.4;
 }
 
@@ -981,7 +981,7 @@ onMounted(() => {
 }
 
 .test-option.selected {
-  border-color: #0a0a0a;
+  border-color: #334155;
   background: #fafafa;
 }
 
@@ -1001,7 +1001,7 @@ onMounted(() => {
 }
 
 .test-option.selected .option-marker {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
 }
 
@@ -1022,7 +1022,7 @@ onMounted(() => {
 .score-num {
   font-size: 48px;
   font-weight: 800;
-  color: #0a0a0a;
+  color: #334155;
   letter-spacing: -0.03em;
 }
 
@@ -1059,7 +1059,7 @@ onMounted(() => {
   padding: 11px 22px;
   border: none;
   border-radius: 10px;
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
   font-size: 14px;
   font-weight: 500;
@@ -1069,7 +1069,7 @@ onMounted(() => {
 }
 
 .btn-primary:hover {
-  background: #222;
+  background: #23277a;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }

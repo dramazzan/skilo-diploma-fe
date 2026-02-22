@@ -24,44 +24,44 @@ export interface TopicTest {
 }
 
 export const mockRoadmap: RoadmapTopic[] = [
-  { id: "history-of-ai", roadmapId: "ai", title: "History of AI", description: "From symbolic AI to modern deep learning", level: "beginner" },
-  { id: "data-preprocessing", roadmapId: "ai", title: "Data Preprocessing", description: "Cleaning, normalization, and feature prep", level: "beginner" },
-  { id: "ml-intro", roadmapId: "ai", title: "Machine Learning Intro", description: "Core ML ideas and model workflow", level: "beginner" },
-  { id: "model-evaluation", roadmapId: "ai", title: "Model Evaluation", description: "Metrics, validation, and generalization", level: "intermediate" },
-  { id: "neural-networks", roadmapId: "ai", title: "Neural Networks", description: "Perceptron, layers, activation functions", level: "intermediate" },
-  { id: "optimization-basics", roadmapId: "ai", title: "Optimization Basics", description: "Gradient descent and optimization tricks", level: "intermediate" },
-  { id: "cnn", roadmapId: "ai", title: "Convolutional Neural Networks", description: "Image-focused deep learning architecture", level: "advanced" },
-  { id: "transformers-basics", roadmapId: "ai", title: "Transformers Basics", description: "Attention architecture fundamentals", level: "advanced" },
+  { id: "history-of-ai", roadmapId: "ai", title: "История AI", description: "От символического AI к современному глубокому обучению", level: "beginner" },
+  { id: "data-preprocessing", roadmapId: "ai", title: "Предобработка данных", description: "Очистка, нормализация и подготовка признаков", level: "beginner" },
+  { id: "ml-intro", roadmapId: "ai", title: "Введение в машинное обучение", description: "Ключевые идеи ML и рабочий процесс с моделями", level: "beginner" },
+  { id: "model-evaluation", roadmapId: "ai", title: "Оценка моделей", description: "Метрики, валидация и обобщающая способность", level: "intermediate" },
+  { id: "neural-networks", roadmapId: "ai", title: "Нейронные сети", description: "Перцептрон, слои и функции активации", level: "intermediate" },
+  { id: "optimization-basics", roadmapId: "ai", title: "Основы оптимизации", description: "Градиентный спуск и приемы оптимизации", level: "intermediate" },
+  { id: "cnn", roadmapId: "ai", title: "Сверточные нейронные сети", description: "Архитектура глубокого обучения для изображений", level: "advanced" },
+  { id: "transformers-basics", roadmapId: "ai", title: "Основы трансформеров", description: "Базовые принципы архитектуры attention", level: "advanced" },
 
-  { id: "flexbox", roadmapId: "frontend", title: "Flexbox", description: "One-dimensional layouts with CSS", level: "beginner" },
-  { id: "responsive-design", roadmapId: "frontend", title: "Responsive Design", description: "Adaptive UI for mobile and desktop", level: "beginner" },
-  { id: "grid", roadmapId: "frontend", title: "CSS Grid", description: "Two-dimensional responsive layout system", level: "beginner" },
-  { id: "css-architecture", roadmapId: "frontend", title: "CSS Architecture", description: "Scalable CSS organization patterns", level: "intermediate" },
-  { id: "composition-api", roadmapId: "frontend", title: "Composition API", description: "State and logic composition in Vue 3", level: "intermediate" },
-  { id: "vue-lifecycle", roadmapId: "frontend", title: "Vue Lifecycle", description: "Lifecycle hooks and rendering phases", level: "intermediate" },
-  { id: "pinia", roadmapId: "frontend", title: "State Management with Pinia", description: "Centralized state for Vue applications", level: "intermediate" },
-  { id: "vue-router-basics", roadmapId: "frontend", title: "Vue Router Basics", description: "Route config, params, and navigation", level: "intermediate" },
+  { id: "flexbox", roadmapId: "frontend", title: "Флексбокс", description: "Одномерные макеты с помощью CSS", level: "beginner" },
+  { id: "responsive-design", roadmapId: "frontend", title: "Адаптивный дизайн", description: "Адаптивный интерфейс для мобильных и десктопа", level: "beginner" },
+  { id: "grid", roadmapId: "frontend", title: "CSS Grid", description: "Двумерная система адаптивной верстки", level: "beginner" },
+  { id: "css-architecture", roadmapId: "frontend", title: "Архитектура CSS", description: "Масштабируемые паттерны организации CSS", level: "intermediate" },
+  { id: "composition-api", roadmapId: "frontend", title: "Composition API", description: "Композиция состояния и логики во Vue 3", level: "intermediate" },
+  { id: "vue-lifecycle", roadmapId: "frontend", title: "Жизненный цикл Vue", description: "Хуки жизненного цикла и этапы рендера", level: "intermediate" },
+  { id: "pinia", roadmapId: "frontend", title: "Управление состоянием с Pinia", description: "Централизованное состояние для приложений Vue", level: "intermediate" },
+  { id: "vue-router-basics", roadmapId: "frontend", title: "Основы Vue Router", description: "Конфигурация маршрутов, параметры и навигация", level: "intermediate" },
 
-  { id: "express", roadmapId: "backend", title: "Express", description: "Build HTTP APIs with Express.js", level: "beginner" },
-  { id: "rest-design", roadmapId: "backend", title: "REST Design", description: "Resource modeling and HTTP semantics", level: "intermediate" },
-  { id: "auth", roadmapId: "backend", title: "Authentication", description: "Sessions, tokens, and route protection", level: "intermediate" },
-  { id: "role-based-access", roadmapId: "backend", title: "Role-Based Access", description: "Permissions and role policies", level: "intermediate" },
-  { id: "database-indexing", roadmapId: "backend", title: "Database Indexing", description: "Indexes and query optimization", level: "intermediate" },
+  { id: "express", roadmapId: "backend", title: "Express", description: "Создание HTTP API с помощью Express.js", level: "beginner" },
+  { id: "rest-design", roadmapId: "backend", title: "Проектирование REST API", description: "Моделирование ресурсов и семантика HTTP", level: "intermediate" },
+  { id: "auth", roadmapId: "backend", title: "Аутентификация", description: "Сессии, токены и защита маршрутов", level: "intermediate" },
+  { id: "role-based-access", roadmapId: "backend", title: "Ролевой доступ", description: "Разрешения и ролевые политики", level: "intermediate" },
+  { id: "database-indexing", roadmapId: "backend", title: "Индексация баз данных", description: "Индексы и оптимизация запросов", level: "intermediate" },
 
-  { id: "docker-basics", roadmapId: "devops", title: "Docker Basics", description: "Container fundamentals and workflows", level: "beginner" },
-  { id: "docker-networking", roadmapId: "devops", title: "Docker Networking", description: "Container networks and service communication", level: "intermediate" },
-  { id: "cicd-pipelines", roadmapId: "devops", title: "CI/CD Pipelines", description: "Build, test, and deploy automation", level: "intermediate" },
-  { id: "monitoring-basics", roadmapId: "devops", title: "Monitoring Basics", description: "Metrics, logs, and alerts", level: "intermediate" },
+  { id: "docker-basics", roadmapId: "devops", title: "Базовый Docker", description: "Основы контейнеров и рабочие процессы", level: "beginner" },
+  { id: "docker-networking", roadmapId: "devops", title: "Сетевое взаимодействие в Docker", description: "Сети контейнеров и взаимодействие сервисов", level: "intermediate" },
+  { id: "cicd-pipelines", roadmapId: "devops", title: "CI/CD пайплайны", description: "Автоматизация сборки, тестирования и деплоя", level: "intermediate" },
+  { id: "monitoring-basics", roadmapId: "devops", title: "Основы мониторинга", description: "Метрики, логи и алерты", level: "intermediate" },
 
-  { id: "flutter", roadmapId: "mobile", title: "Flutter", description: "Cross-platform mobile development basics", level: "beginner" },
-  { id: "dart-basics", roadmapId: "mobile", title: "Dart Basics", description: "Language basics for Flutter", level: "beginner" },
-  { id: "state-management-mobile", roadmapId: "mobile", title: "State Management", description: "Managing reactive app state", level: "intermediate" },
-  { id: "app-deployment", roadmapId: "mobile", title: "App Deployment", description: "Release process for app stores", level: "intermediate" }
+  { id: "flutter", roadmapId: "mobile", title: "Flutter", description: "Основы кроссплатформенной мобильной разработки", level: "beginner" },
+  { id: "dart-basics", roadmapId: "mobile", title: "Основы Dart", description: "Базовый синтаксис языка для Flutter", level: "beginner" },
+  { id: "state-management-mobile", roadmapId: "mobile", title: "Управление состоянием", description: "Управление реактивным состоянием приложения", level: "intermediate" },
+  { id: "app-deployment", roadmapId: "mobile", title: "Публикация приложения", description: "Процесс релиза для магазинов приложений", level: "intermediate" }
 ]
 
 export const mockTopicContent: TopicContent[] = mockRoadmap.map((topic) => ({
   topicId: topic.id,
-  theory: `${topic.title} theory summary:\n\n${topic.description}.\n\nKey ideas:\n- Core concepts\n- Practical workflow\n- Common mistakes\n- Best practices`
+  theory: `${topic.title} краткая теория:\n\n${topic.description}.\n\nКлючевые идеи:\n- Базовые концепции\n- Практический рабочий процесс\n- Типичные ошибки\n- Лучшие практики`
 }))
 
 export const mockTests: TopicTest[] = mockRoadmap.map((topic) => ({
@@ -69,56 +69,56 @@ export const mockTests: TopicTest[] = mockRoadmap.map((topic) => ({
   questions: [
     {
       id: `${topic.id}-q1`,
-      question: `What is the main focus of ${topic.title}?`,
+      question: `В чем основной фокус темы ${topic.title}?`,
       options: [
-        "Core concepts and practical usage",
-        "Database migrations only",
-        "UI color themes only",
-        "Operating system internals only"
+        "Базовые концепции и практическое применение",
+        "Только миграции базы данных",
+        "Только цветовые темы UI",
+        "Только внутреннее устройство ОС"
       ],
       correctAnswerIndex: 0
     },
     {
       id: `${topic.id}-q2`,
-      question: `Which approach is best when learning ${topic.title}?`,
+      question: `Какой подход лучше при изучении темы ${topic.title}?`,
       options: [
-        "Study theory and then apply it in small projects",
-        "Memorize terms without practice",
-        "Skip fundamentals",
-        "Ignore documentation"
+        "Изучать теорию и применять ее в небольших проектах",
+        "Запоминать термины без практики",
+        "Пропускать основы",
+        "Игнорировать документацию"
       ],
       correctAnswerIndex: 0
     },
     {
       id: `${topic.id}-q3`,
-      question: `What usually indicates beginner-level understanding in ${topic.title}?`,
+      question: `Что обычно показывает базовое понимание темы ${topic.title}?`,
       options: [
-        "Can explain basics and complete simple tasks",
-        "Can redesign entire architecture alone",
-        "Never read examples",
-        "Avoids debugging completely"
+        "Может объяснить основы и выполнять простые задачи",
+        "Может в одиночку перепроектировать всю архитектуру",
+        "Никогда не смотреть примеры",
+        "Полностью избегает отладки"
       ],
       correctAnswerIndex: 0
     },
     {
       id: `${topic.id}-q4`,
-      question: `How do you validate progress in ${topic.title}?`,
+      question: `Как вы проверяете прогресс в теме ${topic.title}?`,
       options: [
-        "Use practical tasks and measurable outcomes",
-        "Judge only by time spent",
-        "Skip feedback and tests",
-        "Only watch tutorials"
+        "Использовать практические задачи и измеримые результаты",
+        "Оценивать только по затраченному времени",
+        "Пропускать обратную связь и тесты",
+        "Только смотреть туториалы"
       ],
       correctAnswerIndex: 0
     },
     {
       id: `${topic.id}-q5`,
-      question: `What is a good next step after finishing basics of ${topic.title}?`,
+      question: `Какой следующий шаг после изучения основ темы ${topic.title}?`,
       options: [
-        "Build a mini project and review weak points",
-        "Stop learning immediately",
-        "Delete all notes",
-        "Avoid real examples"
+        "Сделать мини-проект и разобрать слабые места",
+        "Сразу прекратить обучение",
+        "Удалить все заметки",
+        "Избегать реальных примеров"
       ],
       correctAnswerIndex: 0
     }

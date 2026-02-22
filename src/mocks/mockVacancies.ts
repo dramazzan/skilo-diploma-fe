@@ -44,7 +44,7 @@ export const mockVacancies: VacancyItem[] = [
   {
     id: "vac-frontend-junior-1",
     company: "Kaspi Tech",
-    title: "Junior Frontend Developer (Vue)",
+    title: "Junior Frontend-разработчик (Vue)",
     level: "junior",
     location: "Almaty",
     employment: "full-time",
@@ -52,7 +52,7 @@ export const mockVacancies: VacancyItem[] = [
     tags: ["Vue 3", "TypeScript", "REST API"],
     summary: "Разработка пользовательских интерфейсов, участие в доработке внутренних продуктов и UI-компонентов.",
     preparation: {
-      direction: "Frontend / Vue",
+      direction: "Фронтенд / Vue",
       questions: [
         {
           id: "fq1",
@@ -131,7 +131,7 @@ export const mockVacancies: VacancyItem[] = [
   {
     id: "vac-backend-middle-1",
     company: "Freedom Tech",
-    title: "Middle Backend Developer (Node.js)",
+    title: "Middle Backend-разработчик (Node.js)",
     level: "middle",
     location: "Astana",
     employment: "remote",
@@ -139,7 +139,7 @@ export const mockVacancies: VacancyItem[] = [
     tags: ["Node.js", "PostgreSQL", "Docker"],
     summary: "Проектирование API, оптимизация запросов, работа с очередями и масштабирование серверной логики.",
     preparation: {
-      direction: "Backend / Node.js",
+      direction: "Бэкенд / Node.js",
       questions: [
         {
           id: "bq1",
@@ -217,7 +217,7 @@ export const mockVacancies: VacancyItem[] = [
   {
     id: "vac-data-intern-1",
     company: "Halyk Digital",
-    title: "Data Analyst Intern",
+    title: "Стажер-аналитик данных",
     level: "junior",
     location: "Almaty",
     employment: "internship",
@@ -225,7 +225,7 @@ export const mockVacancies: VacancyItem[] = [
     tags: ["SQL", "Python", "BI"],
     summary: "Подготовка отчетов, анализ бизнес-метрик, визуализация данных и помощь в проверке гипотез.",
     preparation: {
-      direction: "Data Analytics",
+      direction: "Аналитика данных",
       questions: [
         {
           id: "dq1",

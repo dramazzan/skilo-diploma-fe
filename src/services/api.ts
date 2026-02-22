@@ -138,6 +138,96 @@ export interface Vacancy extends Omit<VacancyItem, "preparation"> {
   preparation: VacancyPreparation
 }
 
+export interface CompanyVacancyPayload {
+  title: string
+  description: string
+  requirements: string[]
+  level: Vacancy["level"]
+  stack: string[]
+  location: string
+  employment: Vacancy["employment"]
+  salaryRange: string
+}
+
+export interface CompanyVacancyTaskPayload {
+  title: string
+  brief: string
+  requirements: string[]
+  deliverables: string[]
+  estimatedHours: number
+}
+
+export type CandidateResultStatus = "passed" | "failed" | "not_submitted"
+
+export interface CompanyCandidateTaskResult {
+  taskId: string
+  taskTitle: string
+  status: CandidateResultStatus
+  score: number | null
+  submittedAt: string | null
+}
+
+export interface CompanyCandidateTestResult {
+  status: CandidateResultStatus
+  score: number | null
+  correctAnswers: number
+  totalQuestions: number
+}
+
+export interface CompanyCandidateInterviewResult {
+  status: CandidateResultStatus
+  score: number | null
+  answered: number
+  totalQuestions: number
+}
+
+export interface CompanyCandidateEvaluation {
+  tasks: CompanyCandidateTaskResult[]
+  tasksSubmitted: number
+  tasksPassed: number
+  tasksTotal: number
+  test: CompanyCandidateTestResult
+  interview: CompanyCandidateInterviewResult
+  overallScore: number | null
+  workReadinessPercent: number
+  readyForWork: boolean
+}
+
+export interface CompanyCandidate {
+  id: string
+  fullName: string
+  email: string
+  avatar: string
+  phone: string
+  country: string
+  city: string
+  university: string
+  experienceLevel: "intern" | "junior" | "middle"
+  about: string
+  skills: string[]
+  portfolioUrl: string
+  githubUrl: string
+  linkedinUrl: string
+  vacancyId: string
+  vacancyTitle: string
+  appliedAt: string
+  status: "new" | "reviewed" | "invited"
+  inviteSentAt: string | null
+  evaluation: CompanyCandidateEvaluation
+}
+
+export interface InterviewInvitePayload {
+  subject: string
+  message: string
+}
+
+export interface InterviewInviteResult {
+  candidateId: string
+  sentTo: string
+  subject: string
+  sentAt: string
+}
+
 export interface FriendProfile {
   userId: number
   fullName: string
@@ -180,6 +270,8 @@ const TOPIC_RESULTS_KEY = "topic_test_results"
 const ROADMAP_PROGRESS_STORAGE_KEY = "user_roadmap_progress"
 const VACANCY_TASK_SUBMISSIONS_KEY = "vacancy_task_submissions"
 const USER_FRIENDS_KEY = "mock_user_friends"
+const COMPANY_VACANCIES_KEY = "mock_company_vacancies"
+const COMPANY_CANDIDATES_KEY = "mock_company_candidates"
 
 // emulate network latency
 const delay = (ms: number) =>
@@ -350,6 +442,244 @@ const getVacancyTaskSubmissionsDb = (): Record<string, VacancyTaskSubmission[]> 
 
 const saveVacancyTaskSubmissionsDb = (db: Record<string, VacancyTaskSubmission[]>) => {
   localStorage.setItem(VACANCY_TASK_SUBMISSIONS_KEY, JSON.stringify(db))
+}
+
+const getCompanyVacanciesDb = (): Vacancy[] => {
+  const raw = localStorage.getItem(COMPANY_VACANCIES_KEY)
+  if (!raw) return [...mockVacancies]
+
+  try {
+    return JSON.parse(raw) as Vacancy[]
+  } catch {
+    return [...mockVacancies]
+  }
+}
+
+const saveCompanyVacanciesDb = (vacancies: Vacancy[]) => {
+  localStorage.setItem(COMPANY_VACANCIES_KEY, JSON.stringify(vacancies))
+}
+
+const createInitialCandidates = (vacancies: Vacancy[]): CompanyCandidate[] => {
+  const first = vacancies[0]
+  const second = vacancies[1] ?? first
+  const third = vacancies[2] ?? first
+
+  return [
+    {
+      id: "cand-1",
+      fullName: "Айдана С.",
+      email: "aidana.candidate@example.com",
+      avatar: "A",
+      phone: "+7 777 145 80 12",
+      country: "Казахстан",
+      city: "Алматы",
+      university: "KBTU",
+      experienceLevel: "junior",
+      about: "Frontend-кандидат с фокусом на Vue и аккуратный UI.",
+      skills: ["Vue", "TypeScript", "Pinia", "HTML/CSS"],
+      portfolioUrl: "https://portfolio.example.com/aidana",
+      githubUrl: "https://github.com/aidana-dev",
+      linkedinUrl: "https://linkedin.com/in/aidana-dev",
+      vacancyId: first?.id ?? "vac-frontend-junior-1",
+      vacancyTitle: first?.title ?? "Junior Frontend-разработчик (Vue)",
+      appliedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+      status: "new",
+      inviteSentAt: null,
+      evaluation: buildCandidateEvaluation({ id: "cand-1", status: "new" }, first ?? null)
+    },
+    {
+      id: "cand-2",
+      fullName: "Тимур А.",
+      email: "timur.candidate@example.com",
+      avatar: "T",
+      phone: "+7 701 506 33 91",
+      country: "Казахстан",
+      city: "Астана",
+      university: "ENU",
+      experienceLevel: "middle",
+      about: "Backend-разработчик, уверенно работает с Node.js и БД.",
+      skills: ["Node.js", "PostgreSQL", "NestJS", "Docker"],
+      portfolioUrl: "https://portfolio.example.com/timur",
+      githubUrl: "https://github.com/timur-backend",
+      linkedinUrl: "https://linkedin.com/in/timur-backend",
+      vacancyId: second?.id ?? "vac-backend-middle-1",
+      vacancyTitle: second?.title ?? "Middle Backend-разработчик (Node.js)",
+      appliedAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+      status: "reviewed",
+      inviteSentAt: null,
+      evaluation: buildCandidateEvaluation({ id: "cand-2", status: "reviewed" }, second ?? null)
+    },
+    {
+      id: "cand-3",
+      fullName: "Назерке К.",
+      email: "nazerke.candidate@example.com",
+      avatar: "N",
+      phone: "+7 705 661 27 55",
+      country: "Казахстан",
+      city: "Шымкент",
+      university: "SDU",
+      experienceLevel: "intern",
+      about: "Начинающий аналитик данных, активно проходит тесты и практику.",
+      skills: ["Python", "Pandas", "SQL", "Power BI"],
+      portfolioUrl: "https://portfolio.example.com/nazerke",
+      githubUrl: "https://github.com/nazerke-data",
+      linkedinUrl: "https://linkedin.com/in/nazerke-data",
+      vacancyId: third?.id ?? "vac-data-intern-1",
+      vacancyTitle: third?.title ?? "Стажер-аналитик данных",
+      appliedAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+      status: "new",
+      inviteSentAt: null,
+      evaluation: buildCandidateEvaluation({ id: "cand-3", status: "new" }, third ?? null)
+    }
+  ]
+}
+
+const getCompanyCandidatesDb = (): CompanyCandidate[] => {
+  const raw = localStorage.getItem(COMPANY_CANDIDATES_KEY)
+  if (!raw) {
+    const seeded = createInitialCandidates(getCompanyVacanciesDb())
+    localStorage.setItem(COMPANY_CANDIDATES_KEY, JSON.stringify(seeded))
+    return seeded
+  }
+
+  try {
+    return JSON.parse(raw) as CompanyCandidate[]
+  } catch {
+    const seeded = createInitialCandidates(getCompanyVacanciesDb())
+    localStorage.setItem(COMPANY_CANDIDATES_KEY, JSON.stringify(seeded))
+    return seeded
+  }
+}
+
+const saveCompanyCandidatesDb = (candidates: CompanyCandidate[]) => {
+  localStorage.setItem(COMPANY_CANDIDATES_KEY, JSON.stringify(candidates))
+}
+
+const candidateSeedHash = (value: string): number => {
+  let hash = 0
+  for (let i = 0; i < value.length; i++) {
+    hash = (hash << 5) - hash + value.charCodeAt(i)
+    hash |= 0
+  }
+  return Math.abs(hash)
+}
+
+const candidateScoreStatus = (score: number): CandidateResultStatus => {
+  return score >= 70 ? "passed" : "failed"
+}
+
+const buildCandidateEvaluation = (
+  candidate: Pick<CompanyCandidate, "id" | "status">,
+  vacancy: Vacancy | null
+): CompanyCandidateEvaluation => {
+  const statusEngagement: Record<CompanyCandidate["status"], number> = {
+    new: 0.38,
+    reviewed: 0.68,
+    invited: 0.9
+  }
+
+  const baseHash = candidateSeedHash(`${candidate.id}:${vacancy?.id ?? "no-vacancy"}`)
+  const tasks = vacancy?.realTasks ?? []
+  const taskResults: CompanyCandidateTaskResult[] = tasks.map((task, index) => {
+    const scoreSeed = (baseHash + index * 37) % 100
+    const submitted = scoreSeed < statusEngagement[candidate.status] * 100
+    if (!submitted) {
+      return {
+        taskId: task.id,
+        taskTitle: task.title,
+        status: "not_submitted",
+        score: null,
+        submittedAt: null
+      }
+    }
+
+    const score = 55 + (scoreSeed % 41)
+    return {
+      taskId: task.id,
+      taskTitle: task.title,
+      status: candidateScoreStatus(score),
+      score,
+      submittedAt: new Date(Date.now() - (index + 1) * 86400000).toISOString()
+    }
+  })
+
+  const tasksSubmitted = taskResults.filter((item) => item.status !== "not_submitted").length
+  const tasksPassed = taskResults.filter((item) => item.status === "passed").length
+  const taskScores = taskResults.flatMap((item) => (typeof item.score === "number" ? [item.score] : []))
+
+  const testTotal = Math.max(1, vacancy?.preparation.test.length ?? 0)
+  const testTaken = baseHash % 100 < statusEngagement[candidate.status] * 100
+  const testScore = testTaken ? 52 + ((baseHash + 11) % 44) : null
+  const testCorrect = testScore ? Math.round((testScore / 100) * testTotal) : 0
+
+  const interviewTotal = Math.max(1, vacancy?.preparation.questions.length ?? 0)
+  const interviewTaken = (baseHash + 17) % 100 < statusEngagement[candidate.status] * 100
+  const interviewScore = interviewTaken ? 54 + ((baseHash + 23) % 42) : null
+  const interviewAnswered = interviewScore ? Math.round((interviewScore / 100) * interviewTotal) : 0
+
+  const scorePool = [
+    ...taskScores,
+    ...(typeof testScore === "number" ? [testScore] : []),
+    ...(typeof interviewScore === "number" ? [interviewScore] : [])
+  ]
+
+  const overallScore = scorePool.length
+    ? Math.round(scorePool.reduce((sum, value) => sum + value, 0) / scorePool.length)
+    : null
+
+  const baseReadiness = overallScore ?? 0
+  const completionBonus = tasks.length
+    ? Math.round((tasksSubmitted / tasks.length) * 12)
+    : 0
+  const readinessPercent = Math.max(0, Math.min(100, baseReadiness + completionBonus))
+  const readyForWork = readinessPercent >= 75 &&
+    tasksPassed >= Math.ceil(tasks.length * 0.6) &&
+    testScore !== null &&
+    interviewScore !== null
+
+  return {
+    tasks: taskResults,
+    tasksSubmitted,
+    tasksPassed,
+    tasksTotal: taskResults.length,
+    test: {
+      status: typeof testScore === "number" ? candidateScoreStatus(testScore) : "not_submitted",
+      score: testScore,
+      correctAnswers: testCorrect,
+      totalQuestions: testTotal
+    },
+    interview: {
+      status: typeof interviewScore === "number" ? candidateScoreStatus(interviewScore) : "not_submitted",
+      score: interviewScore,
+      answered: interviewAnswered,
+      totalQuestions: interviewTotal
+    },
+    overallScore,
+    workReadinessPercent: readinessPercent,
+    readyForWork
+  }
+}
+
+const enrichCompanyCandidate = (candidate: CompanyCandidate, vacancies: Vacancy[]): CompanyCandidate => {
+  const vacancy = vacancies.find((item) => item.id === candidate.vacancyId) ?? null
+  const evaluation = buildCandidateEvaluation(candidate, vacancy)
+
+  return {
+    ...candidate,
+    vacancyTitle: vacancy?.title ?? candidate.vacancyTitle,
+    avatar: candidate.avatar || candidate.fullName.trim().slice(0, 1).toUpperCase(),
+    phone: candidate.phone || "+7 700 000 00 00",
+    country: candidate.country || "Казахстан",
+    city: candidate.city || "Алматы",
+    university: candidate.university || "Satbayev University",
+    experienceLevel: candidate.experienceLevel || "junior",
+    about: candidate.about || "Кандидат изучает направление и выполняет практические задания.",
+    skills: candidate.skills?.length ? candidate.skills : ["Git", "REST API"],
+    portfolioUrl: candidate.portfolioUrl || "",
+    githubUrl: candidate.githubUrl || "",
+    linkedinUrl: candidate.linkedinUrl || "",
+    evaluation
+  }
 }
 
 const evaluateSubmissionQuality = (submission: VacancyTaskSubmission): number => {
@@ -840,7 +1170,7 @@ export const api = {
 
   async getVacancies(): Promise<Vacancy[]> {
     if (USE_MOCK) {
-      return await delay(300).then(() => mockVacancies)
+      return await delay(300).then(() => getCompanyVacanciesDb())
     }
 
     await delay(700)
@@ -849,7 +1179,7 @@ export const api = {
 
   async getVacancyById(vacancyId: string): Promise<Vacancy | null> {
     if (USE_MOCK) {
-      return await delay(260).then(() => mockVacancies.find((item) => item.id === vacancyId) ?? null)
+      return await delay(260).then(() => getCompanyVacanciesDb().find((item) => item.id === vacancyId) ?? null)
     }
 
     await delay(700)
@@ -873,7 +1203,7 @@ export const api = {
           const scores = currentUserSubmissions.map((item) => evaluateSubmissionQuality(item))
           const averageQualityScore = Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length)
           const latest = [...currentUserSubmissions].sort((a, b) => b.submittedAt.localeCompare(a.submittedAt))[0]
-          const relatedVacancy = mockVacancies.find((vacancy) => vacancy.id === latest.vacancyId)
+          const relatedVacancy = getCompanyVacanciesDb().find((vacancy) => vacancy.id === latest.vacancyId)
 
           currentUserEntry = {
             userId: resolvedUserId,
@@ -924,7 +1254,7 @@ export const api = {
 
     if (USE_MOCK) {
       return await delay(240).then(() => {
-        const vacancy = mockVacancies.find((item) => item.id === vacancyId)
+        const vacancy = getCompanyVacanciesDb().find((item) => item.id === vacancyId)
         const vacancyTitle = vacancy?.title ?? "Vacancy"
 
         const db = getVacancyTaskSubmissionsDb()
@@ -979,7 +1309,7 @@ export const api = {
 
     if (USE_MOCK) {
       return await delay(220).then(() => {
-        const vacancy = mockVacancies.find((item) => item.id === vacancyId)
+        const vacancy = getCompanyVacanciesDb().find((item) => item.id === vacancyId)
         if (!vacancy) return []
 
         const db = getVacancyTaskSubmissionsDb()
@@ -1045,5 +1375,242 @@ export const api = {
 
     await delay(700)
     return []
+  },
+
+  async getCompanyVacancies(): Promise<Vacancy[]> {
+    if (USE_MOCK) {
+      return await delay(220).then(() => getCompanyVacanciesDb())
+    }
+
+    await delay(700)
+    return []
+  },
+
+  async createCompanyVacancy(payload: CompanyVacancyPayload): Promise<Vacancy> {
+    if (USE_MOCK) {
+      return await delay(260).then(() => {
+        const db = getCompanyVacanciesDb()
+        const created: Vacancy = {
+          id: `vac-company-${Date.now()}`,
+          company: "Skilo Company",
+          title: payload.title,
+          level: payload.level,
+          location: payload.location,
+          employment: payload.employment,
+          salaryRange: payload.salaryRange,
+          tags: payload.stack,
+          summary: payload.description,
+          preparation: {
+            direction: payload.stack.join(" / "),
+            questions: [],
+            test: []
+          },
+          realTasks: payload.requirements.length
+            ? [
+                {
+                  id: `task-company-${Date.now()}`,
+                  title: "Базовое тестовое задание",
+                  brief: "Опишите решение с учетом требований вакансии.",
+                  requirements: payload.requirements,
+                  deliverables: ["Ссылка на репозиторий", "Краткое описание решения"],
+                  estimatedHours: 6
+                }
+              ]
+            : []
+        }
+
+        const next = [created, ...db]
+        saveCompanyVacanciesDb(next)
+        return created
+      })
+    }
+
+    await delay(700)
+    throw new Error("Not implemented")
+  },
+
+  async updateCompanyVacancy(vacancyId: string, payload: CompanyVacancyPayload): Promise<Vacancy | null> {
+    if (USE_MOCK) {
+      return await delay(240).then(() => {
+        const db = getCompanyVacanciesDb()
+        let updated: Vacancy | null = null
+
+        const next = db.map((vacancy) => {
+          if (vacancy.id !== vacancyId) return vacancy
+
+          updated = {
+            ...vacancy,
+            title: payload.title,
+            level: payload.level,
+            location: payload.location,
+            employment: payload.employment,
+            salaryRange: payload.salaryRange,
+            tags: payload.stack,
+            summary: payload.description
+          }
+
+          return updated
+        })
+
+        saveCompanyVacanciesDb(next)
+        return updated
+      })
+    }
+
+    await delay(700)
+    return null
+  },
+
+  async deleteCompanyVacancy(vacancyId: string): Promise<boolean> {
+    if (USE_MOCK) {
+      return await delay(220).then(() => {
+        const db = getCompanyVacanciesDb()
+        const next = db.filter((vacancy) => vacancy.id !== vacancyId)
+        saveCompanyVacanciesDb(next)
+
+        const candidates = getCompanyCandidatesDb().filter((candidate) => candidate.vacancyId !== vacancyId)
+        saveCompanyCandidatesDb(candidates)
+        return true
+      })
+    }
+
+    await delay(700)
+    return false
+  },
+
+  async createCompanyVacancyTask(vacancyId: string, payload: CompanyVacancyTaskPayload): Promise<VacancyTask | null> {
+    if (USE_MOCK) {
+      return await delay(220).then(() => {
+        const db = getCompanyVacanciesDb()
+        let created: VacancyTask | null = null
+
+        const next = db.map((vacancy) => {
+          if (vacancy.id !== vacancyId) return vacancy
+
+          created = {
+            id: `task-company-${Date.now()}`,
+            title: payload.title,
+            brief: payload.brief,
+            requirements: payload.requirements,
+            deliverables: payload.deliverables,
+            estimatedHours: payload.estimatedHours
+          }
+
+          return {
+            ...vacancy,
+            realTasks: [...vacancy.realTasks, created]
+          }
+        })
+
+        saveCompanyVacanciesDb(next)
+        return created
+      })
+    }
+
+    await delay(700)
+    return null
+  },
+
+  async updateCompanyVacancyTask(
+    vacancyId: string,
+    taskId: string,
+    payload: CompanyVacancyTaskPayload
+  ): Promise<VacancyTask | null> {
+    if (USE_MOCK) {
+      return await delay(220).then(() => {
+        const db = getCompanyVacanciesDb()
+        let updated: VacancyTask | null = null
+
+        const next = db.map((vacancy) => {
+          if (vacancy.id !== vacancyId) return vacancy
+
+          return {
+            ...vacancy,
+            realTasks: vacancy.realTasks.map((task) => {
+              if (task.id !== taskId) return task
+              updated = {
+                ...task,
+                title: payload.title,
+                brief: payload.brief,
+                requirements: payload.requirements,
+                deliverables: payload.deliverables,
+                estimatedHours: payload.estimatedHours
+              }
+              return updated
+            })
+          }
+        })
+
+        saveCompanyVacanciesDb(next)
+        return updated
+      })
+    }
+
+    await delay(700)
+    return null
+  },
+
+  async deleteCompanyVacancyTask(vacancyId: string, taskId: string): Promise<boolean> {
+    if (USE_MOCK) {
+      return await delay(220).then(() => {
+        const db = getCompanyVacanciesDb()
+        const next = db.map((vacancy) => {
+          if (vacancy.id !== vacancyId) return vacancy
+          return {
+            ...vacancy,
+            realTasks: vacancy.realTasks.filter((task) => task.id !== taskId)
+          }
+        })
+        saveCompanyVacanciesDb(next)
+        return true
+      })
+    }
+
+    await delay(700)
+    return false
+  },
+
+  async getCompanyCandidates(): Promise<CompanyCandidate[]> {
+    if (USE_MOCK) {
+      return await delay(220).then(() => {
+        const vacancies = getCompanyVacanciesDb()
+        const candidates = getCompanyCandidatesDb()
+        return candidates.map((candidate) => enrichCompanyCandidate(candidate, vacancies))
+      })
+    }
+
+    await delay(700)
+    return []
+  },
+
+  async sendInterviewInvite(
+    candidateId: string,
+    payload: InterviewInvitePayload
+  ): Promise<InterviewInviteResult | null> {
+    if (USE_MOCK) {
+      return await delay(260).then(() => {
+        const candidates = getCompanyCandidatesDb()
+        const target = candidates.find((candidate) => candidate.id === candidateId)
+        if (!target) return null
+
+        const sentAt = new Date().toISOString()
+        const next = candidates.map((candidate) =>
+          candidate.id === candidateId
+            ? { ...candidate, status: "invited" as const, inviteSentAt: sentAt }
+            : candidate
+        )
+        saveCompanyCandidatesDb(next)
+
+        return {
+          candidateId,
+          sentTo: target.email,
+          subject: payload.subject,
+          sentAt
+        }
+      })
+    }
+
+    await delay(700)
+    return null
   }
 }

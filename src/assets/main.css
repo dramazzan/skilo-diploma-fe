@@ -205,6 +205,43 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* Unified button palette: dark blue like navigation */
+button,
+.btn-primary,
+.btn--primary,
+.primary,
+.submit-btn {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #fff !important;
+}
+
+button:hover,
+.btn-primary:hover,
+.btn--primary:hover,
+.primary:hover,
+.submit-btn:hover {
+  background: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+  color: #fff !important;
+}
+
+.secondary,
+.btn-ghost,
+.chip {
+  background: #fff !important;
+  border-color: var(--border) !important;
+  color: #334155 !important;
+}
+
+.secondary:hover,
+.btn-ghost:hover,
+.chip:hover {
+  background: #f8fbff !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
 input,
 textarea,
 select {

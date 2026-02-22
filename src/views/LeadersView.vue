@@ -268,7 +268,7 @@ onMounted(() => {
   margin: 0 auto;
   padding: 48px 20px 80px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #111;
+  color: #334155;
 }
 
 /* Header */
@@ -281,7 +281,7 @@ onMounted(() => {
   font-weight: 700;
   letter-spacing: -0.03em;
   margin: 0 0 6px;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .page-header p {
@@ -320,7 +320,7 @@ onMounted(() => {
   background: #fff;
   padding: 10px 12px;
   font-size: 14px;
-  color: #111;
+  color: #334155;
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.15s ease;
@@ -332,7 +332,7 @@ onMounted(() => {
 
 .filter-item select:focus {
   outline: none;
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 /* My Stats */
@@ -373,7 +373,7 @@ onMounted(() => {
 .stat-cell strong {
   font-size: 20px;
   font-weight: 700;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .with-icon {
@@ -429,7 +429,7 @@ onMounted(() => {
 }
 
 .leader-row.is-me {
-  border-color: #0a0a0a;
+  border-color: #334155;
   background: #fafafa;
 }
 
@@ -448,7 +448,7 @@ onMounted(() => {
 }
 
 .rank.gold {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
 }
 
@@ -484,7 +484,7 @@ onMounted(() => {
   font-size: 15px;
   font-weight: 600;
   margin: 0 0 2px;
-  color: #111;
+  color: #334155;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -505,7 +505,7 @@ onMounted(() => {
   gap: 5px;
   font-size: 15px;
   font-weight: 700;
-  color: #0a0a0a;
+  color: #334155;
   flex-shrink: 0;
 }
 
@@ -551,7 +551,7 @@ onMounted(() => {
 }
 
 .modal-close:hover {
-  color: #111;
+  color: #334155;
   background: #f0f0f0;
 }
 
@@ -579,7 +579,7 @@ onMounted(() => {
   font-size: 18px;
   font-weight: 700;
   margin: 0 0 2px;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .modal-location {
@@ -615,7 +615,7 @@ onMounted(() => {
 .modal-stat strong {
   font-size: 18px;
   font-weight: 700;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .modal-stat strong.success {

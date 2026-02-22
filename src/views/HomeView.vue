@@ -62,7 +62,7 @@ const navigate = (path: string) => {
 .home {
   min-height: 100vh;
   background-color: #fafafa;
-  color: #111;
+  color: #334155;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -82,7 +82,7 @@ const navigate = (path: string) => {
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #0a0a0a;
+  color: #334155;
   background: #f0f0f0;
   border: 1px solid #e5e5e5;
   padding: 6px 16px;
@@ -99,7 +99,7 @@ const navigate = (path: string) => {
 }
 
 .hero h1 .accent {
-  background: linear-gradient(135deg, #0a0a0a 0%, #555 100%);
+  background: linear-gradient(135deg, #1f2d7a 0%, #555 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -130,7 +130,7 @@ button {
 }
 
 button.primary {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
   display: flex;
   align-items: center;
@@ -138,14 +138,14 @@ button.primary {
 }
 
 button.primary:hover {
-  background: #222;
+  background: #23277a;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 button.secondary {
   background: #fff;
-  color: #0a0a0a;
+  color: #334155;
   border: 1px solid #e0e0e0;
 }
 
@@ -208,7 +208,7 @@ button.secondary:hover {
   font-size: 16px;
   font-weight: 600;
   margin: 0 0 6px;
-  color: #111;
+  color: #334155;
 }
 
 .feature-card p {

@@ -125,7 +125,7 @@ const handleSubmit = async () => {
   background: #fafafa;
   padding: 40px 20px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #111;
+  color: #334155;
 }
 
 .container {
@@ -149,11 +149,11 @@ const handleSubmit = async () => {
 }
 
 .step.done {
-  background: #0a0a0a;
+  background: #1f2d7a;
 }
 
 .step.active {
-  background: #0a0a0a;
+  background: #1f2d7a;
 }
 
 /* Header */
@@ -166,7 +166,7 @@ header h1 {
   font-weight: 700;
   letter-spacing: -0.03em;
   margin: 0 0 8px;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 header p {
@@ -203,7 +203,7 @@ header p {
 }
 
 .interest-card.selected {
-  border-color: #0a0a0a;
+  border-color: #334155;
   background: #fafafa;
 }
 
@@ -223,8 +223,8 @@ header p {
 }
 
 .interest-card.selected .card-check {
-  background: #0a0a0a;
-  border-color: #0a0a0a;
+  background: #1f2d7a;
+  border-color: #334155;
 }
 
 .card-icon {
@@ -241,7 +241,7 @@ header p {
 }
 
 .interest-card.selected .card-icon {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
 }
 
@@ -249,7 +249,7 @@ header p {
   font-size: 15px;
   font-weight: 600;
   margin: 0 0 4px;
-  color: #111;
+  color: #334155;
 }
 
 .interest-card p {
@@ -289,7 +289,7 @@ header p {
   padding: 12px 28px;
   border: none;
   border-radius: 10px;
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
   font-size: 15px;
   font-weight: 500;
@@ -299,7 +299,7 @@ header p {
 }
 
 .submit-btn:hover {
-  background: #222;
+  background: #23277a;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }

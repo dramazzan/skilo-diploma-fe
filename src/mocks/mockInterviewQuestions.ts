@@ -5,23 +5,23 @@ const makeInterviewPack = (topicId: string, title: string): InterviewQuestionIte
   {
     id: `${topicId}-i1`,
     topicId,
-    question: `How would you explain ${title} to a junior developer?`,
+    question: `Как бы вы объяснили тему «${title}» junior-разработчику?`,
     answer:
-      `Start with core concepts, then show one practical use case, and finally mention common mistakes. For ${title}, focus on when to use it and the trade-offs.`
+      `Начните с базовых понятий, затем покажите один практический сценарий и завершите типичными ошибками. Для темы «${title}» важно объяснить, когда это использовать и какие есть компромиссы.`
   },
   {
     id: `${topicId}-i2`,
     topicId,
-    question: `What are common pitfalls in ${title}?`,
+    question: `Какие типичные ошибки встречаются в теме «${title}»?`,
     answer:
-      `Typical issues include overengineering, poor debugging visibility, and skipping validation. A good answer should include prevention steps and examples.`
+      `Частые проблемы: избыточно сложные решения, слабая наблюдаемость при отладке и пропуск проверки результата. Хороший ответ включает и примеры ошибок, и способы их предотвратить.`
   },
   {
     id: `${topicId}-i3`,
     topicId,
-    question: `How would you assess production readiness for ${title}?`,
+    question: `Как вы оцените готовность темы «${title}» к продакшену?`,
     answer:
-      `Check reliability, performance under load, observability, and rollback strategy. Interviewers expect concrete metrics and a verification plan.`
+      `Проверьте надежность, производительность под нагрузкой, наблюдаемость и стратегию отката. На собеседовании обычно ждут конкретные метрики и понятный план верификации.`
   }
 ]
 

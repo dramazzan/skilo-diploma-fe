@@ -237,7 +237,7 @@ onMounted(() => {
   display: grid;
   gap: 16px;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .hero {
@@ -330,7 +330,7 @@ onMounted(() => {
 }
 
 .state.error {
-  color: #0a0a0a;
+  color: #334155;
   background: #f9f9f9;
 }
 
@@ -346,7 +346,7 @@ onMounted(() => {
   border-radius: 10px;
   padding: 0 12px;
   background: #fff;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .add-row input::placeholder {
@@ -370,14 +370,14 @@ onMounted(() => {
 }
 
 .primary {
-  background: #0a0a0a;
-  border-color: #0a0a0a;
+  background: #1f2d7a;
+  border-color: #334155;
   color: #fff;
 }
 
 .secondary {
   background: #fff;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .secondary.tiny {
@@ -388,7 +388,7 @@ onMounted(() => {
 .chip {
   border-radius: 100px;
   background: #fff;
-  color: #0a0a0a;
+  color: #334155;
   font-size: 12px;
   font-weight: 500;
   padding: 6px 12px;
@@ -402,7 +402,7 @@ onMounted(() => {
 }
 
 .error {
-  color: #0a0a0a;
+  color: #334155;
   margin: 8px 0 0;
   font-size: 13px;
 }
@@ -450,7 +450,7 @@ onMounted(() => {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
   display: grid;
   place-items: center;
@@ -465,7 +465,7 @@ onMounted(() => {
 .friend-copy h3 {
   margin: 0;
   font-size: 14px;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .friend-copy p {
@@ -492,7 +492,7 @@ onMounted(() => {
   border-radius: 100px;
   padding: 4px 10px;
   background: #f5f5f5;
-  color: #0a0a0a;
+  color: #334155;
   font-size: 12px;
   font-weight: 600;
 }
@@ -532,7 +532,7 @@ onMounted(() => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #0a0a0a;
+  background: #1f2d7a;
 }
 
 .tree-root strong {
@@ -592,7 +592,7 @@ onMounted(() => {
 .branch-copy h3 {
   margin: 0 0 6px;
   font-size: 14px;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .branch-badges {
@@ -644,7 +644,7 @@ onMounted(() => {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #0a0a0a;
+  background: #1f2d7a;
 }
 
 @media (max-width: 640px) {

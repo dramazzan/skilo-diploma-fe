@@ -118,7 +118,7 @@ const handleClick = () => {
   font-size: 12px;
   font-weight: 700;
   line-height: 1.25;
-  color: #0a0a0a;
+  color: #334155;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -157,13 +157,13 @@ const handleClick = () => {
 /* in_progress */
 .roadmap-node.in_progress .node-shape {
   background: #f5f5f5;
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 .roadmap-node.in_progress .node-status {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 .roadmap-node.in_progress .node-shape {
@@ -172,8 +172,8 @@ const handleClick = () => {
 
 /* completed */
 .roadmap-node.completed .node-shape {
-  background: #0a0a0a;
-  border-color: #0a0a0a;
+  background: #1f2d7a;
+  border-color: #334155;
 }
 
 .roadmap-node.completed .node-title {
@@ -199,8 +199,8 @@ const handleClick = () => {
   transform: translateX(-50%);
   min-width: 170px;
   max-width: 216px;
-  background: #0a0a0a;
-  border: 1px solid #222;
+  background: #1f2d7a;
+  border: 1px solid #23277a;
   border-radius: 12px;
   padding: 10px 12px;
   box-shadow: 0 8px 24px rgba(10, 10, 10, 0.18);

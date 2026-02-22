@@ -25,6 +25,10 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v13H3zM8 7V5h8v2M3 12h18" /></svg>
                 <span>Вакансии</span>
               </router-link>
+              <router-link to="/company">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h6M9 14h6" /></svg>
+                <span>Кабинет компании</span>
+              </router-link>
               <router-link to="/leaders">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v2h3v2a5 5 0 0 1-5 5h-4a5 5 0 0 1-5-5V6h3zM12 13v4M9 21h6" /></svg>
                 <span>Лидеры</span>

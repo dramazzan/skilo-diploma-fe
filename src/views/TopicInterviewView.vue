@@ -95,7 +95,7 @@ onMounted(() => {
 /* ── Base ── */
 .interview-page {
   font-family: 'Inter', sans-serif;
-  color: #0a0a0a;
+  color: #334155;
   max-width: 780px;
   display: flex;
   flex-direction: column;
@@ -120,9 +120,9 @@ onMounted(() => {
 }
 
 .btn--primary {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 .btn--primary:hover {
@@ -132,7 +132,7 @@ onMounted(() => {
 
 .btn--ghost {
   background: #fff;
-  color: #0a0a0a;
+  color: #334155;
   border-color: #eee;
 }
 
@@ -164,12 +164,12 @@ onMounted(() => {
 }
 
 .topic-tab:hover {
-  color: #0a0a0a;
+  color: #334155;
   background: #fff;
 }
 
 .topic-tab.router-link-active {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
   box-shadow: 0 2px 8px rgba(10, 10, 10, 0.15);
 }
@@ -185,7 +185,7 @@ onMounted(() => {
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #0a0a0a;
+  color: #334155;
   margin: 0;
   line-height: 1.2;
 }
@@ -254,7 +254,7 @@ onMounted(() => {
 }
 
 .interview-card--open {
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 /* ── Question button ── */
@@ -265,27 +265,30 @@ onMounted(() => {
   justify-content: space-between;
   gap: 16px;
   padding: 16px 18px;
-  background: transparent;
-  border: none;
+  background: transparent !important;
+  border: none !important;
+  color: inherit !important;
   cursor: pointer;
   font-family: inherit;
   text-align: left;
   transition: background 0.15s ease;
+  box-shadow: none !important;
 }
 
 .interview-question:hover {
-  background: #f5f5f5;
+  background: #f5f5f5 !important;
+  transform: none;
 }
 
 .interview-card--open .interview-question {
-  background: #f5f5f5;
+  background: #f5f5f5 !important;
   border-bottom: 1px solid #eee;
 }
 
 .question-text {
   font-size: 14px;
   font-weight: 500;
-  color: #0a0a0a;
+  color: #334155;
   line-height: 1.5;
   flex: 1;
 }
@@ -296,7 +299,7 @@ onMounted(() => {
   height: 24px;
   border-radius: 100px;
   background: #eee;
-  color: #0a0a0a;
+  color: #334155;
   font-size: 16px;
   font-weight: 600;
   display: flex;
@@ -307,7 +310,7 @@ onMounted(() => {
 }
 
 .interview-card--open .question-toggle {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
 }
 

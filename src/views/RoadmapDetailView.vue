@@ -131,7 +131,7 @@ watch(viewMode, (value) => {
 .roadmap-page {
   max-width: 1280px;
   font-family: 'Inter', sans-serif;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 /* ── Header ── */
@@ -143,7 +143,7 @@ watch(viewMode, (value) => {
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #0a0a0a;
+  color: #334155;
   margin: 0 0 8px;
   line-height: 1.2;
 }
@@ -183,9 +183,9 @@ watch(viewMode, (value) => {
 }
 
 .btn--primary {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 .btn--primary:hover {
@@ -195,7 +195,7 @@ watch(viewMode, (value) => {
 
 .btn--ghost {
   background: #fff;
-  color: #0a0a0a;
+  color: #334155;
   border-color: #eee;
 }
 
@@ -239,7 +239,7 @@ watch(viewMode, (value) => {
 .progress-badge {
   font-size: 13px;
   font-weight: 700;
-  color: #0a0a0a;
+  color: #334155;
   background: #fff;
   border: 1px solid #eee;
   border-radius: 100px;
@@ -258,7 +258,7 @@ watch(viewMode, (value) => {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #0a0a0a;
+  background: #1f2d7a;
   transition: width 0.4s ease;
 }
 

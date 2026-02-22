@@ -156,7 +156,7 @@ const goToRoadmap = () => {
   margin: 0 auto;
   padding: 48px 20px 80px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #111;
+  color: #334155;
 }
 
 .sr-only {
@@ -225,7 +225,7 @@ const goToRoadmap = () => {
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0 0 6px;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .form-header p {
@@ -257,7 +257,7 @@ const goToRoadmap = () => {
   font-weight: 500;
   padding: 4px 12px;
   border-radius: 100px;
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
 }
 
@@ -273,7 +273,7 @@ const goToRoadmap = () => {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #0a0a0a;
+  background: #1f2d7a;
   transition: width 0.3s ease;
 }
 
@@ -321,7 +321,7 @@ const goToRoadmap = () => {
 }
 
 .question-card.answered .question-num {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
 }
 
@@ -329,7 +329,7 @@ const goToRoadmap = () => {
   margin: 0;
   font-size: 15px;
   font-weight: 600;
-  color: #111;
+  color: #334155;
   line-height: 1.4;
   padding-top: 3px;
 }
@@ -362,9 +362,9 @@ const goToRoadmap = () => {
 }
 
 .option-label.selected {
-  border-color: #0a0a0a;
+  border-color: #334155;
   background: #fafafa;
-  color: #111;
+  color: #334155;
 }
 
 .option-radio {
@@ -378,14 +378,14 @@ const goToRoadmap = () => {
 }
 
 .option-label.selected .option-radio {
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 .option-label.selected .option-radio::after {
   content: "";
   position: absolute;
   inset: 3px;
-  background: #0a0a0a;
+  background: #1f2d7a;
   border-radius: 50%;
 }
 
@@ -409,7 +409,7 @@ const goToRoadmap = () => {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
   display: flex;
   align-items: center;
@@ -421,7 +421,7 @@ const goToRoadmap = () => {
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #0a0a0a;
+  color: #334155;
   margin: 0;
 }
 
@@ -441,7 +441,7 @@ const goToRoadmap = () => {
   padding: 8px 20px;
   border-radius: 100px;
   background: #f5f5f5;
-  color: #0a0a0a;
+  color: #334155;
   border: 1px solid #eee;
   margin-bottom: 4px;
 }
@@ -454,7 +454,7 @@ const goToRoadmap = () => {
   padding: 12px 24px;
   border: none;
   border-radius: 10px;
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
   font-size: 15px;
   font-weight: 500;
@@ -464,7 +464,7 @@ const goToRoadmap = () => {
 }
 
 .btn-primary:hover {
-  background: #222;
+  background: #23277a;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }

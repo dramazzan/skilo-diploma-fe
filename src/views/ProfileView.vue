@@ -532,7 +532,7 @@ onMounted(fetchProfile)
   margin: 0 auto;
   padding: 48px 20px 80px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #111;
+  color: #334155;
 }
 
 /* States */
@@ -558,7 +558,7 @@ onMounted(fetchProfile)
   width: 24px;
   height: 24px;
   border: 2.5px solid #e5e5e5;
-  border-top-color: #111;
+  border-top-color: #334155;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -579,7 +579,7 @@ onMounted(fetchProfile)
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
   display: flex;
   align-items: center;
@@ -594,7 +594,7 @@ onMounted(fetchProfile)
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0 0 2px;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .email {
@@ -631,7 +631,7 @@ onMounted(fetchProfile)
 .meta-card strong {
   font-size: 20px;
   font-weight: 700;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .trophy-value {
@@ -719,7 +719,7 @@ onMounted(fetchProfile)
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #0a0a0a;
+  background: #1f2d7a;
   flex-shrink: 0;
 }
 
@@ -747,7 +747,7 @@ onMounted(fetchProfile)
 .detail-item strong {
   display: block;
   font-size: 14px;
-  color: #111;
+  color: #334155;
 }
 
 /* Activity */
@@ -760,7 +760,7 @@ onMounted(fetchProfile)
 }
 
 .activity-stats strong {
-  color: #111;
+  color: #334155;
 }
 
 .toggle-bar {
@@ -795,9 +795,9 @@ onMounted(fetchProfile)
 }
 
 .toggle-group button.active {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
-  border-color: #0a0a0a;
+  border-color: #334155;
 }
 
 /* Heatmap */
@@ -838,7 +838,7 @@ onMounted(fetchProfile)
 .heatmap-day.level-1 { background: #ccc; }
 .heatmap-day.level-2 { background: #999; }
 .heatmap-day.level-3 { background: #555; }
-.heatmap-day.level-4 { background: #0a0a0a; }
+.heatmap-day.level-4 { background: #1f2d7a; }
 
 .heatmap-legend {
   margin-top: 8px;
@@ -892,7 +892,7 @@ onMounted(fetchProfile)
 .bar-fill {
   width: 100%;
   border-radius: inherit;
-  background: #0a0a0a;
+  background: #1f2d7a;
   transition: height 0.3s ease;
 }
 
@@ -915,7 +915,7 @@ onMounted(fetchProfile)
   padding: 12px 24px;
   border: none;
   border-radius: 10px;
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
   font-size: 14px;
   font-weight: 500;
@@ -925,7 +925,7 @@ onMounted(fetchProfile)
 }
 
 .btn-primary:hover {
-  background: #222;
+  background: #23277a;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -977,7 +977,7 @@ onMounted(fetchProfile)
 .cert-preview-title {
   font-size: 15px;
   font-weight: 600;
-  color: #111;
+  color: #334155;
   margin: 0 0 14px;
 }
 
@@ -1007,7 +1007,7 @@ onMounted(fetchProfile)
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #0a0a0a;
+  color: #334155;
 }
 
 .cert-id {
@@ -1031,7 +1031,7 @@ onMounted(fetchProfile)
   margin: 10px 0;
   font-size: 26px;
   font-weight: 700;
-  color: #0a0a0a;
+  color: #334155;
   letter-spacing: -0.02em;
 }
 
@@ -1066,7 +1066,7 @@ onMounted(fetchProfile)
 
 .cert-meta-grid strong {
   font-size: 13px;
-  color: #111;
+  color: #334155;
 }
 
 .cert-section {
@@ -1119,7 +1119,7 @@ onMounted(fetchProfile)
 }
 
 .cert-progress-head strong {
-  color: #111;
+  color: #334155;
 }
 
 .cert-progress-head span {
@@ -1139,7 +1139,7 @@ onMounted(fetchProfile)
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #0a0a0a;
+  background: #1f2d7a;
   transition: width 0.3s ease;
 }
 

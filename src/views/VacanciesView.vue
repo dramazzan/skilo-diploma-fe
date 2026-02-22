@@ -58,13 +58,24 @@ onMounted(() => {
 
 <template>
   <div class="vacancies-page">
-    <!-- Header -->
-    <header class="page-header">
-      <h1>Вакансии</h1>
-      <p>Выберите вакансию и откройте персональный блок подготовки с вопросами и тестом</p>
+    <header class="hero">
+      <div>
+        <p class="section-title">Карьерный трек</p>
+        <h1>Вакансии</h1>
+        <p class="hero-note">Выберите вакансию и перейдите в отдельный план подготовки с задачами, вопросами и тестом.</p>
+      </div>
+      <div class="hero-metrics">
+        <div class="metric">
+          <span>Открытых позиций</span>
+          <strong>{{ sortedVacancies.length }}</strong>
+        </div>
+        <div class="metric">
+          <span>Компаний</span>
+          <strong>{{ new Set(sortedVacancies.map((item) => item.company)).size }}</strong>
+        </div>
+      </div>
     </header>
 
-    <!-- States -->
     <div v-if="loading" class="state-view">
       <span class="loader" />
       <p>Загрузка вакансий...</p>
@@ -78,118 +89,168 @@ onMounted(() => {
       <p>Пока нет опубликованных вакансий.</p>
     </div>
 
-    <!-- Grid -->
-    <div v-else class="vacancy-grid">
-      <article
-        v-for="vacancy in sortedVacancies"
-        :key="vacancy.id"
-        class="vacancy-card"
-      >
-        <!-- Top -->
-        <div class="card-top">
-          <div>
-            <h3>{{ vacancy.title }}</h3>
-            <p class="company">{{ vacancy.company }} · {{ vacancy.location }}</p>
-          </div>
-          <span class="level-pill">{{ levelLabel(vacancy.level) }}</span>
-        </div>
+    <div v-else class="vacancies-layout">
+      <aside class="left-panel">
+        <section class="panel-block">
+          <p class="section-title">Навигация</p>
+          <p class="panel-note">Откройте карточку справа, чтобы посмотреть обзор, лидеров и перейти к подготовке.</p>
+        </section>
 
-        <!-- Summary -->
-        <p class="summary">{{ vacancy.summary }}</p>
-
-        <!-- Meta row -->
-        <div class="meta-row">
-          <span class="meta-chip">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
-            {{ employmentLabel(vacancy.employment) }}
-          </span>
-          <span class="meta-chip">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17a5 5 0 0 0 10 0c0-2.76-2.5-5-5-3l-5 3Z"/><path d="M12 17a5 5 0 0 0 10 0c0-2.76-2.5-5-5-3l-5 3Z"/><path d="M7 14c3.22-2.91 4.29-8.75 5-12 1.66 2.38 4.94 9 5 12"/></svg>
-            {{ vacancy.salaryRange }}
-          </span>
-          <span class="meta-chip accent">
-            {{ vacancy.realTasks.length }} {{ vacancy.realTasks.length === 1 ? 'задача' : 'задач' }}
-          </span>
-        </div>
-
-        <!-- Tags -->
-        <div class="tags">
-          <span v-for="tag in vacancy.tags" :key="tag">{{ tag }}</span>
-        </div>
-
-        <!-- Leaders toggle -->
-        <button class="btn-ghost" @click="toggleVacancyLeaders(vacancy.id)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          {{ openedLeadersVacancyId === vacancy.id ? "Скрыть лидеров" : "Лидеры по задачам" }}
-          <svg
-            class="chevron"
-            :class="{ rotated: openedLeadersVacancyId === vacancy.id }"
-            xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-          ><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-
-        <!-- Leaders panel -->
-        <transition name="slide">
-          <div v-if="openedLeadersVacancyId === vacancy.id" class="leaders-panel">
-            <div
-              v-for="leader in (leaderboardByVacancy[vacancy.id]?.leaders ?? []).slice(0, 3)"
-              :key="`vac-leader-${vacancy.id}-${leader.userId}`"
-              class="leader-row"
-            >
-              <span
-                class="leader-rank"
-                :class="{ gold: leader.rank === 1, silver: leader.rank === 2, bronze: leader.rank === 3 }"
-              >{{ leader.rank }}</span>
-              <span class="leader-name">{{ leader.fullName }}</span>
-              <span class="leader-score">{{ leader.averageQualityScore }}<small>/100</small></span>
+        <section class="panel-block compact-list">
+          <p class="section-title">Список вакансий</p>
+          <article v-for="vacancy in sortedVacancies" :key="`mini-${vacancy.id}`" class="mini-item">
+            <div>
+              <h4>{{ vacancy.title }}</h4>
+              <p>{{ vacancy.company }}</p>
             </div>
-            <p v-if="!(leaderboardByVacancy[vacancy.id]?.leaders ?? []).length" class="no-leaders">
-              Пока нет участников
-            </p>
-          </div>
-        </transition>
+            <span class="badge-pill">{{ levelLabel(vacancy.level) }}</span>
+          </article>
+        </section>
+      </aside>
 
-        <!-- CTA -->
-        <button class="btn-primary" @click="openPreparation(vacancy.id)">
-          Подготовка к вакансии
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </button>
-      </article>
+      <section class="right-panel">
+        <div class="vacancy-grid">
+          <article
+            v-for="vacancy in sortedVacancies"
+            :key="vacancy.id"
+            class="vacancy-card"
+          >
+            <div class="card-top">
+              <div>
+                <h3>{{ vacancy.title }}</h3>
+                <p class="company">{{ vacancy.company }} · {{ vacancy.location }}</p>
+              </div>
+              <span class="level-pill">{{ levelLabel(vacancy.level) }}</span>
+            </div>
+
+            <p class="summary">{{ vacancy.summary }}</p>
+
+            <div class="meta-row">
+              <span class="meta-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                {{ employmentLabel(vacancy.employment) }}
+              </span>
+              <span class="meta-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17a5 5 0 0 0 10 0c0-2.76-2.5-5-5-3l-5 3Z"/><path d="M12 17a5 5 0 0 0 10 0c0-2.76-2.5-5-5-3l-5 3Z"/><path d="M7 14c3.22-2.91 4.29-8.75 5-12 1.66 2.38 4.94 9 5 12"/></svg>
+                {{ vacancy.salaryRange }}
+              </span>
+              <span class="meta-chip accent">
+                {{ vacancy.realTasks.length }} {{ vacancy.realTasks.length === 1 ? 'задача' : 'задач' }}
+              </span>
+            </div>
+
+            <div class="tags">
+              <span v-for="tag in vacancy.tags" :key="tag">{{ tag }}</span>
+            </div>
+
+            <button class="btn-ghost" @click="toggleVacancyLeaders(vacancy.id)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              {{ openedLeadersVacancyId === vacancy.id ? "Скрыть лидеров" : "Лидеры по задачам" }}
+              <svg
+                class="chevron"
+                :class="{ rotated: openedLeadersVacancyId === vacancy.id }"
+                xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              ><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+
+            <transition name="slide">
+              <div v-if="openedLeadersVacancyId === vacancy.id" class="leaders-panel">
+                <div
+                  v-for="leader in (leaderboardByVacancy[vacancy.id]?.leaders ?? []).slice(0, 3)"
+                  :key="`vac-leader-${vacancy.id}-${leader.userId}`"
+                  class="leader-row"
+                >
+                  <span
+                    class="leader-rank"
+                    :class="{ gold: leader.rank === 1, silver: leader.rank === 2, bronze: leader.rank === 3 }"
+                  >{{ leader.rank }}</span>
+                  <span class="leader-name">{{ leader.fullName }}</span>
+                  <span class="leader-score">{{ leader.averageQualityScore }}<small>/100</small></span>
+                </div>
+                <p v-if="!(leaderboardByVacancy[vacancy.id]?.leaders ?? []).length" class="no-leaders">
+                  Пока нет участников
+                </p>
+              </div>
+            </transition>
+
+            <button class="btn-primary" @click="openPreparation(vacancy.id)">
+              Подготовка к вакансии
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </article>
+        </div>
+      </section>
     </div>
   </div>
 </template>
 
 <style scoped>
 .vacancies-page {
-  max-width: 800px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 48px 20px 80px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #111;
+  padding: 20px 18px 72px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #334155;
 }
 
-/* Header */
-.page-header {
-  margin-bottom: 32px;
+.hero {
+  border: 1px solid #eee;
+  border-radius: 14px;
+  background: linear-gradient(165deg, #ffffff 0%, #f7f7f7 100%);
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
 }
 
-.page-header h1 {
+.section-title {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #999;
+}
+
+.hero h1 {
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.03em;
   margin: 0 0 6px;
-  color: #0a0a0a;
 }
 
-.page-header p {
-  font-size: 15px;
-  color: #888;
+.hero-note {
   margin: 0;
-  line-height: 1.5;
+  color: #888;
+  max-width: 620px;
 }
 
-/* States */
+.hero-metrics {
+  display: flex;
+  gap: 10px;
+}
+
+.metric {
+  min-width: 130px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #fff;
+  padding: 10px;
+}
+
+.metric span {
+  display: block;
+  font-size: 12px;
+  color: #999;
+}
+
+.metric strong {
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+
 .state-view {
   display: flex;
   flex-direction: column;
@@ -205,14 +266,14 @@ onMounted(() => {
 }
 
 .error-text {
-  color: #dc2626;
+  color: #334155;
 }
 
 .loader {
   width: 24px;
   height: 24px;
   border: 2.5px solid #e5e5e5;
-  border-top-color: #111;
+  border-top-color: #334155;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -221,28 +282,104 @@ onMounted(() => {
   to { transform: rotate(360deg); }
 }
 
-/* Grid */
-.vacancy-grid {
+.vacancies-layout {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 320px 1fr;
   gap: 14px;
 }
 
-/* Card */
-.vacancy-card {
+.left-panel,
+.right-panel {
   border: 1px solid #eee;
   border-radius: 14px;
   background: #fff;
-  padding: 22px 20px;
+  padding: 14px;
+}
+
+.left-panel {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.panel-block {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #f9f9f9;
+  padding: 12px;
+}
+
+.panel-note {
+  margin: 0;
+  color: #888;
+  line-height: 1.5;
+}
+
+.compact-list {
+  max-height: 640px;
+  overflow: auto;
+}
+
+.mini-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #fff;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.mini-item:last-child {
+  margin-bottom: 0;
+}
+
+.mini-item h4 {
+  margin: 0;
+  font-size: 13px;
+}
+
+.mini-item p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #888;
+}
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #eee;
+  border-radius: 100px;
+  padding: 4px 10px;
+  background: #f5f5f5;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.vacancy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.vacancy-card {
+  border: 1px solid #eee;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fff 0%, #fbfbfb 100%);
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  transition: all 0.15s ease;
+  gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .vacancy-card:hover {
-  border-color: #ddd;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(10, 10, 10, 0.06);
 }
 
 .card-top {
@@ -256,7 +393,7 @@ onMounted(() => {
   font-size: 16px;
   font-weight: 700;
   margin: 0 0 4px;
-  color: #0a0a0a;
+  color: #334155;
   letter-spacing: -0.01em;
 }
 
@@ -275,9 +412,9 @@ onMounted(() => {
   letter-spacing: 0.04em;
   padding: 5px 10px;
   border-radius: 100px;
-  background: #f0f0f0;
+  background: #f5f5f5;
   color: #555;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #eee;
 }
 
 .summary {
@@ -287,7 +424,6 @@ onMounted(() => {
   color: #666;
 }
 
-/* Meta */
 .meta-row {
   display: flex;
   flex-wrap: wrap;
@@ -301,19 +437,18 @@ onMounted(() => {
   font-size: 12px;
   font-weight: 500;
   padding: 5px 10px;
-  border-radius: 8px;
-  background: #fafafa;
+  border-radius: 100px;
+  background: #fff;
   border: 1px solid #eee;
   color: #666;
 }
 
 .meta-chip.accent {
-  background: #0a0a0a;
-  border-color: #0a0a0a;
+  background: #1f2d7a;
+  border-color: #334155;
   color: #fff;
 }
 
-/* Tags */
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -330,24 +465,26 @@ onMounted(() => {
   border: 1px solid #eee;
 }
 
-/* Ghost button */
 .btn-ghost {
   display: inline-flex;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
-  padding: 8px 0;
-  border: none;
-  background: none;
-  color: #888;
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  background: #fff;
+  color: #555;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-ghost:hover {
-  color: #333;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(10, 10, 10, 0.08);
 }
 
 .chevron {
@@ -358,7 +495,6 @@ onMounted(() => {
   transform: rotate(180deg);
 }
 
-/* Leaders panel */
 .leaders-panel {
   border: 1px solid #eee;
   border-radius: 10px;
@@ -391,7 +527,7 @@ onMounted(() => {
 }
 
 .leader-rank.gold {
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
 }
 
@@ -408,7 +544,7 @@ onMounted(() => {
 .leader-name {
   flex: 1;
   font-weight: 600;
-  color: #222;
+  color: #23277a;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -416,7 +552,7 @@ onMounted(() => {
 
 .leader-score {
   font-weight: 700;
-  color: #0a0a0a;
+  color: #334155;
   flex-shrink: 0;
 }
 
@@ -433,7 +569,6 @@ onMounted(() => {
   padding: 6px 0;
 }
 
-/* Slide transition */
 .slide-enter-active,
 .slide-leave-active {
   transition: all 0.2s ease;
@@ -455,20 +590,19 @@ onMounted(() => {
   max-height: 200px;
 }
 
-/* Primary button */
 .btn-primary {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 12px 20px;
-  border: none;
+  padding: 11px 20px;
+  border: 1px solid #1f2d7a;
   border-radius: 10px;
-  background: #0a0a0a;
+  background: #1f2d7a;
   color: #fff;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   font-family: inherit;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -476,23 +610,55 @@ onMounted(() => {
 }
 
 .btn-primary:hover {
-  background: #222;
+  background: #23277a;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Responsive */
-@media (max-width: 720px) {
+@media (max-width: 980px) {
+  .vacancies-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .left-panel {
+    order: 2;
+  }
+
+  .right-panel {
+    order: 1;
+  }
+}
+
+@media (max-width: 640px) {
   .vacancies-page {
-    padding: 32px 16px 60px;
+    padding: 16px 12px 56px;
+  }
+
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero h1 {
+    font-size: 24px;
+  }
+
+  .hero-metrics {
+    width: 100%;
+  }
+
+  .metric {
+    flex: 1;
+    min-width: 0;
   }
 
   .vacancy-grid {
     grid-template-columns: 1fr;
   }
 
-  .page-header h1 {
-    font-size: 24px;
+  .right-panel,
+  .left-panel {
+    padding: 10px;
   }
 }
 </style>
