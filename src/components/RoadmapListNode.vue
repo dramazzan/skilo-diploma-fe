@@ -51,23 +51,41 @@ const getNodeClass = (node: RoadmapNode) => ({
 </script>
 
 <template>
-  <div class="legacy-node" :class="`depth-${depth}`">
-    <div class="legacy-row">
-      <span v-if="depth > 0" class="legacy-connector" />
+  <div class="list-node" :class="`depth-${depth}`">
+    <div class="list-row">
+      <span v-if="depth > 0" class="list-connector" />
 
-      <div class="legacy-title" :class="getNodeClass(node)" @click="hasChildren ? toggle() : openTopic()">
-        <span class="legacy-toggle" v-if="hasChildren">
-          {{ expanded ? "▼" : "▶" }}
+      <div
+        class="list-item"
+        :class="getNodeClass(node)"
+        @click="hasChildren ? toggle() : openTopic()"
+      >
+        <span class="list-toggle" :class="{ 'list-toggle--leaf': !hasChildren }">
+          <template v-if="hasChildren">
+            {{ expanded ? "▾" : "▸" }}
+          </template>
+          <template v-else>
+            <span class="list-dot" />
+          </template>
         </span>
-        <span class="legacy-toggle" v-else>•</span>
 
-        <span class="legacy-name">{{ node.title }}</span>
+        <span class="list-name">{{ node.title }}</span>
 
-        <span class="legacy-status">{{ getNodeStatusLabel(node) }}</span>
+        <span
+          v-if="getNodeStatusLabel(node)"
+          class="list-status"
+          :class="{
+            'list-status--completed': node.status === 'completed',
+            'list-status--progress': node.status === 'in_progress',
+            'list-status--locked': node.status === 'locked',
+          }"
+        >
+          {{ getNodeStatusLabel(node) }}
+        </span>
       </div>
     </div>
 
-    <div v-if="expanded && hasChildren" class="legacy-children">
+    <div v-if="expanded && hasChildren" class="list-children">
       <RoadmapListNode
         v-for="child in node.children"
         :key="child.id"
@@ -79,73 +97,163 @@ const getNodeClass = (node: RoadmapNode) => ({
 </template>
 
 <style scoped>
-.legacy-node {
-  margin-top: 8px;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ── Node wrapper ── */
+.list-node {
+  margin-top: 6px;
+  font-family: 'Inter', sans-serif;
 }
 
-.legacy-row {
+/* ── Row ── */
+.list-row {
   display: flex;
   align-items: center;
 }
 
-.legacy-connector {
-  width: 18px;
+/* ── Connector line ── */
+.list-connector {
+  flex-shrink: 0;
+  width: 20px;
   height: 1px;
-  background: #cdd8ea;
-  margin-right: 8px;
+  background: #eee;
+  margin-right: 6px;
 }
 
-.legacy-title {
+/* ── Item ── */
+.list-item {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: #ffffff;
-  border: 1px solid #dbe3ef;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #eee;
   border-radius: 10px;
-  padding: 10px 12px;
-  transition: all 0.2s ease;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  user-select: none;
 }
 
-.legacy-title:hover {
-  border-color: #bfd2ec;
-  background: #f8fbff;
+.list-item:hover {
+  border-color: #ddd;
+  background: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10, 10, 10, 0.06);
 }
 
-.legacy-toggle {
-  min-width: 14px;
-  color: #56627d;
+/* locked */
+.list-item.locked {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
 }
 
-.legacy-name {
+/* ── Toggle icon ── */
+.list-toggle {
+  flex-shrink: 0;
+  width: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #999;
+  line-height: 1;
+}
+
+.list-toggle--leaf {
+  /* keep alignment consistent */
+}
+
+.list-dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 100px;
+  background: #ccc;
+}
+
+/* ── Name ── */
+.list-name {
+  font-size: 14px;
   font-weight: 600;
+  color: #0a0a0a;
+  flex: 1;
+  line-height: 1.4;
 }
 
-.legacy-status {
-  margin-left: auto;
-  font-size: 12px;
-  font-weight: 700;
-  border: 1px solid #dbe3ef;
-  border-radius: 999px;
-  padding: 2px 8px;
-  color: #475569;
+/* ── Status badge ── */
+.list-status {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 100px;
+  padding: 3px 10px;
+  border: 1px solid #eee;
+  background: #f5f5f5;
+  color: #999;
+  white-space: nowrap;
 }
 
-.legacy-title.locked {
-  opacity: 0.58;
+.list-status--completed {
+  background: #0a0a0a;
+  color: #fff;
+  border-color: #0a0a0a;
 }
 
-.legacy-title.in_progress .legacy-status {
-  border-color: #c7d3ff;
-  color: #3347a0;
+.list-status--progress {
+  background: #f5f5f5;
+  color: #555;
+  border-color: #ddd;
 }
 
-.legacy-title.completed .legacy-status {
-  border-color: #bfe6d5;
-  color: #176a4f;
+.list-status--locked {
+  background: #f5f5f5;
+  color: #bbb;
+  border-color: #eee;
 }
 
-.legacy-children {
+/* ── Children ── */
+.list-children {
   margin-left: 26px;
+  border-left: 1px solid #eee;
+  padding-left: 0;
+}
+
+/* ── Depth tinting ── */
+.depth-1 .list-item {
+  background: #fafafa;
+}
+
+.depth-2 .list-item {
+  background: #f7f7f7;
+}
+
+/* ── Adaptive ── */
+@media (max-width: 640px) {
+  .list-name {
+    font-size: 13px;
+  }
+
+  .list-status {
+    font-size: 10px;
+    padding: 2px 8px;
+    letter-spacing: 0.03em;
+  }
+
+  .list-item {
+    padding: 9px 12px;
+    gap: 8px;
+  }
+
+  .list-children {
+    margin-left: 16px;
+  }
+
+  .list-connector {
+    width: 14px;
+  }
 }
 </style>

@@ -54,10 +54,9 @@ body {
 
 .top-nav-inner {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 14px;
 }
 
 .top-brand {
@@ -67,19 +66,54 @@ body {
   color: #1f2d7a;
 }
 
+.top-nav-menu {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.nav-section {
+  border: 1px solid #dfe7f4;
+  border-radius: 10px;
+  background: #fff;
+  padding: 8px;
+}
+
+.nav-section-title {
+  margin: 0 0 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7b8ca8;
+}
+
 .top-nav-links {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
 }
 
 .top-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   color: #0f172a;
   border: 1px solid transparent;
   border-radius: 8px;
-  padding: 7px 11px;
+  padding: 7px 10px;
   font-weight: 600;
   transition: all 0.2s ease;
+}
+
+.top-nav a svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
 }
 
 .top-nav a:hover {
@@ -95,6 +129,32 @@ body {
 
 .app-main {
   padding: 24px 16px 28px;
+}
+
+@media (max-width: 1080px) {
+  .top-nav-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .top-nav-menu {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 720px) {
+  .nav-section {
+    width: 100%;
+  }
+
+  .top-nav-links {
+    flex-wrap: wrap;
+  }
+
+  .top-nav a {
+    flex: 1;
+    justify-content: center;
+  }
 }
 
 h1,

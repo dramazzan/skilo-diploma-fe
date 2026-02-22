@@ -84,6 +84,41 @@ export interface UserActivityDay {
 
 export type UserActivityResponse = UserActivityDay[]
 
+export interface FriendProfile {
+  userId: number
+  fullName: string
+  email: string
+  avatar: string
+  country: string
+  city: string
+  university: string
+  points: number
+  roadmapProgressPercent: number
+  roadmapProgress: Record<string, number>
+}
+
+export interface GlobalItMapRoadmap {
+  roadmapId: string
+  title: string
+}
+
+export interface GlobalItMapParticipant {
+  userId: number
+  fullName: string
+  avatar: string
+  isCurrentUser: boolean
+  points: number
+  overallProgressPercent: number
+  roadmapProgress: Record<string, number>
+}
+
+export interface GlobalItMapResponse {
+  roadmaps: GlobalItMapRoadmap[]
+  participants: GlobalItMapParticipant[]
+}
+
+export type FriendsResponse = FriendProfile[]
+
 export interface LeaderboardEntry {
   userId: number
   fullName: string
@@ -411,6 +446,37 @@ export const MVP_API_ENDPOINTS: EndpointDoc[] = [
   },
   {
     method: "GET",
+    path: "/users/:userId/friends",
+    response: "FriendsResponse",
+    purpose: "Get current user friend list"
+  },
+  {
+    method: "GET",
+    path: "/users/:userId/friends/suggestions",
+    response: "FriendsResponse",
+    purpose: "Get users that can be added as friends"
+  },
+  {
+    method: "POST",
+    path: "/users/:userId/friends",
+    request: "{ email: string }",
+    response: "FriendsResponse",
+    purpose: "Add friend by email and return updated friend list"
+  },
+  {
+    method: "DELETE",
+    path: "/users/:userId/friends/:friendUserId",
+    response: "FriendsResponse",
+    purpose: "Remove friend and return updated friend list"
+  },
+  {
+    method: "GET",
+    path: "/users/:userId/global-it-map",
+    response: "GlobalItMapResponse",
+    purpose: "Get shared roadmap progress map for current user and friends"
+  },
+  {
+    method: "GET",
     path: "/leaderboard",
     response: "LeaderboardResponse",
     purpose: "Get leaderboard with user points, ranks, and current user result"
@@ -557,6 +623,9 @@ export const MOCK_TO_API_CONTRACT: MockToApiContractItem[] = [
   { mockSourceFile: "src/mocks/mockData.ts", mockExport: "mockRoadmapProgressResponse", endpoint: "/users/:userId/roadmap-progress", method: "GET", responseModel: "RoadmapProgressResponse" },
 
   { mockSourceFile: "src/mocks/mockProfile.ts", mockExport: "mockProfileData", endpoint: "/profile", method: "GET", responseModel: "ProfileResponse" },
+  { mockSourceFile: "src/mocks/mockFriends.ts", mockExport: "mockFriendDirectory + mockDefaultFriendIds", endpoint: "/users/:userId/friends", method: "GET", responseModel: "FriendsResponse" },
+  { mockSourceFile: "src/mocks/mockFriends.ts", mockExport: "mockFriendDirectory + mockDefaultFriendIds", endpoint: "/users/:userId/friends/suggestions", method: "GET", responseModel: "FriendsResponse" },
+  { mockSourceFile: "src/mocks/mockFriends.ts", mockExport: "mockFriendDirectory + mockDefaultFriendIds", endpoint: "/users/:userId/global-it-map", method: "GET", responseModel: "GlobalItMapResponse" },
 
   { mockSourceFile: "src/mocks/mockRoadmaps.ts", mockExport: "mockRoadmaps", endpoint: "/roadmaps", method: "GET", responseModel: "RoadmapListResponse" },
   { mockSourceFile: "src/mocks/mockRoadmaps.ts", mockExport: "mockRoadmapTrees", endpoint: "/roadmaps/tree", method: "GET", responseModel: "RoadmapTreeResponse" },
@@ -597,9 +666,13 @@ export const MOCK_TO_API_CONTRACT: MockToApiContractItem[] = [
  *    - /topics/:topicId/result (POST after finish)
  * 6) Interview tab:
  *    - /topics/:topicId/interview-questions
- * 7) User removes roadmap:
+ * 7) Friends + global map:
+ *    - /users/:userId/friends
+ *    - /users/:userId/friends/suggestions
+ *    - /users/:userId/global-it-map
+ * 8) User removes roadmap:
  *    - /users/:userId/roadmaps/:roadmapId (DELETE)
- * 8) Vacancies and interview preparation:
+ * 9) Vacancies and interview preparation:
  *    - /vacancies
  *    - /vacancies/:vacancyId
  *    - /vacancies/:vacancyId/tasks

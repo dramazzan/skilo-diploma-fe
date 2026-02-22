@@ -1,5 +1,7 @@
 import { mockDefaultRoadmapCollection, mockLoginResponse, mockRoadmapProgressResponse } from "@/mocks/mockData"
+import { mockFriendDirectory, mockDefaultFriendIds, type MockFriendProfile } from "@/mocks/mockFriends"
 import { mockInterviewQuestionsByTopic } from "@/mocks/mockInterviewQuestions"
+import { mockRoadmaps } from "@/mocks/mockRoadmaps"
 import { mockVacancies, type VacancyItem, type VacancyTask as MockVacancyTask } from "@/mocks/mockVacancies"
 
 export interface User {
@@ -136,6 +138,39 @@ export interface Vacancy extends Omit<VacancyItem, "preparation"> {
   preparation: VacancyPreparation
 }
 
+export interface FriendProfile {
+  userId: number
+  fullName: string
+  email: string
+  avatar: string
+  country: string
+  city: string
+  university: string
+  points: number
+  roadmapProgressPercent: number
+  roadmapProgress: Record<string, number>
+}
+
+export interface GlobalItMapRoadmap {
+  roadmapId: string
+  title: string
+}
+
+export interface GlobalItMapParticipant {
+  userId: number
+  fullName: string
+  avatar: string
+  isCurrentUser: boolean
+  points: number
+  overallProgressPercent: number
+  roadmapProgress: Record<string, number>
+}
+
+export interface GlobalItMapResponse {
+  roadmaps: GlobalItMapRoadmap[]
+  participants: GlobalItMapParticipant[]
+}
+
 // mock switch
 const USE_MOCK = true
 
@@ -144,6 +179,7 @@ const USER_ROADMAP_COLLECTIONS_KEY = "mock_user_roadmap_collections"
 const TOPIC_RESULTS_KEY = "topic_test_results"
 const ROADMAP_PROGRESS_STORAGE_KEY = "user_roadmap_progress"
 const VACANCY_TASK_SUBMISSIONS_KEY = "vacancy_task_submissions"
+const USER_FRIENDS_KEY = "mock_user_friends"
 
 // emulate network latency
 const delay = (ms: number) =>
@@ -174,6 +210,22 @@ const getCollectionDb = (): Record<string, string[]> => {
 
 const saveCollectionDb = (db: Record<string, string[]>) => {
   localStorage.setItem(USER_ROADMAP_COLLECTIONS_KEY, JSON.stringify(db))
+}
+
+const getFriendsDb = (): Record<string, number[]> => {
+  const raw = localStorage.getItem(USER_FRIENDS_KEY)
+
+  if (!raw) return {}
+
+  try {
+    return JSON.parse(raw) as Record<string, number[]>
+  } catch {
+    return {}
+  }
+}
+
+const saveFriendsDb = (db: Record<string, number[]>) => {
+  localStorage.setItem(USER_FRIENDS_KEY, JSON.stringify(db))
 }
 
 const toIsoDate = (date: Date) => {
@@ -244,6 +296,45 @@ const getRoadmapProgressDb = (): Record<string, RoadmapProgressItem> => {
   } catch {
     return {}
   }
+}
+
+const getCurrentUserRoadmapProgressMap = (): Record<string, number> => {
+  const db = getRoadmapProgressDb()
+
+  if (!Object.keys(db).length) {
+    return mockRoadmapProgressResponse.reduce<Record<string, number>>((acc, item) => {
+      acc[item.roadmapId] = item.completionPercent
+      return acc
+    }, {})
+  }
+
+  return Object.values(db).reduce<Record<string, number>>((acc, item) => {
+    acc[item.roadmapId] = item.completionPercent
+    return acc
+  }, {})
+}
+
+const averageProgressFromMap = (map: Record<string, number>): number => {
+  const values = Object.values(map)
+  if (!values.length) return 0
+  return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length)
+}
+
+const normalizeFriendProfile = (profile: MockFriendProfile): FriendProfile => {
+  return {
+    ...profile,
+    roadmapProgressPercent: averageProgressFromMap(profile.roadmapProgress)
+  }
+}
+
+const getFriendsForUser = (userId: number): FriendProfile[] => {
+  const db = getFriendsDb()
+  const friendIds = db[String(userId)] ?? [...mockDefaultFriendIds]
+
+  return friendIds
+    .map((friendId) => mockFriendDirectory.find((candidate) => candidate.userId === friendId))
+    .filter((candidate): candidate is MockFriendProfile => Boolean(candidate))
+    .map(normalizeFriendProfile)
 }
 
 const getVacancyTaskSubmissionsDb = (): Record<string, VacancyTaskSubmission[]> => {
@@ -566,6 +657,126 @@ export const api = {
 
     await delay(700)
     return []
+  },
+
+  async getFriends(userId: number | null): Promise<FriendProfile[]> {
+    const resolvedUserId = resolveMockUserId(userId)
+
+    if (USE_MOCK) {
+      return await delay(220).then(() => getFriendsForUser(resolvedUserId))
+    }
+
+    await delay(700)
+    return []
+  },
+
+  async getFriendSuggestions(userId: number | null): Promise<FriendProfile[]> {
+    const resolvedUserId = resolveMockUserId(userId)
+
+    if (USE_MOCK) {
+      return await delay(180).then(() => {
+        const existingIds = new Set(getFriendsForUser(resolvedUserId).map((item) => item.userId))
+        return mockFriendDirectory
+          .filter((candidate) => candidate.userId !== resolvedUserId && !existingIds.has(candidate.userId))
+          .map(normalizeFriendProfile)
+      })
+    }
+
+    await delay(700)
+    return []
+  },
+
+  async addFriendByEmail(userId: number | null, email: string): Promise<FriendProfile[]> {
+    const resolvedUserId = resolveMockUserId(userId)
+    const normalizedEmail = email.trim().toLowerCase()
+
+    if (USE_MOCK) {
+      return await delay(220).then(() => {
+        const friend = mockFriendDirectory.find((candidate) => candidate.email.toLowerCase() === normalizedEmail)
+
+        if (!friend) {
+          throw new Error("Пользователь с таким email не найден")
+        }
+
+        if (friend.userId === resolvedUserId) {
+          throw new Error("Нельзя добавить самого себя")
+        }
+
+        const db = getFriendsDb()
+        const current = db[String(resolvedUserId)] ?? [...mockDefaultFriendIds]
+        if (!current.includes(friend.userId)) {
+          db[String(resolvedUserId)] = [...current, friend.userId]
+          saveFriendsDb(db)
+        }
+
+        return getFriendsForUser(resolvedUserId)
+      })
+    }
+
+    await delay(700)
+    return []
+  },
+
+  async removeFriend(userId: number | null, friendUserId: number): Promise<FriendProfile[]> {
+    const resolvedUserId = resolveMockUserId(userId)
+
+    if (USE_MOCK) {
+      return await delay(220).then(() => {
+        const db = getFriendsDb()
+        const current = db[String(resolvedUserId)] ?? [...mockDefaultFriendIds]
+        db[String(resolvedUserId)] = current.filter((id) => id !== friendUserId)
+        saveFriendsDb(db)
+        return getFriendsForUser(resolvedUserId)
+      })
+    }
+
+    await delay(700)
+    return []
+  },
+
+  async getGlobalItMap(userId: number | null): Promise<GlobalItMapResponse> {
+    const resolvedUserId = resolveMockUserId(userId)
+
+    if (USE_MOCK) {
+      return await delay(240).then(() => {
+        const currentProgressMap = getCurrentUserRoadmapProgressMap()
+        const snapshot = getCurrentUserPointsSnapshot()
+
+        const currentUserParticipant: GlobalItMapParticipant = {
+          userId: resolvedUserId,
+          fullName: "Вы",
+          avatar: "Y",
+          isCurrentUser: true,
+          points: snapshot.points,
+          overallProgressPercent: averageProgressFromMap(currentProgressMap),
+          roadmapProgress: currentProgressMap
+        }
+
+        const friendParticipants: GlobalItMapParticipant[] = getFriendsForUser(resolvedUserId).map((friend) => ({
+          userId: friend.userId,
+          fullName: friend.fullName,
+          avatar: friend.avatar,
+          isCurrentUser: false,
+          points: friend.points,
+          overallProgressPercent: friend.roadmapProgressPercent,
+          roadmapProgress: friend.roadmapProgress
+        }))
+
+        return {
+          roadmaps: mockRoadmaps.map((roadmap) => ({
+            roadmapId: roadmap.id,
+            title: roadmap.title
+          })),
+          participants: [currentUserParticipant, ...friendParticipants]
+        }
+      })
+    }
+
+    await delay(700)
+    return {
+      roadmaps: [],
+      participants: []
+    }
   },
 
   async getLeaderboard(userId: number | null): Promise<LeaderboardResponse> {

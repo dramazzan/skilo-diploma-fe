@@ -487,8 +487,12 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 12px;
+  border: 1px solid #d7e4f6;
+  border-radius: 12px;
+  padding: 10px;
+  background: linear-gradient(180deg, #ffffff 0%, #f6fbff 100%);
 }
 
 .legend {
@@ -498,31 +502,32 @@ onBeforeUnmount(() => {
 }
 
 .legend-item {
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
   border-radius: 999px;
-  padding: 4px 8px;
+  padding: 5px 10px;
   border: 1px solid transparent;
+  background: #f7fbff;
 }
 
 .legend-item.completed {
-  color: #7fe5c9;
-  border-color: rgba(97, 220, 174, 0.6);
+  color: #2f7b66;
+  border-color: #bfe6d9;
 }
 
 .legend-item.in-progress {
-  color: #8fc4ff;
-  border-color: rgba(95, 182, 255, 0.64);
+  color: #285f99;
+  border-color: #bdd9fb;
 }
 
 .legend-item.available {
-  color: #c6ecff;
-  border-color: rgba(108, 177, 208, 0.5);
+  color: #3a6287;
+  border-color: #c8dff4;
 }
 
 .legend-item.locked {
-  color: #88a6bb;
-  border-color: rgba(90, 126, 149, 0.42);
+  color: #667d95;
+  border-color: #d2dfea;
 }
 
 .tree-viewport {
