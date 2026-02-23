@@ -1,48 +1,83 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useAuthStore } from "@/store/auth";
-import { api, type AuthResponse } from "@/services/api";
+import { ref } from "vue"
+import { useRouter } from "vue-router"
+import { useAuthStore } from "@/store/auth"
 
-const email = ref("");
-const password = ref("");
+const email = ref("")
+const password = ref("")
+const loading = ref(false)
+const error = ref<string | null>(null)
 
-const router = useRouter();
-const auth = useAuthStore();
+const router = useRouter()
+const auth = useAuthStore()
 
 const handleLogin = async () => {
   try {
-    const response: AuthResponse | undefined = await api.login(email.value, password.value);
+    loading.value = true
+    error.value = null
 
-    if (!response) {
-      throw new Error("Login failed: response is undefined");
+    if (!email.value.trim() || !password.value.trim()) {
+      error.value = "Заполните email и пароль"
+      return
     }
 
-    auth.setAuth(response.token, response.user);
+    const response = await auth.login(email.value.trim(), password.value)
 
     if (response.user.firstLogin) {
-      router.push("/onboarding");
+      router.push("/onboarding")
     } else {
-      router.push("/roadmaps");
+      router.push("/roadmaps")
     }
-  } catch (err) {
-    console.error(err);
-    alert("Login failed. Check your email and password.");
+  } catch (err: any) {
+    error.value = err?.message || "Не удалось выполнить вход"
+  } finally {
+    loading.value = false
   }
-};
+}
 </script>
 
 <template>
-  <div class="auth-container">
-    <div class="card">
-      <h2>Login</h2>
-      <input v-model="email" placeholder="Email" />
-      <input v-model="password" type="password" placeholder="Password" />
-      <button @click="handleLogin">Login</button>
-      <p>
-        No account?
-        <router-link to="/register">Create one</router-link>
-      </p>
+  <section class="auth-page">
+    <div class="auth-container auth-shell">
+      <aside class="auth-side">
+        <p class="auth-kicker">Skilo</p>
+        <h1>Вход в личный кабинет</h1>
+        <p class="auth-text">
+          Продолжайте обучение, отслеживайте прогресс и работайте с дорожными картами в одном месте.
+        </p>
+      </aside>
+
+      <div class="card auth-card">
+        <h2>С возвращением</h2>
+        <p class="auth-subtitle">Введите данные аккаунта, чтобы продолжить.</p>
+
+        <label class="auth-field">
+          <span>Email</span>
+          <input v-model="email" type="email" placeholder="you@example.com" autocomplete="email" />
+        </label>
+
+        <label class="auth-field">
+          <span>Пароль</span>
+          <input
+            v-model="password"
+            type="password"
+            placeholder="Введите пароль"
+            autocomplete="current-password"
+            @keyup.enter="handleLogin"
+          />
+        </label>
+
+        <p v-if="error" class="error auth-error">{{ error }}</p>
+
+        <button class="primary auth-submit" :disabled="loading" @click="handleLogin">
+          {{ loading ? "Выполняется вход..." : "Войти" }}
+        </button>
+
+        <p class="auth-footer">
+          Нет аккаунта?
+          <router-link to="/register">Зарегистрироваться</router-link>
+        </p>
+      </div>
     </div>
-  </div>
+  </section>
 </template>

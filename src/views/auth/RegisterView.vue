@@ -5,6 +5,7 @@ import { useAuthStore } from "@/store/auth"
 
 const email = ref("")
 const password = ref("")
+const confirmPassword = ref("")
 const loading = ref(false)
 const error = ref<string | null>(null)
 
@@ -15,11 +16,22 @@ const handleRegister = async () => {
   try {
     loading.value = true
     error.value = null
-    const response = await auth.register(email.value, password.value)
+
+    if (!email.value.trim() || !password.value.trim() || !confirmPassword.value.trim()) {
+      error.value = "Заполните все поля"
+      return
+    }
+
+    if (password.value !== confirmPassword.value) {
+      error.value = "Пароли не совпадают"
+      return
+    }
+
+    const response = await auth.register(email.value.trim(), password.value)
     if (response.user.firstLogin) router.push("/onboarding")
     else router.push("/roadmaps")
   } catch (err: any) {
-    error.value = err.message
+    error.value = err?.message || "Не удалось зарегистрироваться"
   } finally {
     loading.value = false
   }
@@ -27,19 +39,57 @@ const handleRegister = async () => {
 </script>
 
 <template>
-  <div class="auth-container">
-    <div class="card">
-      <h2>Register</h2>
-      <input v-model="email" placeholder="Email" />
-      <input v-model="password" type="password" placeholder="Password" />
-      <button :disabled="loading" @click="handleRegister">
-        {{ loading ? "Loading..." : "Register" }}
-      </button>
-      <p v-if="error" class="error">{{ error }}</p>
-      <p>
-        Already have an account?
-        <router-link to="/login">Sign in</router-link>
-      </p>
+  <section class="auth-page">
+    <div class="auth-container auth-shell">
+      <aside class="auth-side">
+        <p class="auth-kicker">Skilo</p>
+        <h1>Создание аккаунта</h1>
+        <p class="auth-text">
+          Пройдите быструю регистрацию и получите доступ к roadmap-платформе, вакансиям и заданиям.
+        </p>
+      </aside>
+
+      <div class="card auth-card">
+        <h2>Регистрация</h2>
+        <p class="auth-subtitle">Заполните поля, чтобы начать работу.</p>
+
+        <label class="auth-field">
+          <span>Email</span>
+          <input v-model="email" type="email" placeholder="you@example.com" autocomplete="email" />
+        </label>
+
+        <label class="auth-field">
+          <span>Пароль</span>
+          <input
+            v-model="password"
+            type="password"
+            placeholder="Минимум 6 символов"
+            autocomplete="new-password"
+          />
+        </label>
+
+        <label class="auth-field">
+          <span>Подтверждение пароля</span>
+          <input
+            v-model="confirmPassword"
+            type="password"
+            placeholder="Повторите пароль"
+            autocomplete="new-password"
+            @keyup.enter="handleRegister"
+          />
+        </label>
+
+        <p v-if="error" class="error auth-error">{{ error }}</p>
+
+        <button class="primary auth-submit" :disabled="loading" @click="handleRegister">
+          {{ loading ? "Создание аккаунта..." : "Зарегистрироваться" }}
+        </button>
+
+        <p class="auth-footer">
+          Уже есть аккаунт?
+          <router-link to="/login">Войти</router-link>
+        </p>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
