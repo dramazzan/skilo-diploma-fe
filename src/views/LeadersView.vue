@@ -268,7 +268,7 @@ onMounted(() => {
   margin: 0 auto;
   padding: 48px 20px 80px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #334155;
+  color: var(--text);
 }
 
 /* Header */
@@ -281,12 +281,12 @@ onMounted(() => {
   font-weight: 700;
   letter-spacing: -0.03em;
   margin: 0 0 6px;
-  color: #334155;
+  color: var(--text);
 }
 
 .page-header p {
   font-size: 15px;
-  color: #888;
+  color: var(--muted);
   margin: 0;
   line-height: 1.5;
 }
@@ -308,19 +308,19 @@ onMounted(() => {
 .filter-item span {
   font-size: 12px;
   font-weight: 500;
-  color: #999;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .filter-item select {
   appearance: none;
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--border);
   border-radius: 10px;
   background: #fff;
   padding: 10px 12px;
   font-size: 14px;
-  color: #334155;
+  color: var(--text);
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.15s ease;
@@ -332,22 +332,22 @@ onMounted(() => {
 
 .filter-item select:focus {
   outline: none;
-  border-color: #334155;
+  border-color: var(--text);
 }
 
 /* My Stats */
 .my-stats {
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 20px;
   margin-bottom: 24px;
-  background: #fafafa;
+  background: var(--surface-soft);
 }
 
 .my-stats-label {
   font-size: 13px;
   font-weight: 600;
-  color: #555;
+  color: var(--muted);
   margin-bottom: 14px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -366,14 +366,14 @@ onMounted(() => {
 .stat-cell span {
   display: block;
   font-size: 12px;
-  color: #999;
+  color: var(--muted);
   margin-bottom: 4px;
 }
 
 .stat-cell strong {
   font-size: 20px;
   font-weight: 700;
-  color: #334155;
+  color: var(--text);
 }
 
 .with-icon {
@@ -397,7 +397,7 @@ onMounted(() => {
   text-align: center;
   padding: 48px 0;
   font-size: 15px;
-  color: #999;
+  color: var(--muted);
 }
 
 .error-text {
@@ -415,7 +415,7 @@ onMounted(() => {
   align-items: center;
   gap: 14px;
   padding: 14px 16px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   background: #fff;
   cursor: pointer;
@@ -423,14 +423,14 @@ onMounted(() => {
 }
 
 .leader-row:hover {
-  border-color: #ddd;
+  border-color: var(--border);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
   transform: translateY(-1px);
 }
 
 .leader-row.is-me {
-  border-color: #334155;
-  background: #fafafa;
+  border-color: var(--text);
+  background: var(--surface-soft);
 }
 
 .rank {
@@ -442,23 +442,23 @@ onMounted(() => {
   justify-content: center;
   font-size: 13px;
   font-weight: 700;
-  color: #555;
-  background: #f0f0f0;
+  color: var(--muted);
+  background: var(--surface-soft);
   flex-shrink: 0;
 }
 
 .rank.gold {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
 }
 
 .rank.silver {
-  background: #333;
+  background: var(--text);
   color: #fff;
 }
 
 .rank.bronze {
-  background: #666;
+  background: var(--muted);
   color: #fff;
 }
 
@@ -466,8 +466,8 @@ onMounted(() => {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #f5f5f5;
-  border: 1px solid #eee;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -484,7 +484,7 @@ onMounted(() => {
   font-size: 15px;
   font-weight: 600;
   margin: 0 0 2px;
-  color: #334155;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -492,7 +492,7 @@ onMounted(() => {
 
 .info p {
   font-size: 13px;
-  color: #999;
+  color: var(--muted);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -505,7 +505,7 @@ onMounted(() => {
   gap: 5px;
   font-size: 15px;
   font-weight: 700;
-  color: #334155;
+  color: var(--text);
   flex-shrink: 0;
 }
 
@@ -544,15 +544,15 @@ onMounted(() => {
   background: none;
   border: none;
   cursor: pointer;
-  color: #999;
+  color: var(--muted);
   padding: 4px;
   border-radius: 6px;
   transition: color 0.15s ease, background 0.15s ease;
 }
 
 .modal-close:hover {
-  color: #334155;
-  background: #f0f0f0;
+  color: var(--text);
+  background: var(--surface-soft);
 }
 
 .modal-header {
@@ -566,8 +566,8 @@ onMounted(() => {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #f5f5f5;
-  border: 1px solid #eee;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -579,12 +579,12 @@ onMounted(() => {
   font-size: 18px;
   font-weight: 700;
   margin: 0 0 2px;
-  color: #334155;
+  color: var(--text);
 }
 
 .modal-location {
   font-size: 13px;
-  color: #999;
+  color: var(--muted);
   margin: 0;
 }
 
@@ -597,7 +597,7 @@ onMounted(() => {
 
 .modal-stat {
   padding: 14px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 10px;
   text-align: center;
 }
@@ -606,7 +606,7 @@ onMounted(() => {
   display: block;
   font-size: 11px;
   font-weight: 500;
-  color: #999;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 6px;
@@ -615,7 +615,7 @@ onMounted(() => {
 .modal-stat strong {
   font-size: 18px;
   font-weight: 700;
-  color: #334155;
+  color: var(--text);
 }
 
 .modal-stat strong.success {
@@ -637,9 +637,9 @@ onMounted(() => {
   font-weight: 500;
   padding: 5px 12px;
   border-radius: 100px;
-  background: #f5f5f5;
-  color: #555;
-  border: 1px solid #eee;
+  background: var(--surface-soft);
+  color: var(--muted);
+  border: 1px solid var(--border);
 }
 
 /* Transitions */

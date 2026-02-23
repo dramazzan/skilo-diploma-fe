@@ -1,18 +1,19 @@
 :root {
   font-family: "Manrope", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  color: #1f2937;
-  background: #f5f7fb;
+  color: #0d0d0d;
+  background: #eff0f3;
 
-  --bg-a: #f5f7fb;
-  --bg-b: #edf3ff;
+  --bg-a: #eff0f3;
+  --bg-b: #eff0f3;
   --surface: #ffffff;
-  --surface-soft: #f8fafc;
-  --text: #0f172a;
-  --muted: #64748b;
-  --border: #dbe3ef;
-  --primary: #2a2f8f;
-  --primary-hover: #23277a;
+  --surface-soft: #f6f7f9;
+  --text: #0d0d0d;
+  --muted: #6b7280;
+  --border: #d3d7de;
+  --primary: #ff8e3c;
+  --primary-hover: #f07923;
+  --button-text: #0d0d0d;
   --shadow-sm: 0 8px 20px rgba(15, 23, 42, 0.05);
   --shadow-md: 0 18px 38px rgba(15, 23, 42, 0.09);
 }
@@ -25,10 +26,7 @@ body {
   margin: 0;
   min-width: 320px;
   color: var(--text);
-  background:
-    radial-gradient(1200px 420px at 10% -10%, #e6efff 0%, transparent 60%),
-    radial-gradient(900px 380px at 100% 0%, #e8f5ff 0%, transparent 55%),
-    linear-gradient(180deg, var(--bg-b) 0%, var(--bg-a) 26%, var(--bg-a) 100%);
+  background: var(--bg-a);
 }
 
 #app {
@@ -45,7 +43,7 @@ body {
 .top-nav {
   width: 100%;
   margin: 0;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-bottom: 1px solid rgba(219, 227, 239, 0.9);
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(6px);
@@ -56,32 +54,32 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
+  gap: 10px;
 }
 
 .top-brand {
-  font-size: 24px;
+  font-size: 21px;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #1f2d7a;
+  color: var(--primary);
 }
 
 .top-nav-menu {
   display: flex;
   align-items: stretch;
-  gap: 10px;
+  gap: 8px;
 }
 
 .nav-section {
   border: 1px solid #dfe7f4;
   border-radius: 10px;
   background: #fff;
-  padding: 8px;
+  padding: 6px;
 }
 
 .nav-section-title {
-  margin: 0 0 6px;
-  font-size: 10px;
+  margin: 0 0 4px;
+  font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -90,24 +88,25 @@ body {
 
 .top-nav-links {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .top-nav a {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   color: #0f172a;
   border: 1px solid transparent;
   border-radius: 8px;
-  padding: 7px 10px;
+  padding: 6px 9px;
+  font-size: 14px;
   font-weight: 600;
   transition: all 0.2s ease;
 }
 
 .top-nav a svg {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
@@ -118,13 +117,13 @@ body {
 
 .top-nav a:hover {
   border-color: var(--border);
-  background: #f8fbff;
+  background: var(--surface-soft);
 }
 
 .top-nav a.router-link-active {
   background: var(--primary);
   border-color: var(--primary);
-  color: #fff;
+  color: var(--button-text);
 }
 
 .app-main {
@@ -187,7 +186,7 @@ button {
   cursor: pointer;
   border: 1px solid var(--border);
   background: var(--surface);
-  color: #0f172a;
+  color: var(--button-text);
   border-radius: 10px;
   padding: 10px 14px;
   font-weight: 600;
@@ -196,7 +195,7 @@ button {
 }
 
 button:hover {
-  background: #f8fbff;
+  background: var(--surface-soft);
   transform: translateY(-1px);
 }
 
@@ -205,7 +204,7 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Unified button palette: dark blue like navigation */
+/* Unified button palette */
 button,
 .btn-primary,
 .btn--primary,
@@ -213,7 +212,7 @@ button,
 .submit-btn {
   background: var(--primary) !important;
   border-color: var(--primary) !important;
-  color: #fff !important;
+  color: var(--button-text) !important;
 }
 
 button:hover,
@@ -223,7 +222,7 @@ button:hover,
 .submit-btn:hover {
   background: var(--primary-hover) !important;
   border-color: var(--primary-hover) !important;
-  color: #fff !important;
+  color: var(--button-text) !important;
 }
 
 .secondary,
@@ -231,15 +230,15 @@ button:hover,
 .chip {
   background: #fff !important;
   border-color: var(--border) !important;
-  color: #334155 !important;
+  color: var(--button-text) !important;
 }
 
 .secondary:hover,
 .btn-ghost:hover,
 .chip:hover {
-  background: #f8fbff !important;
+  background: var(--surface-soft) !important;
   border-color: #cbd5e1 !important;
-  color: #1e293b !important;
+  color: var(--button-text) !important;
 }
 
 input,
@@ -307,13 +306,13 @@ pre {
 }
 
 .primary {
-  background: linear-gradient(135deg, #2f3599 0%, #2a2f8f 60%, #3f2f88 100%);
-  color: #fff;
+  background: var(--primary);
+  color: var(--button-text);
   border-color: var(--primary);
 }
 
 .primary:hover {
-  background: linear-gradient(135deg, #272c84 0%, #23277a 60%, #352873 100%);
+  background: var(--primary-hover);
 }
 
 .secondary {
@@ -434,7 +433,7 @@ pre {
   border: 1px solid #d8e5f6;
   background:
     radial-gradient(520px 180px at 8% 0%, rgba(171, 205, 255, 0.28), transparent 55%),
-    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    linear-gradient(180deg, #ffffff 0%, var(--surface-soft) 100%);
 }
 
 .home-intro-head h1 {
@@ -564,7 +563,7 @@ pre {
   justify-content: space-between;
   font-size: 12px;
   font-weight: 700;
-  color: #334155;
+  color: var(--text);
   margin-bottom: 6px;
 }
 
@@ -580,7 +579,7 @@ pre {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #2f3599 0%, #3f2f88 100%);
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-hover) 100%);
   transition: width 0.25s ease;
 }
 
@@ -602,7 +601,7 @@ pre {
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 6px 12px;
-  color: #334155;
+  color: var(--text);
   font-weight: 700;
   font-size: 13px;
   background: #fff;
@@ -611,7 +610,7 @@ pre {
 .topic-tab.router-link-active {
   color: #fff;
   border-color: var(--primary);
-  background: linear-gradient(135deg, #2f3599 0%, #2a2f8f 60%, #3f2f88 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 60%, var(--primary-hover) 100%);
 }
 
 .interview-list {
@@ -634,7 +633,7 @@ pre {
 
 .interview-card p {
   margin: 0;
-  color: #334155;
+  color: var(--text);
 }
 
 .interview-question {
@@ -659,7 +658,7 @@ pre {
 
 .interview-answer {
   margin-top: 8px;
-  color: #334155;
+  color: var(--text);
 }
 
 .topic-content {
@@ -865,7 +864,7 @@ pre {
 }
 
 .node-title:hover {
-  background: #f8fbff;
+  background: var(--surface-soft);
   border-color: #bfd2ec;
 }
 
@@ -981,7 +980,7 @@ pre {
   border: 1px solid var(--border);
   border-radius: 9999px;
   padding: 4px 10px;
-  background: #f8fbff;
+  background: var(--surface-soft);
   font-size: 13px;
 }
 
@@ -1046,7 +1045,7 @@ pre {
 }
 
 .assessment-option:hover {
-  background: #f8fbff;
+  background: var(--surface-soft);
   border-color: var(--border);
 }
 

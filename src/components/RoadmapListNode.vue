@@ -116,7 +116,7 @@ const getNodeClass = (node: RoadmapNode) => ({
   flex-shrink: 0;
   width: 20px;
   height: 1px;
-  background: #eee;
+  background: var(--border);
   margin-right: 6px;
 }
 
@@ -127,7 +127,7 @@ const getNodeClass = (node: RoadmapNode) => ({
   align-items: center;
   gap: 10px;
   background: #fff;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px 14px;
   cursor: pointer;
@@ -136,8 +136,8 @@ const getNodeClass = (node: RoadmapNode) => ({
 }
 
 .list-item:hover {
-  border-color: #ddd;
-  background: #f5f5f5;
+  border-color: var(--border);
+  background: var(--surface-soft);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(10, 10, 10, 0.06);
 }
@@ -157,7 +157,7 @@ const getNodeClass = (node: RoadmapNode) => ({
   align-items: center;
   justify-content: center;
   font-size: 11px;
-  color: #999;
+  color: var(--muted);
   line-height: 1;
 }
 
@@ -170,14 +170,14 @@ const getNodeClass = (node: RoadmapNode) => ({
   width: 5px;
   height: 5px;
   border-radius: 100px;
-  background: #ccc;
+  background: var(--border);
 }
 
 /* ── Name ── */
 .list-name {
   font-size: 14px;
   font-weight: 600;
-  color: #334155;
+  color: var(--text);
   flex: 1;
   line-height: 1.4;
 }
@@ -191,40 +191,40 @@ const getNodeClass = (node: RoadmapNode) => ({
   letter-spacing: 0.05em;
   border-radius: 100px;
   padding: 3px 10px;
-  border: 1px solid #eee;
-  background: #f5f5f5;
-  color: #999;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--muted);
   white-space: nowrap;
 }
 
 .list-status--completed {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
-  border-color: #334155;
+  border-color: var(--text);
 }
 
 .list-status--progress {
-  background: #f5f5f5;
-  color: #555;
-  border-color: #ddd;
+  background: var(--surface-soft);
+  color: var(--muted);
+  border-color: var(--border);
 }
 
 .list-status--locked {
-  background: #f5f5f5;
-  color: #bbb;
-  border-color: #eee;
+  background: var(--surface-soft);
+  color: var(--muted);
+  border-color: var(--border);
 }
 
 /* ── Children ── */
 .list-children {
   margin-left: 26px;
-  border-left: 1px solid #eee;
+  border-left: 1px solid var(--border);
   padding-left: 0;
 }
 
 /* ── Depth tinting ── */
 .depth-1 .list-item {
-  background: #fafafa;
+  background: var(--surface-soft);
 }
 
 .depth-2 .list-item {

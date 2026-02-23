@@ -122,10 +122,10 @@ const handleSubmit = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fafafa;
+  background: var(--bg-a);
   padding: 40px 20px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #334155;
+  color: var(--text);
 }
 
 .container {
@@ -144,16 +144,16 @@ const handleSubmit = async () => {
   height: 3px;
   flex: 1;
   border-radius: 100px;
-  background: #e5e5e5;
+  background: var(--border);
   transition: background 0.2s ease;
 }
 
 .step.done {
-  background: #1f2d7a;
+  background: var(--primary);
 }
 
 .step.active {
-  background: #1f2d7a;
+  background: var(--primary);
 }
 
 /* Header */
@@ -166,12 +166,12 @@ header h1 {
   font-weight: 700;
   letter-spacing: -0.03em;
   margin: 0 0 8px;
-  color: #334155;
+  color: var(--text);
 }
 
 header p {
   font-size: 15px;
-  color: #888;
+  color: var(--muted);
   margin: 0;
   line-height: 1.5;
 }
@@ -187,7 +187,7 @@ header p {
 .interest-card {
   position: relative;
   background: #fff;
-  border: 1.5px solid #eee;
+  border: 1.5px solid var(--border);
   border-radius: 14px;
   padding: 22px 20px;
   text-align: left;
@@ -198,13 +198,13 @@ header p {
 }
 
 .interest-card:hover {
-  border-color: #ddd;
+  border-color: var(--border);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
 .interest-card.selected {
-  border-color: #334155;
-  background: #fafafa;
+  border-color: var(--text);
+  background: var(--surface-soft);
 }
 
 .card-check {
@@ -214,7 +214,7 @@ header p {
   width: 22px;
   height: 22px;
   border-radius: 6px;
-  border: 1.5px solid #ddd;
+  border: 1.5px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -223,25 +223,25 @@ header p {
 }
 
 .interest-card.selected .card-check {
-  background: #1f2d7a;
-  border-color: #334155;
+  background: var(--primary);
+  border-color: var(--text);
 }
 
 .card-icon {
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background: #f5f5f5;
+  background: var(--surface-soft);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 14px;
-  color: #444;
+  color: var(--text);
   transition: all 0.15s ease;
 }
 
 .interest-card.selected .card-icon {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
 }
 
@@ -249,12 +249,12 @@ header p {
   font-size: 15px;
   font-weight: 600;
   margin: 0 0 4px;
-  color: #334155;
+  color: var(--text);
 }
 
 .interest-card p {
   font-size: 13px;
-  color: #999;
+  color: var(--muted);
   margin: 0;
   line-height: 1.4;
 }
@@ -279,7 +279,7 @@ header p {
 
 .selected-count {
   font-size: 13px;
-  color: #999;
+  color: var(--muted);
 }
 
 .submit-btn {
@@ -289,8 +289,8 @@ header p {
   padding: 12px 28px;
   border: none;
   border-radius: 10px;
-  background: #1f2d7a;
-  color: #fff;
+  background: var(--primary);
+  color: var(--button-text);
   font-size: 15px;
   font-weight: 500;
   font-family: inherit;
@@ -299,13 +299,13 @@ header p {
 }
 
 .submit-btn:hover {
-  background: #23277a;
+  background: var(--primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .submit-btn.disabled {
-  background: #ccc;
+  background: var(--border);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -314,8 +314,8 @@ header p {
 .spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
+  border: 2px solid rgba(13, 13, 13, 0.25);
+  border-top-color: var(--button-text);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }

@@ -532,7 +532,7 @@ onMounted(fetchProfile)
   margin: 0 auto;
   padding: 48px 20px 80px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #334155;
+  color: var(--text);
 }
 
 /* States */
@@ -546,7 +546,7 @@ onMounted(fetchProfile)
 
 .state-view p {
   font-size: 15px;
-  color: #999;
+  color: var(--muted);
   margin: 0;
 }
 
@@ -557,8 +557,8 @@ onMounted(fetchProfile)
 .loader {
   width: 24px;
   height: 24px;
-  border: 2.5px solid #e5e5e5;
-  border-top-color: #334155;
+  border: 2.5px solid var(--border);
+  border-top-color: var(--text);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -579,7 +579,7 @@ onMounted(fetchProfile)
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
   display: flex;
   align-items: center;
@@ -594,12 +594,12 @@ onMounted(fetchProfile)
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0 0 2px;
-  color: #334155;
+  color: var(--text);
 }
 
 .email {
   font-size: 14px;
-  color: #888;
+  color: var(--muted);
   margin: 0;
 }
 
@@ -612,7 +612,7 @@ onMounted(fetchProfile)
 }
 
 .meta-card {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
   background: #fff;
@@ -622,7 +622,7 @@ onMounted(fetchProfile)
 .meta-card span {
   display: block;
   font-size: 12px;
-  color: #999;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 6px;
@@ -631,7 +631,7 @@ onMounted(fetchProfile)
 .meta-card strong {
   font-size: 20px;
   font-weight: 700;
-  color: #334155;
+  color: var(--text);
 }
 
 .trophy-value {
@@ -649,7 +649,7 @@ onMounted(fetchProfile)
 /* Sections */
 .section {
   padding: 24px 0;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border);
 }
 
 .section-title {
@@ -657,7 +657,7 @@ onMounted(fetchProfile)
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #999;
+  color: var(--muted);
   margin: 0 0 16px;
 }
 
@@ -671,13 +671,13 @@ onMounted(fetchProfile)
 
 .section-note {
   font-size: 13px;
-  color: #999;
+  color: var(--muted);
   margin: 0;
 }
 
 .muted {
   font-size: 14px;
-  color: #999;
+  color: var(--muted);
 }
 
 /* Tags */
@@ -692,9 +692,9 @@ onMounted(fetchProfile)
   font-weight: 500;
   padding: 6px 14px;
   border-radius: 100px;
-  background: #f5f5f5;
-  color: #444;
-  border: 1px solid #eee;
+  background: var(--surface-soft);
+  color: var(--text);
+  border: 1px solid var(--border);
 }
 
 /* Achievements */
@@ -712,14 +712,14 @@ onMounted(fetchProfile)
   align-items: center;
   gap: 10px;
   font-size: 14px;
-  color: #333;
+  color: var(--text);
 }
 
 .ach-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #1f2d7a;
+  background: var(--primary);
   flex-shrink: 0;
 }
 
@@ -731,23 +731,23 @@ onMounted(fetchProfile)
 }
 
 .detail-item {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 12px 14px;
-  background: #fafafa;
+  background: var(--surface-soft);
 }
 
 .detail-item span {
   display: block;
   font-size: 12px;
-  color: #999;
+  color: var(--muted);
   margin-bottom: 4px;
 }
 
 .detail-item strong {
   display: block;
   font-size: 14px;
-  color: #334155;
+  color: var(--text);
 }
 
 /* Activity */
@@ -756,11 +756,11 @@ onMounted(fetchProfile)
   gap: 16px;
   margin-bottom: 14px;
   font-size: 13px;
-  color: #888;
+  color: var(--muted);
 }
 
 .activity-stats strong {
-  color: #334155;
+  color: var(--text);
 }
 
 .toggle-bar {
@@ -781,30 +781,30 @@ onMounted(fetchProfile)
   font-size: 12px;
   font-weight: 500;
   padding: 6px 12px;
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--border);
   border-radius: 8px;
   background: #fff;
-  color: #888;
+  color: var(--muted);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .toggle-group button:hover {
-  border-color: #ccc;
-  color: #555;
+  border-color: var(--border);
+  color: var(--muted);
 }
 
 .toggle-group button.active {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
-  border-color: #334155;
+  border-color: var(--text);
 }
 
 /* Heatmap */
 .heatmap-wrap {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fafafa;
+  background: var(--surface-soft);
   padding: 14px;
 }
 
@@ -826,7 +826,7 @@ onMounted(fetchProfile)
   height: 12px;
   border-radius: 3px;
   border: none;
-  background: #eee;
+  background: var(--border);
 }
 
 .heatmap-day.level-empty {
@@ -834,11 +834,11 @@ onMounted(fetchProfile)
   pointer-events: none;
 }
 
-.heatmap-day.level-0 { background: #eee; }
-.heatmap-day.level-1 { background: #ccc; }
-.heatmap-day.level-2 { background: #999; }
-.heatmap-day.level-3 { background: #555; }
-.heatmap-day.level-4 { background: #1f2d7a; }
+.heatmap-day.level-0 { background: var(--border); }
+.heatmap-day.level-1 { background: var(--border); }
+.heatmap-day.level-2 { background: var(--muted); }
+.heatmap-day.level-3 { background: var(--muted); }
+.heatmap-day.level-4 { background: var(--primary); }
 
 .heatmap-legend {
   margin-top: 8px;
@@ -846,7 +846,7 @@ onMounted(fetchProfile)
   align-items: center;
   gap: 4px;
   font-size: 11px;
-  color: #999;
+  color: var(--muted);
 }
 
 .heatmap-legend .heatmap-day {
@@ -856,9 +856,9 @@ onMounted(fetchProfile)
 
 /* Chart */
 .chart-wrap {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fafafa;
+  background: var(--surface-soft);
   padding: 14px;
 }
 
@@ -883,7 +883,7 @@ onMounted(fetchProfile)
   width: 18px;
   height: 140px;
   border-radius: 100px;
-  background: #e5e5e5;
+  background: var(--border);
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -892,19 +892,19 @@ onMounted(fetchProfile)
 .bar-fill {
   width: 100%;
   border-radius: inherit;
-  background: #1f2d7a;
+  background: var(--primary);
   transition: height 0.3s ease;
 }
 
 .bar-label {
   font-size: 10px;
-  color: #999;
+  color: var(--muted);
 }
 
 .bar-value {
   font-size: 11px;
   font-weight: 700;
-  color: #333;
+  color: var(--text);
 }
 
 /* Buttons */
@@ -915,7 +915,7 @@ onMounted(fetchProfile)
   padding: 12px 24px;
   border: none;
   border-radius: 10px;
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
   font-size: 14px;
   font-weight: 500;
@@ -925,13 +925,13 @@ onMounted(fetchProfile)
 }
 
 .btn-primary:hover {
-  background: #23277a;
+  background: var(--primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary:disabled {
-  background: #ccc;
+  background: var(--border);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -939,10 +939,10 @@ onMounted(fetchProfile)
 
 .btn-secondary {
   padding: 8px 16px;
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--border);
   border-radius: 8px;
   background: #fff;
-  color: #555;
+  color: var(--muted);
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
@@ -951,8 +951,8 @@ onMounted(fetchProfile)
 }
 
 .btn-secondary:hover {
-  border-color: #ccc;
-  background: #fafafa;
+  border-color: var(--border);
+  background: var(--surface-soft);
 }
 
 .btn-secondary:disabled {
@@ -977,12 +977,12 @@ onMounted(fetchProfile)
 .cert-preview-title {
   font-size: 15px;
   font-weight: 600;
-  color: #334155;
+  color: var(--text);
   margin: 0 0 14px;
 }
 
 .certificate {
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: #fff;
   padding: 28px 24px;
@@ -991,7 +991,7 @@ onMounted(fetchProfile)
 .cert-header {
   text-align: center;
   padding-bottom: 16px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
 }
 
 .cert-issuer {
@@ -999,7 +999,7 @@ onMounted(fetchProfile)
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #999;
+  color: var(--muted);
 }
 
 .cert-title {
@@ -1007,13 +1007,13 @@ onMounted(fetchProfile)
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #334155;
+  color: var(--text);
 }
 
 .cert-id {
   margin: 0;
   font-size: 12px;
-  color: #bbb;
+  color: var(--muted);
 }
 
 .cert-body {
@@ -1024,14 +1024,14 @@ onMounted(fetchProfile)
 .cert-body p {
   margin: 0;
   font-size: 14px;
-  color: #888;
+  color: var(--muted);
 }
 
 .cert-name {
   margin: 10px 0;
   font-size: 26px;
   font-weight: 700;
-  color: #334155;
+  color: var(--text);
   letter-spacing: -0.02em;
 }
 
@@ -1039,7 +1039,7 @@ onMounted(fetchProfile)
   margin: 10px 0 0;
   font-size: 18px;
   font-weight: 700;
-  color: #333;
+  color: var(--text);
 }
 
 .cert-meta-grid {
@@ -1047,8 +1047,8 @@ onMounted(fetchProfile)
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   padding: 16px 0;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .cert-meta-grid div {
@@ -1060,13 +1060,13 @@ onMounted(fetchProfile)
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #999;
+  color: var(--muted);
   margin-bottom: 4px;
 }
 
 .cert-meta-grid strong {
   font-size: 13px;
-  color: #334155;
+  color: var(--text);
 }
 
 .cert-section {
@@ -1078,7 +1078,7 @@ onMounted(fetchProfile)
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #999;
+  color: var(--muted);
   font-weight: 600;
 }
 
@@ -1089,12 +1089,12 @@ onMounted(fetchProfile)
 }
 
 .cert-skills span {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 100px;
   padding: 4px 12px;
   font-size: 12px;
-  color: #555;
-  background: #fafafa;
+  color: var(--muted);
+  background: var(--surface-soft);
 }
 
 .cert-progress-list {
@@ -1104,9 +1104,9 @@ onMounted(fetchProfile)
 }
 
 .cert-progress-item {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fafafa;
+  background: var(--surface-soft);
   padding: 10px 12px;
 }
 
@@ -1119,11 +1119,11 @@ onMounted(fetchProfile)
 }
 
 .cert-progress-head strong {
-  color: #334155;
+  color: var(--text);
 }
 
 .cert-progress-head span {
-  color: #999;
+  color: var(--muted);
   font-size: 12px;
 }
 
@@ -1131,7 +1131,7 @@ onMounted(fetchProfile)
   width: 100%;
   height: 6px;
   border-radius: 100px;
-  background: #e5e5e5;
+  background: var(--border);
   overflow: hidden;
 }
 
@@ -1139,14 +1139,14 @@ onMounted(fetchProfile)
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #1f2d7a;
+  background: var(--primary);
   transition: width 0.3s ease;
 }
 
 .cert-footer {
   margin-top: 16px;
   padding-top: 14px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -1155,11 +1155,11 @@ onMounted(fetchProfile)
 .cert-footer p {
   margin: 0;
   font-size: 12px;
-  color: #888;
+  color: var(--muted);
 }
 
 .cert-footer strong {
-  color: #333;
+  color: var(--text);
 }
 
 .cert-actions {

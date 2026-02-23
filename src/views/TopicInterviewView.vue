@@ -95,7 +95,7 @@ onMounted(() => {
 /* ── Base ── */
 .interview-page {
   font-family: 'Inter', sans-serif;
-  color: #334155;
+  color: var(--text);
   max-width: 780px;
   display: flex;
   flex-direction: column;
@@ -120,9 +120,9 @@ onMounted(() => {
 }
 
 .btn--primary {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
-  border-color: #334155;
+  border-color: var(--text);
 }
 
 .btn--primary:hover {
@@ -132,12 +132,12 @@ onMounted(() => {
 
 .btn--ghost {
   background: #fff;
-  color: #334155;
-  border-color: #eee;
+  color: var(--text);
+  border-color: var(--border);
 }
 
 .btn--ghost:hover {
-  background: #f5f5f5;
+  background: var(--surface-soft);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(10, 10, 10, 0.06);
 }
@@ -146,10 +146,10 @@ onMounted(() => {
 .topic-tabs {
   display: flex;
   gap: 4px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 4px;
-  background: #f5f5f5;
+  background: var(--surface-soft);
   align-self: flex-start;
 }
 
@@ -158,18 +158,18 @@ onMounted(() => {
   border-radius: 10px;
   font-size: 13px;
   font-weight: 500;
-  color: #888;
+  color: var(--muted);
   text-decoration: none;
   transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .topic-tab:hover {
-  color: #334155;
+  color: var(--text);
   background: #fff;
 }
 
 .topic-tab.router-link-active {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
   box-shadow: 0 2px 8px rgba(10, 10, 10, 0.15);
 }
@@ -185,14 +185,14 @@ onMounted(() => {
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #334155;
+  color: var(--text);
   margin: 0;
   line-height: 1.2;
 }
 
 .interview-subtitle {
   font-size: 14px;
-  color: #888;
+  color: var(--muted);
   margin: 0;
   line-height: 1.5;
 }
@@ -204,21 +204,21 @@ onMounted(() => {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #999;
+  color: var(--muted);
   margin-bottom: 8px;
 }
 
 /* ── State texts ── */
 .state-text {
   font-size: 14px;
-  color: #999;
+  color: var(--muted);
   padding: 32px 0;
 }
 
 /* ── Empty ── */
 .empty-state {
   padding: 40px 0;
-  color: #999;
+  color: var(--muted);
 }
 
 /* ── Interview body ── */
@@ -236,7 +236,7 @@ onMounted(() => {
 
 /* ── Interview Card ── */
 .interview-card {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   background: #fff;
   margin-bottom: 8px;
@@ -254,7 +254,7 @@ onMounted(() => {
 }
 
 .interview-card--open {
-  border-color: #334155;
+  border-color: var(--text);
 }
 
 /* ── Question button ── */
@@ -276,19 +276,19 @@ onMounted(() => {
 }
 
 .interview-question:hover {
-  background: #f5f5f5 !important;
+  background: var(--surface-soft) !important;
   transform: none;
 }
 
 .interview-card--open .interview-question {
-  background: #f5f5f5 !important;
-  border-bottom: 1px solid #eee;
+  background: var(--surface-soft) !important;
+  border-bottom: 1px solid var(--border);
 }
 
 .question-text {
   font-size: 14px;
   font-weight: 500;
-  color: #334155;
+  color: var(--text);
   line-height: 1.5;
   flex: 1;
 }
@@ -298,8 +298,8 @@ onMounted(() => {
   width: 24px;
   height: 24px;
   border-radius: 100px;
-  background: #eee;
-  color: #334155;
+  background: var(--border);
+  color: var(--text);
   font-size: 16px;
   font-weight: 600;
   display: flex;
@@ -310,7 +310,7 @@ onMounted(() => {
 }
 
 .interview-card--open .question-toggle {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
 }
 
@@ -322,7 +322,7 @@ onMounted(() => {
 
 .interview-answer p {
   font-size: 14px;
-  color: #555;
+  color: var(--muted);
   margin: 0;
   line-height: 1.7;
 }

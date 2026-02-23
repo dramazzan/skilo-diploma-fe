@@ -91,7 +91,7 @@ const handleClick = () => {
   height: 100%;
   clip-path: polygon(24% 8%, 76% 8%, 96% 50%, 76% 92%, 24% 92%, 4% 50%);
   background: #fff;
-  border: 1.5px solid #eee;
+  border: 1.5px solid var(--border);
   display: grid;
   place-items: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -118,7 +118,7 @@ const handleClick = () => {
   font-size: 12px;
   font-weight: 700;
   line-height: 1.25;
-  color: #334155;
+  color: var(--text);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -134,9 +134,9 @@ const handleClick = () => {
   border-radius: 100px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #999;
-  border: 1px solid #eee;
-  background: #f5f5f5;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
   white-space: nowrap;
 }
 
@@ -151,19 +151,19 @@ const handleClick = () => {
 /* not_started */
 .roadmap-node.not_started .node-shape {
   background: #fff;
-  border-color: #eee;
+  border-color: var(--border);
 }
 
 /* in_progress */
 .roadmap-node.in_progress .node-shape {
-  background: #f5f5f5;
-  border-color: #334155;
+  background: var(--surface-soft);
+  border-color: var(--text);
 }
 
 .roadmap-node.in_progress .node-status {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
-  border-color: #334155;
+  border-color: var(--text);
 }
 
 .roadmap-node.in_progress .node-shape {
@@ -172,8 +172,8 @@ const handleClick = () => {
 
 /* completed */
 .roadmap-node.completed .node-shape {
-  background: #1f2d7a;
-  border-color: #334155;
+  background: var(--primary);
+  border-color: var(--text);
 }
 
 .roadmap-node.completed .node-title {
@@ -199,8 +199,8 @@ const handleClick = () => {
   transform: translateX(-50%);
   min-width: 170px;
   max-width: 216px;
-  background: #1f2d7a;
-  border: 1px solid #23277a;
+  background: var(--primary);
+  border: 1px solid var(--primary-hover);
   border-radius: 12px;
   padding: 10px 12px;
   box-shadow: 0 8px 24px rgba(10, 10, 10, 0.18);
@@ -223,7 +223,7 @@ const handleClick = () => {
   margin: 0;
   font-size: 11px;
   font-weight: 500;
-  color: #888;
+  color: var(--muted);
   line-height: 1.35;
 }
 

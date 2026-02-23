@@ -237,11 +237,11 @@ onMounted(() => {
   display: grid;
   gap: 16px;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #334155;
+  color: var(--text);
 }
 
 .hero {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: linear-gradient(165deg, #ffffff 0%, #f7f7f7 100%);
   padding: 18px;
@@ -258,7 +258,7 @@ onMounted(() => {
 
 .hero-note {
   margin: 0;
-  color: #888;
+  color: var(--muted);
   max-width: 620px;
 }
 
@@ -269,7 +269,7 @@ onMounted(() => {
 
 .metric {
   min-width: 130px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   background: #fff;
   padding: 10px;
@@ -278,7 +278,7 @@ onMounted(() => {
 .metric span {
   display: block;
   font-size: 12px;
-  color: #999;
+  color: var(--muted);
 }
 
 .metric strong {
@@ -294,7 +294,7 @@ onMounted(() => {
 
 .network-panel,
 .map-panel {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: #fff;
   padding: 14px;
@@ -307,9 +307,9 @@ onMounted(() => {
 }
 
 .panel-block {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #f9f9f9;
+  background: var(--surface-soft);
   padding: 12px;
 }
 
@@ -319,19 +319,19 @@ onMounted(() => {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #999;
+  color: var(--muted);
 }
 
 .state {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   background: #fff;
   padding: 24px;
 }
 
 .state.error {
-  color: #334155;
-  background: #f9f9f9;
+  color: var(--text);
+  background: var(--surface-soft);
 }
 
 .add-row {
@@ -342,26 +342,26 @@ onMounted(() => {
 
 .add-row input {
   height: 40px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0 12px;
   background: #fff;
-  color: #334155;
+  color: var(--text);
 }
 
 .add-row input::placeholder {
-  color: #999;
+  color: var(--muted);
 }
 
 .add-row input:focus {
   outline: none;
-  border-color: #999;
+  border-color: var(--muted);
 }
 
 .primary,
 .secondary,
 .chip {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 9px 12px;
   font-size: 14px;
@@ -370,14 +370,14 @@ onMounted(() => {
 }
 
 .primary {
-  background: #1f2d7a;
-  border-color: #334155;
+  background: var(--primary);
+  border-color: var(--text);
   color: #fff;
 }
 
 .secondary {
   background: #fff;
-  color: #334155;
+  color: var(--text);
 }
 
 .secondary.tiny {
@@ -388,7 +388,7 @@ onMounted(() => {
 .chip {
   border-radius: 100px;
   background: #fff;
-  color: #334155;
+  color: var(--text);
   font-size: 12px;
   font-weight: 500;
   padding: 6px 12px;
@@ -402,13 +402,13 @@ onMounted(() => {
 }
 
 .error {
-  color: #334155;
+  color: var(--text);
   margin: 8px 0 0;
   font-size: 13px;
 }
 
 .muted {
-  color: #999;
+  color: var(--muted);
 }
 
 .suggestions {
@@ -428,7 +428,7 @@ onMounted(() => {
 }
 
 .friend-card {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 10px;
   background: #fff;
   padding: 10px;
@@ -450,7 +450,7 @@ onMounted(() => {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
   display: grid;
   place-items: center;
@@ -465,12 +465,12 @@ onMounted(() => {
 .friend-copy h3 {
   margin: 0;
   font-size: 14px;
-  color: #334155;
+  color: var(--text);
 }
 
 .friend-copy p {
   margin: 2px 0 0;
-  color: #888;
+  color: var(--muted);
   font-size: 12px;
 }
 
@@ -480,7 +480,7 @@ onMounted(() => {
   flex-wrap: wrap;
   gap: 8px;
   margin: 10px 0;
-  color: #888;
+  color: var(--muted);
   font-size: 13px;
 }
 
@@ -488,40 +488,40 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 100px;
   padding: 4px 10px;
-  background: #f5f5f5;
-  color: #334155;
+  background: var(--surface-soft);
+  color: var(--text);
   font-size: 12px;
   font-weight: 600;
 }
 
 .map-panel-head {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
   padding-bottom: 10px;
   margin-bottom: 10px;
 }
 
 .map-panel-head p {
   margin: 0;
-  color: #888;
+  color: var(--muted);
 }
 
 .tree-scene {
   position: relative;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: radial-gradient(circle at 50% -20%, #f5f5f5 0%, #fff 46%);
+  background: radial-gradient(circle at 50% -20%, var(--surface-soft) 0%, #fff 46%);
   padding: 14px 12px 12px;
 }
 
 .tree-root {
   margin: 0 auto;
   width: fit-content;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 100px;
-  background: #f5f5f5;
+  background: var(--surface-soft);
   padding: 8px 14px;
   display: flex;
   align-items: center;
@@ -532,7 +532,7 @@ onMounted(() => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #1f2d7a;
+  background: var(--primary);
 }
 
 .tree-root strong {
@@ -544,7 +544,7 @@ onMounted(() => {
 .tree-trunk {
   width: 2px;
   height: 24px;
-  background: #eee;
+  background: var(--border);
   margin: 8px auto 10px;
 }
 
@@ -556,7 +556,7 @@ onMounted(() => {
 
 .tree-branch {
   position: relative;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   background: linear-gradient(180deg, #fff 0%, #fbfbfb 100%);
   padding: 10px;
@@ -564,7 +564,7 @@ onMounted(() => {
 }
 
 .tree-branch.me {
-  background: linear-gradient(180deg, #f5f5f5 0%, #fafafa 100%);
+  background: linear-gradient(180deg, var(--surface-soft) 0%, var(--surface-soft) 100%);
 }
 
 .tree-branch:hover {
@@ -578,7 +578,7 @@ onMounted(() => {
   left: 50%;
   width: 1px;
   height: 12px;
-  background: #eee;
+  background: var(--border);
   transform: translateX(-50%);
 }
 
@@ -592,7 +592,7 @@ onMounted(() => {
 .branch-copy h3 {
   margin: 0 0 6px;
   font-size: 14px;
-  color: #334155;
+  color: var(--text);
 }
 
 .branch-badges {
@@ -611,7 +611,7 @@ onMounted(() => {
 }
 
 .leaf-item {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 10px;
   background: #fff;
   padding: 8px;
@@ -627,7 +627,7 @@ onMounted(() => {
 
 .leaf-title {
   font-size: 11px;
-  color: #999;
+  color: var(--muted);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -636,7 +636,7 @@ onMounted(() => {
 .mini-track {
   height: 8px;
   border-radius: 999px;
-  background: #eee;
+  background: var(--border);
   overflow: hidden;
 }
 
@@ -644,7 +644,7 @@ onMounted(() => {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #1f2d7a;
+  background: var(--primary);
 }
 
 @media (max-width: 640px) {

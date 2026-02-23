@@ -131,7 +131,7 @@ watch(viewMode, (value) => {
 .roadmap-page {
   max-width: 1280px;
   font-family: 'Inter', sans-serif;
-  color: #334155;
+  color: var(--text);
 }
 
 /* ── Header ── */
@@ -143,14 +143,14 @@ watch(viewMode, (value) => {
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #334155;
+  color: var(--text);
   margin: 0 0 8px;
   line-height: 1.2;
 }
 
 .roadmap-description {
   font-size: 15px;
-  color: #888;
+  color: var(--muted);
   margin: 0;
   line-height: 1.6;
 }
@@ -162,7 +162,7 @@ watch(viewMode, (value) => {
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #999;
+  color: var(--muted);
   margin-bottom: 8px;
 }
 
@@ -183,9 +183,9 @@ watch(viewMode, (value) => {
 }
 
 .btn--primary {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
-  border-color: #334155;
+  border-color: var(--text);
 }
 
 .btn--primary:hover {
@@ -195,12 +195,12 @@ watch(viewMode, (value) => {
 
 .btn--ghost {
   background: #fff;
-  color: #334155;
-  border-color: #eee;
+  color: var(--text);
+  border-color: var(--border);
 }
 
 .btn--ghost:hover {
-  background: #f5f5f5;
+  background: var(--surface-soft);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(10, 10, 10, 0.07);
 }
@@ -214,7 +214,7 @@ watch(viewMode, (value) => {
 
 /* ── Classic list wrap ── */
 .legacy-list-wrap {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: #fff;
   padding: 16px;
@@ -222,9 +222,9 @@ watch(viewMode, (value) => {
 
 /* ── Classic Progress ── */
 .classic-progress {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #f5f5f5;
+  background: var(--surface-soft);
   padding: 14px 16px;
   margin-bottom: 16px;
 }
@@ -239,9 +239,9 @@ watch(viewMode, (value) => {
 .progress-badge {
   font-size: 13px;
   font-weight: 700;
-  color: #334155;
+  color: var(--text);
   background: #fff;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 100px;
   padding: 2px 10px;
 }
@@ -250,7 +250,7 @@ watch(viewMode, (value) => {
   width: 100%;
   height: 6px;
   border-radius: 100px;
-  background: #eee;
+  background: var(--border);
   overflow: hidden;
 }
 
@@ -258,7 +258,7 @@ watch(viewMode, (value) => {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #1f2d7a;
+  background: var(--primary);
   transition: width 0.4s ease;
 }
 
@@ -275,9 +275,9 @@ watch(viewMode, (value) => {
   align-items: center;
   font-size: 12px;
   font-weight: 500;
-  color: #888;
+  color: var(--muted);
   background: #fff;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 100px;
   padding: 3px 10px;
 }
@@ -285,7 +285,7 @@ watch(viewMode, (value) => {
 /* ── Empty State ── */
 .empty-state {
   padding: 40px 0;
-  color: #999;
+  color: var(--muted);
   font-size: 15px;
 }
 

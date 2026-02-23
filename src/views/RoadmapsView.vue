@@ -558,7 +558,7 @@ const generateCustomTrack = async () => {
 /* ── Reset & Base ── */
 .page {
   font-family: 'Inter', sans-serif;
-  color: #334155;
+  color: var(--text);
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -566,7 +566,7 @@ const generateCustomTrack = async () => {
 
 /* ── Intro Card ── */
 .intro-card {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: #fff;
   padding: 28px;
@@ -587,14 +587,14 @@ const generateCustomTrack = async () => {
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #334155;
+  color: var(--text);
   margin: 0 0 8px;
   line-height: 1.2;
 }
 
 .intro-desc {
   font-size: 14px;
-  color: #888;
+  color: var(--muted);
   margin: 0;
   max-width: 480px;
   line-height: 1.6;
@@ -606,10 +606,10 @@ const generateCustomTrack = async () => {
   align-items: center;
   gap: 20px;
   flex-shrink: 0;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 14px 20px;
-  background: #f5f5f5;
+  background: var(--surface-soft);
 }
 
 .stat-item {
@@ -622,14 +622,14 @@ const generateCustomTrack = async () => {
 .stat-value {
   font-size: 22px;
   font-weight: 700;
-  color: #334155;
+  color: var(--text);
   line-height: 1;
 }
 
 .stat-label {
   font-size: 11px;
   font-weight: 500;
-  color: #999;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
@@ -638,7 +638,7 @@ const generateCustomTrack = async () => {
 .stat-divider {
   width: 1px;
   height: 32px;
-  background: #eee;
+  background: var(--border);
 }
 
 /* ── Feature Grid ── */
@@ -649,10 +649,10 @@ const generateCustomTrack = async () => {
 }
 
 .feature-item {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
-  background: #f5f5f5;
+  background: var(--surface-soft);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -670,13 +670,13 @@ const generateCustomTrack = async () => {
 .feature-title {
   font-size: 14px;
   font-weight: 600;
-  color: #334155;
+  color: var(--text);
   margin: 0 0 6px;
 }
 
 .feature-desc {
   font-size: 13px;
-  color: #888;
+  color: var(--muted);
   margin: 0;
   line-height: 1.5;
 }
@@ -699,7 +699,7 @@ const generateCustomTrack = async () => {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #999;
+  color: var(--muted);
 }
 
 .section-count {
@@ -712,9 +712,9 @@ const generateCustomTrack = async () => {
   align-items: center;
   font-size: 12px;
   font-weight: 500;
-  color: #888;
-  background: #f5f5f5;
-  border: 1px solid #eee;
+  color: var(--muted);
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   border-radius: 100px;
   padding: 2px 10px;
 }
@@ -729,41 +729,41 @@ const generateCustomTrack = async () => {
   letter-spacing: 0.05em;
   border-radius: 100px;
   padding: 3px 10px;
-  border: 1px solid #eee;
-  background: #f5f5f5;
-  color: #888;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--muted);
 }
 
 .level-badge.level-beginner {
-  background: #f5f5f5;
-  color: #555;
-  border-color: #ddd;
+  background: var(--surface-soft);
+  color: var(--muted);
+  border-color: var(--border);
 }
 
 .level-badge.level-intermediate {
-  background: #f0f0f0;
-  color: #333;
-  border-color: #ccc;
+  background: var(--surface-soft);
+  color: var(--text);
+  border-color: var(--border);
 }
 
 .level-badge.level-advanced {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
-  border-color: #334155;
+  border-color: var(--text);
 }
 
 /* ── Empty Card ── */
 .empty-card {
-  border: 1px dashed #eee;
+  border: 1px dashed var(--border);
   border-radius: 12px;
   padding: 24px;
-  color: #999;
+  color: var(--muted);
   font-size: 14px;
-  background: #fafafa;
+  background: var(--surface-soft);
 }
 
 .builder-card {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 18px;
   background: #fff;
@@ -785,15 +785,15 @@ const generateCustomTrack = async () => {
 }
 
 .mode-switch .btn.mode-active {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
-  border-color: #1f2d7a;
+  border-color: var(--primary);
   box-shadow: 0 6px 18px rgba(31, 45, 122, 0.28);
 }
 
 .mode-switch .btn.mode-active:hover {
-  background: #1a2669;
-  border-color: #1a2669;
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
 }
 
 .mode-switch .btn.mode-active::before {
@@ -809,7 +809,7 @@ const generateCustomTrack = async () => {
 }
 
 .mode-selected strong {
-  color: #1f2d7a;
+  color: var(--primary);
 }
 
 .builder-label {
@@ -822,12 +822,12 @@ const generateCustomTrack = async () => {
 .builder-label input,
 .builder-label textarea,
 .builder-label select {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px 12px;
   font-family: inherit;
   font-size: 14px;
-  color: #334155;
+  color: var(--text);
   background: #fff;
 }
 
@@ -838,7 +838,7 @@ const generateCustomTrack = async () => {
 }
 
 .direction-pill {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 100px;
   padding: 7px 12px;
   background: #fff;
@@ -854,15 +854,15 @@ const generateCustomTrack = async () => {
 }
 
 .direction-pill.active {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
-  border-color: #1f2d7a;
+  border-color: var(--primary);
 }
 
 .builder-ai-hint {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fafafa;
+  background: var(--surface-soft);
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -872,7 +872,7 @@ const generateCustomTrack = async () => {
 .builder-meta {
   margin: 0;
   font-size: 12px;
-  color: #888;
+  color: var(--muted);
 }
 
 .compatibility-block {
@@ -900,7 +900,7 @@ const generateCustomTrack = async () => {
 }
 
 .generated-card {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: #fff;
   padding: 16px;
@@ -919,7 +919,7 @@ const generateCustomTrack = async () => {
 .generated-head h3 {
   margin: 0;
   font-size: 16px;
-  color: #334155;
+  color: var(--text);
 }
 
 .milestones-list {
@@ -944,7 +944,7 @@ const generateCustomTrack = async () => {
 }
 
 .saved-track-card {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   background: #fff;
   padding: 12px;
@@ -955,7 +955,7 @@ const generateCustomTrack = async () => {
 .saved-track-card h4 {
   margin: 0;
   font-size: 14px;
-  color: #334155;
+  color: var(--text);
 }
 
 .saved-track-card p {
@@ -974,7 +974,7 @@ const generateCustomTrack = async () => {
 
 /* ── Roadmap Card ── */
 .roadmap-card {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: #fff;
   display: flex;
@@ -1005,14 +1005,14 @@ const generateCustomTrack = async () => {
 .roadmap-title {
   font-size: 16px;
   font-weight: 600;
-  color: #334155;
+  color: var(--text);
   margin: 0;
   line-height: 1.3;
 }
 
 .roadmap-desc {
   font-size: 13px;
-  color: #888;
+  color: var(--muted);
   margin: 0;
   line-height: 1.55;
   flex: 1;
@@ -1036,7 +1036,7 @@ const generateCustomTrack = async () => {
   width: 100%;
   height: 5px;
   border-radius: 100px;
-  background: #eee;
+  background: var(--border);
   overflow: hidden;
 }
 
@@ -1044,13 +1044,13 @@ const generateCustomTrack = async () => {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #1f2d7a;
+  background: var(--primary);
   transition: width 0.4s ease;
 }
 
 .progress-meta {
   font-size: 12px;
-  color: #999;
+  color: var(--muted);
   margin: 0;
 }
 
@@ -1059,8 +1059,8 @@ const generateCustomTrack = async () => {
   display: flex;
   gap: 8px;
   padding: 14px 20px;
-  border-top: 1px solid #eee;
-  background: #fafafa;
+  border-top: 1px solid var(--border);
+  background: var(--surface-soft);
 }
 
 /* ── Buttons ── */
@@ -1087,9 +1087,9 @@ const generateCustomTrack = async () => {
 }
 
 .btn--primary {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
-  border-color: #334155;
+  border-color: var(--text);
 }
 
 .btn--primary:hover {
@@ -1099,12 +1099,12 @@ const generateCustomTrack = async () => {
 
 .btn--ghost {
   background: #fff;
-  color: #334155;
-  border-color: #eee;
+  color: var(--text);
+  border-color: var(--border);
 }
 
 .btn--ghost:hover {
-  background: #f5f5f5;
+  background: var(--surface-soft);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(10, 10, 10, 0.06);
 }

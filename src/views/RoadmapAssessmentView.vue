@@ -65,7 +65,7 @@ const goToRoadmap = () => {
 
     <!-- Not found -->
     <div v-if="!roadmap || !assessment" class="state-view">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
       <p>Оценка не найдена</p>
     </div>
 
@@ -156,7 +156,7 @@ const goToRoadmap = () => {
   margin: 0 auto;
   padding: 48px 20px 80px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #334155;
+  color: var(--text);
 }
 
 .sr-only {
@@ -183,13 +183,13 @@ const goToRoadmap = () => {
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
-  color: #888;
+  color: var(--muted);
   cursor: pointer;
   transition: color 0.15s ease;
 }
 
 .btn-back:hover {
-  color: #333;
+  color: var(--text);
 }
 
 /* State */
@@ -203,13 +203,13 @@ const goToRoadmap = () => {
 
 .state-view p {
   font-size: 15px;
-  color: #999;
+  color: var(--muted);
   margin: 0;
 }
 
 /* Section Card */
 .section-card {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: #fff;
   padding: 28px 24px;
@@ -225,12 +225,12 @@ const goToRoadmap = () => {
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0 0 6px;
-  color: #334155;
+  color: var(--text);
 }
 
 .form-header p {
   font-size: 15px;
-  color: #888;
+  color: var(--muted);
   margin: 0;
   line-height: 1.5;
 }
@@ -249,7 +249,7 @@ const goToRoadmap = () => {
 
 .progress-info span {
   font-size: 13px;
-  color: #999;
+  color: var(--muted);
 }
 
 .ready-badge {
@@ -257,7 +257,7 @@ const goToRoadmap = () => {
   font-weight: 500;
   padding: 4px 12px;
   border-radius: 100px;
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
 }
 
@@ -265,7 +265,7 @@ const goToRoadmap = () => {
   width: 100%;
   height: 4px;
   border-radius: 100px;
-  background: #eee;
+  background: var(--border);
   overflow: hidden;
 }
 
@@ -273,7 +273,7 @@ const goToRoadmap = () => {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #1f2d7a;
+  background: var(--primary);
   transition: width 0.3s ease;
 }
 
@@ -286,15 +286,15 @@ const goToRoadmap = () => {
 }
 
 .question-card {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 18px 16px;
-  background: #fafafa;
+  background: var(--surface-soft);
   transition: border-color 0.15s ease;
 }
 
 .question-card.answered {
-  border-color: #ddd;
+  border-color: var(--border);
   background: #fff;
 }
 
@@ -309,19 +309,19 @@ const goToRoadmap = () => {
   width: 28px;
   height: 28px;
   border-radius: 8px;
-  background: #eee;
+  background: var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   font-weight: 700;
-  color: #888;
+  color: var(--muted);
   flex-shrink: 0;
   transition: all 0.15s ease;
 }
 
 .question-card.answered .question-num {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
 }
 
@@ -329,7 +329,7 @@ const goToRoadmap = () => {
   margin: 0;
   font-size: 15px;
   font-weight: 600;
-  color: #334155;
+  color: var(--text);
   line-height: 1.4;
   padding-top: 3px;
 }
@@ -347,45 +347,45 @@ const goToRoadmap = () => {
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  border: 1.5px solid #eee;
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   background: #fff;
   font-size: 14px;
-  color: #444;
+  color: var(--text);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .option-label:hover {
-  border-color: #ddd;
-  background: #f5f5f5;
+  border-color: var(--border);
+  background: var(--surface-soft);
 }
 
 .option-label.selected {
-  border-color: #334155;
-  background: #fafafa;
-  color: #334155;
+  border-color: var(--text);
+  background: var(--surface-soft);
+  color: var(--text);
 }
 
 .option-radio {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 2px solid #ddd;
+  border: 2px solid var(--border);
   flex-shrink: 0;
   position: relative;
   transition: all 0.15s ease;
 }
 
 .option-label.selected .option-radio {
-  border-color: #334155;
+  border-color: var(--text);
 }
 
 .option-label.selected .option-radio::after {
   content: "";
   position: absolute;
   inset: 3px;
-  background: #1f2d7a;
+  background: var(--primary);
   border-radius: 50%;
 }
 
@@ -409,7 +409,7 @@ const goToRoadmap = () => {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
   display: flex;
   align-items: center;
@@ -421,18 +421,18 @@ const goToRoadmap = () => {
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #334155;
+  color: var(--text);
   margin: 0;
 }
 
 .result-card p {
   font-size: 15px;
-  color: #888;
+  color: var(--muted);
   margin: 0;
 }
 
 .result-card p strong {
-  color: #333;
+  color: var(--text);
 }
 
 .level-pill {
@@ -440,9 +440,9 @@ const goToRoadmap = () => {
   font-weight: 600;
   padding: 8px 20px;
   border-radius: 100px;
-  background: #f5f5f5;
-  color: #334155;
-  border: 1px solid #eee;
+  background: var(--surface-soft);
+  color: var(--text);
+  border: 1px solid var(--border);
   margin-bottom: 4px;
 }
 
@@ -454,7 +454,7 @@ const goToRoadmap = () => {
   padding: 12px 24px;
   border: none;
   border-radius: 10px;
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
   font-size: 15px;
   font-weight: 500;
@@ -464,13 +464,13 @@ const goToRoadmap = () => {
 }
 
 .btn-primary:hover {
-  background: #23277a;
+  background: var(--primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary.disabled {
-  background: #ccc;
+  background: var(--border);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;

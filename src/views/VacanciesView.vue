@@ -191,11 +191,11 @@ onMounted(() => {
   margin: 0 auto;
   padding: 20px 18px 72px;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #334155;
+  color: var(--text);
 }
 
 .hero {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: linear-gradient(165deg, #ffffff 0%, #f7f7f7 100%);
   padding: 18px;
@@ -211,7 +211,7 @@ onMounted(() => {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #999;
+  color: var(--muted);
 }
 
 .hero h1 {
@@ -223,7 +223,7 @@ onMounted(() => {
 
 .hero-note {
   margin: 0;
-  color: #888;
+  color: var(--muted);
   max-width: 620px;
 }
 
@@ -234,7 +234,7 @@ onMounted(() => {
 
 .metric {
   min-width: 130px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   background: #fff;
   padding: 10px;
@@ -243,7 +243,7 @@ onMounted(() => {
 .metric span {
   display: block;
   font-size: 12px;
-  color: #999;
+  color: var(--muted);
 }
 
 .metric strong {
@@ -261,19 +261,19 @@ onMounted(() => {
 
 .state-view p {
   font-size: 15px;
-  color: #999;
+  color: var(--muted);
   margin: 0;
 }
 
 .error-text {
-  color: #334155;
+  color: var(--text);
 }
 
 .loader {
   width: 24px;
   height: 24px;
-  border: 2.5px solid #e5e5e5;
-  border-top-color: #334155;
+  border: 2.5px solid var(--border);
+  border-top-color: var(--text);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -290,7 +290,7 @@ onMounted(() => {
 
 .left-panel,
 .right-panel {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: #fff;
   padding: 14px;
@@ -303,15 +303,15 @@ onMounted(() => {
 }
 
 .panel-block {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #f9f9f9;
+  background: var(--surface-soft);
   padding: 12px;
 }
 
 .panel-note {
   margin: 0;
-  color: #888;
+  color: var(--muted);
   line-height: 1.5;
 }
 
@@ -325,7 +325,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 10px;
   background: #fff;
   padding: 8px;
@@ -344,18 +344,18 @@ onMounted(() => {
 .mini-item p {
   margin: 2px 0 0;
   font-size: 12px;
-  color: #888;
+  color: var(--muted);
 }
 
 .badge-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 100px;
   padding: 4px 10px;
-  background: #f5f5f5;
-  color: #334155;
+  background: var(--surface-soft);
+  color: var(--text);
   font-size: 12px;
   font-weight: 600;
 }
@@ -367,7 +367,7 @@ onMounted(() => {
 }
 
 .vacancy-card {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: linear-gradient(180deg, #fff 0%, #fbfbfb 100%);
   padding: 16px;
@@ -393,7 +393,7 @@ onMounted(() => {
   font-size: 16px;
   font-weight: 700;
   margin: 0 0 4px;
-  color: #334155;
+  color: var(--text);
   letter-spacing: -0.01em;
 }
 
@@ -401,7 +401,7 @@ onMounted(() => {
   margin: 0;
   font-size: 13px;
   font-weight: 500;
-  color: #777;
+  color: var(--muted);
 }
 
 .level-pill {
@@ -412,16 +412,16 @@ onMounted(() => {
   letter-spacing: 0.04em;
   padding: 5px 10px;
   border-radius: 100px;
-  background: #f5f5f5;
-  color: #555;
-  border: 1px solid #eee;
+  background: var(--surface-soft);
+  color: var(--muted);
+  border: 1px solid var(--border);
 }
 
 .summary {
   margin: 0;
   font-size: 14px;
   line-height: 1.5;
-  color: #666;
+  color: var(--muted);
 }
 
 .meta-row {
@@ -439,13 +439,13 @@ onMounted(() => {
   padding: 5px 10px;
   border-radius: 100px;
   background: #fff;
-  border: 1px solid #eee;
-  color: #666;
+  border: 1px solid var(--border);
+  color: var(--muted);
 }
 
 .meta-chip.accent {
-  background: #1f2d7a;
-  border-color: #334155;
+  background: var(--primary);
+  border-color: var(--text);
   color: #fff;
 }
 
@@ -460,9 +460,9 @@ onMounted(() => {
   font-weight: 500;
   padding: 4px 11px;
   border-radius: 100px;
-  background: #f5f5f5;
-  color: #555;
-  border: 1px solid #eee;
+  background: var(--surface-soft);
+  color: var(--muted);
+  border: 1px solid var(--border);
 }
 
 .btn-ghost {
@@ -472,9 +472,9 @@ onMounted(() => {
   gap: 6px;
   padding: 9px 10px;
   border-radius: 10px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   background: #fff;
-  color: #555;
+  color: var(--muted);
   font-size: 13px;
   font-weight: 600;
   font-family: inherit;
@@ -496,9 +496,9 @@ onMounted(() => {
 }
 
 .leaders-panel {
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fafafa;
+  background: var(--surface-soft);
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
@@ -521,30 +521,30 @@ onMounted(() => {
   justify-content: center;
   font-size: 12px;
   font-weight: 700;
-  color: #555;
-  background: #eee;
+  color: var(--muted);
+  background: var(--border);
   flex-shrink: 0;
 }
 
 .leader-rank.gold {
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
 }
 
 .leader-rank.silver {
-  background: #333;
+  background: var(--text);
   color: #fff;
 }
 
 .leader-rank.bronze {
-  background: #666;
+  background: var(--muted);
   color: #fff;
 }
 
 .leader-name {
   flex: 1;
   font-weight: 600;
-  color: #23277a;
+  color: var(--primary-hover);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -552,18 +552,18 @@ onMounted(() => {
 
 .leader-score {
   font-weight: 700;
-  color: #334155;
+  color: var(--text);
   flex-shrink: 0;
 }
 
 .leader-score small {
   font-weight: 500;
-  color: #bbb;
+  color: var(--muted);
 }
 
 .no-leaders {
   font-size: 13px;
-  color: #bbb;
+  color: var(--muted);
   margin: 0;
   text-align: center;
   padding: 6px 0;
@@ -597,9 +597,9 @@ onMounted(() => {
   gap: 8px;
   width: 100%;
   padding: 11px 20px;
-  border: 1px solid #1f2d7a;
+  border: 1px solid var(--primary);
   border-radius: 10px;
-  background: #1f2d7a;
+  background: var(--primary);
   color: #fff;
   font-size: 14px;
   font-weight: 600;
@@ -610,7 +610,7 @@ onMounted(() => {
 }
 
 .btn-primary:hover {
-  background: #23277a;
+  background: var(--primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }

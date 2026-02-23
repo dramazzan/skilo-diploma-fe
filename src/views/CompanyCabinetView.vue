@@ -366,19 +366,19 @@ onMounted(() => {
 
     <div v-if="loading" class="state">Загрузка...</div>
 
-    <section v-else-if="activeTab === 'publish'" class="card">
+    <section v-else-if="activeTab === 'publish'" class="card publish-form">
       <h2>Новая вакансия</h2>
       <div class="form-grid">
-        <label>Название<input v-model="publishForm.title" type="text" /></label>
-        <label>Уровень
+        <label class="publish-field">Название<input v-model="publishForm.title" type="text" /></label>
+        <label class="publish-field">Уровень
           <select v-model="publishForm.level">
             <option value="junior">Junior</option>
             <option value="middle">Middle</option>
             <option value="senior">Senior</option>
           </select>
         </label>
-        <label>Локация<input v-model="publishForm.location" type="text" /></label>
-        <label>Формат занятости
+        <label class="publish-field">Локация<input v-model="publishForm.location" type="text" /></label>
+        <label class="publish-field">Формат занятости
           <select v-model="publishForm.employment">
             <option value="full-time">Полная занятость</option>
             <option value="part-time">Частичная занятость</option>
@@ -386,12 +386,14 @@ onMounted(() => {
             <option value="remote">Удаленно</option>
           </select>
         </label>
-        <label>Зарплатная вилка<input v-model="publishForm.salaryRange" type="text" placeholder="Например: 700 000 - 900 000 KZT" /></label>
-        <label>Стек технологий (через запятую)<input v-model="publishForm.stack" type="text" placeholder="Vue, TypeScript, REST API" /></label>
+        <label class="publish-field">Зарплатная вилка<input v-model="publishForm.salaryRange" type="text" placeholder="Например: 700 000 - 900 000 KZT" /></label>
+        <label class="publish-field">Стек технологий (через запятую)<input v-model="publishForm.stack" type="text" placeholder="Vue, TypeScript, REST API" /></label>
       </div>
-      <label>Описание<textarea v-model="publishForm.description" rows="4" /></label>
-      <label>Требования (каждый пункт с новой строки)<textarea v-model="publishForm.requirements" rows="5" /></label>
-      <button class="primary" :disabled="actionLoading" @click="createVacancy">Опубликовать вакансию</button>
+      <label class="publish-field publish-field-full">Описание<textarea v-model="publishForm.description" rows="4" /></label>
+      <label class="publish-field publish-field-full">Требования (каждый пункт с новой строки)<textarea v-model="publishForm.requirements" rows="5" /></label>
+      <div class="publish-actions">
+        <button class="primary" :disabled="actionLoading" @click="createVacancy">Опубликовать вакансию</button>
+      </div>
     </section>
 
     <section v-else-if="activeTab === 'manage'" class="card">
@@ -677,12 +679,12 @@ onMounted(() => {
   justify-content: center;
   background: #fff;
   border-color: #dbe3ef;
-  color: #334155;
+  color: var(--text);
 }
 
 .tabs button.active {
-  background: #2a2f8f;
-  border-color: #2a2f8f;
+  background: var(--primary);
+  border-color: var(--primary);
   color: #fff;
 }
 
@@ -721,6 +723,32 @@ onMounted(() => {
   gap: 12px;
 }
 
+.publish-form {
+  padding: 22px;
+}
+
+.publish-form h2 {
+  margin-bottom: 16px;
+}
+
+.publish-form .form-grid {
+  gap: 14px 12px;
+  margin-bottom: 14px;
+}
+
+.publish-field {
+  display: grid;
+  gap: 8px;
+}
+
+.publish-field-full {
+  margin-bottom: 12px;
+}
+
+.publish-actions {
+  margin-top: 4px;
+}
+
 label {
   display: grid;
   gap: 6px;
@@ -753,7 +781,7 @@ select {
 
 .candidate-item.clickable:hover {
   border-color: #c6d5ec;
-  background: #f8fbff;
+  background: var(--surface-soft);
 }
 
 .candidate-top {

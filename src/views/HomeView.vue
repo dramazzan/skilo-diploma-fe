@@ -61,8 +61,8 @@ const navigate = (path: string) => {
 <style scoped>
 .home {
   min-height: 100vh;
-  background-color: #fafafa;
-  color: #334155;
+  background-color: var(--bg-a);
+  color: var(--text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -82,9 +82,9 @@ const navigate = (path: string) => {
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #334155;
-  background: #f0f0f0;
-  border: 1px solid #e5e5e5;
+  color: var(--text);
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   padding: 6px 16px;
   border-radius: 100px;
   margin-bottom: 28px;
@@ -99,7 +99,7 @@ const navigate = (path: string) => {
 }
 
 .hero h1 .accent {
-  background: linear-gradient(135deg, #1f2d7a 0%, #555 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--muted) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -108,7 +108,7 @@ const navigate = (path: string) => {
 .hero p {
   font-size: 17px;
   line-height: 1.6;
-  color: #666;
+  color: var(--muted);
   margin: 0 0 40px;
   max-width: 420px;
 }
@@ -130,28 +130,28 @@ button {
 }
 
 button.primary {
-  background: #1f2d7a;
-  color: #fff;
+  background: var(--primary);
+  color: var(--button-text);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 button.primary:hover {
-  background: #23277a;
+  background: var(--primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 button.secondary {
   background: #fff;
-  color: #334155;
+  color: var(--text);
   border: 1px solid #e0e0e0;
 }
 
 button.secondary:hover {
-  background: #f5f5f5;
-  border-color: #ccc;
+  background: var(--surface-soft);
+  border-color: var(--border);
 }
 
 /* Features */
@@ -166,7 +166,7 @@ button.secondary:hover {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #999;
+  color: var(--muted);
   text-align: center;
   margin: 0 0 32px;
 }
@@ -179,7 +179,7 @@ button.secondary:hover {
 
 .feature-card {
   background: #fff;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 28px 24px;
   cursor: pointer;
@@ -187,7 +187,7 @@ button.secondary:hover {
 }
 
 .feature-card:hover {
-  border-color: #ddd;
+  border-color: var(--border);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   transform: translateY(-2px);
 }
@@ -198,23 +198,23 @@ button.secondary:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
+  background: var(--surface-soft);
   border-radius: 10px;
   margin-bottom: 18px;
-  color: #333;
+  color: var(--text);
 }
 
 .feature-card h3 {
   font-size: 16px;
   font-weight: 600;
   margin: 0 0 6px;
-  color: #334155;
+  color: var(--text);
 }
 
 .feature-card p {
   font-size: 14px;
   line-height: 1.5;
-  color: #888;
+  color: var(--muted);
   margin: 0;
 }
 

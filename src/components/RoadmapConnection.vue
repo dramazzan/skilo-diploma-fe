@@ -36,7 +36,7 @@ const pathD = computed(() => {
 <style scoped>
 .connection {
   fill: none;
-  stroke: #eee;
+  stroke: var(--border);
   stroke-width: 1.5;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
@@ -44,7 +44,7 @@ const pathD = computed(() => {
 }
 
 .connection.active {
-  stroke: #1f2d7a;
+  stroke: var(--primary);
   stroke-width: 2;
   animation: draw-connection 0.7s ease;
 }
