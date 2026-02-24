@@ -923,7 +923,7 @@ select {
 }
 
 .nested-form {
-  border: 1px solid var(--border);
+  border: 1px solid #dbe3ef;
   border-radius: 10px;
   padding: 12px;
   margin-top: 12px;
@@ -945,6 +945,8 @@ select {
 }
 
 .modal-content {
+  display: grid;
+  gap: 12px;
   width: min(600px, 100%);
   border: 1px solid var(--border);
   border-radius: 12px;

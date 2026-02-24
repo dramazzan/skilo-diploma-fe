@@ -112,7 +112,10 @@ body {
   margin: 0;
   min-width: 320px;
   color: var(--text);
-  background: var(--bg-a);
+  background:
+    radial-gradient(1200px 420px at 10% -10%, #e6efff 0%, transparent 60%),
+    radial-gradient(900px 380px at 100% 0%, #e8f5ff 0%, transparent 55%),
+    linear-gradient(180deg, var(--bg-b) 0%, var(--bg-a) 26%, var(--bg-a) 100%);
 }
 
 #app {
@@ -990,6 +993,107 @@ pre {
   gap: 10px;
 }
 
+.auth-page {
+  position: relative;
+  padding: 16px 0 24px;
+}
+
+.auth-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(47, 53, 153, 0.16), transparent 42%),
+    radial-gradient(circle at 88% 80%, rgba(15, 118, 110, 0.12), transparent 46%);
+  pointer-events: none;
+}
+
+.auth-page .auth-container.auth-shell {
+  position: relative;
+  z-index: 1;
+  max-width: 980px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.auth-side {
+  border: 1px solid #d3ddf0;
+  border-radius: 14px;
+  padding: 24px;
+  background: linear-gradient(160deg, #f0f5ff 0%, #f8fffd 100%);
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-kicker {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #2f3599;
+}
+
+.auth-side h1 {
+  margin: 0;
+  font-size: clamp(26px, 3.2vw, 38px);
+  line-height: 1.1;
+}
+
+.auth-text {
+  margin: 0;
+  color: #334155;
+}
+
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+}
+
+.auth-card h2 {
+  margin: 0;
+}
+
+.auth-subtitle {
+  margin: 0;
+  color: #64748b;
+}
+
+.auth-field {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.auth-field span {
+  font-weight: 600;
+  font-size: 14px;
+  color: #334155;
+}
+
+.auth-submit {
+  min-height: 42px;
+}
+
+.auth-error {
+  margin: 0;
+}
+
+.auth-footer {
+  margin: 0;
+  color: #64748b;
+}
+
+.auth-footer a {
+  font-weight: 600;
+}
+
 .error {
   color: #b91c1c;
 }
@@ -1285,5 +1389,13 @@ pre {
   .onboarding-container,
   .profile-card {
     padding: 14px;
+  }
+
+  .auth-page .auth-container.auth-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-side {
+    padding: 20px;
   }
 }
