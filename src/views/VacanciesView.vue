@@ -197,7 +197,7 @@ onMounted(() => {
 .hero {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: linear-gradient(165deg, #ffffff 0%, #f7f7f7 100%);
+  background: linear-gradient(165deg, var(--surface) 0%, var(--surface-soft) 100%);
   padding: 18px;
   display: flex;
   justify-content: space-between;
@@ -236,7 +236,7 @@ onMounted(() => {
   min-width: 130px;
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   padding: 10px;
 }
 
@@ -292,7 +292,7 @@ onMounted(() => {
 .right-panel {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--surface);
   padding: 14px;
 }
 
@@ -327,7 +327,7 @@ onMounted(() => {
   gap: 8px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   padding: 8px;
   margin-bottom: 8px;
 }
@@ -369,7 +369,7 @@ onMounted(() => {
 .vacancy-card {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: linear-gradient(180deg, #fff 0%, #fbfbfb 100%);
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -438,7 +438,7 @@ onMounted(() => {
   font-weight: 500;
   padding: 5px 10px;
   border-radius: 100px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   color: var(--muted);
 }
@@ -473,7 +473,7 @@ onMounted(() => {
   padding: 9px 10px;
   border-radius: 10px;
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--surface);
   color: var(--muted);
   font-size: 13px;
   font-weight: 600;

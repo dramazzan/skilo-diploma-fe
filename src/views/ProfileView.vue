@@ -580,7 +580,7 @@ onMounted(fetchProfile)
   height: 56px;
   border-radius: 50%;
   background: var(--primary);
-  color: #fff;
+  color: var(--button-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -615,7 +615,7 @@ onMounted(fetchProfile)
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
-  background: #fff;
+  background: var(--surface);
   text-align: center;
 }
 
@@ -783,7 +783,7 @@ onMounted(fetchProfile)
   padding: 6px 12px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--surface);
   color: var(--muted);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -916,7 +916,7 @@ onMounted(fetchProfile)
   border: none;
   border-radius: 10px;
   background: var(--primary);
-  color: #fff;
+  color: var(--button-text);
   font-size: 14px;
   font-weight: 500;
   font-family: inherit;
@@ -941,7 +941,7 @@ onMounted(fetchProfile)
   padding: 8px 16px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--surface);
   color: var(--muted);
   font-size: 13px;
   font-weight: 500;
@@ -984,7 +984,7 @@ onMounted(fetchProfile)
 .certificate {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--surface);
   padding: 28px 24px;
 }
 

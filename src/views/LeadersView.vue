@@ -317,7 +317,7 @@ onMounted(() => {
   appearance: none;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   padding: 10px 12px;
   font-size: 14px;
   color: var(--text);
@@ -417,7 +417,7 @@ onMounted(() => {
   padding: 14px 16px;
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -530,7 +530,7 @@ onMounted(() => {
 
 .modal {
   width: min(480px, 100%);
-  background: #fff;
+  background: var(--surface);
   border-radius: 16px;
   padding: 28px;
   position: relative;

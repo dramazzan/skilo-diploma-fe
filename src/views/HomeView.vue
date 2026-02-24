@@ -122,8 +122,6 @@ button {
   font-family: inherit;
   font-size: 15px;
   font-weight: 500;
-  border: none;
-  cursor: pointer;
   border-radius: 10px;
   padding: 12px 24px;
   transition: all 0.2s ease;
@@ -144,9 +142,9 @@ button.primary:hover {
 }
 
 button.secondary {
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
 }
 
 button.secondary:hover {
@@ -178,7 +176,7 @@ button.secondary:hover {
 }
 
 .feature-card {
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 28px 24px;
@@ -230,5 +228,6 @@ button.secondary:hover {
   .features-grid {
     grid-template-columns: 1fr;
   }
+
 }
 </style>

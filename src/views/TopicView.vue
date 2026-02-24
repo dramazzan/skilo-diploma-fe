@@ -335,7 +335,7 @@ onBeforeUnmount(() => {
 
 .btn--primary {
   background: var(--primary);
-  color: #fff;
+  color: var(--button-text);
   border-color: var(--text);
 }
 
@@ -384,7 +384,7 @@ onBeforeUnmount(() => {
 
 .topic-tab.router-link-active {
   background: var(--primary);
-  color: #fff;
+  color: var(--button-text);
   box-shadow: 0 2px 8px rgba(10, 10, 10, 0.15);
 }
 
@@ -433,7 +433,7 @@ onBeforeUnmount(() => {
 
 .status--pass {
   background: var(--primary);
-  color: #fff;
+  color: var(--button-text);
   border-color: var(--text);
 }
 

@@ -126,7 +126,7 @@ const getNodeClass = (node: RoadmapNode) => ({
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px 14px;
@@ -228,7 +228,7 @@ const getNodeClass = (node: RoadmapNode) => ({
 }
 
 .depth-2 .list-item {
-  background: #f7f7f7;
+  background: var(--surface-soft);
 }
 
 /* ── Adaptive ── */

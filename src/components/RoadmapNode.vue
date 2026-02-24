@@ -90,7 +90,7 @@ const handleClick = () => {
   width: 100%;
   height: 100%;
   clip-path: polygon(24% 8%, 76% 8%, 96% 50%, 76% 92%, 24% 92%, 4% 50%);
-  background: #fff;
+  background: var(--surface);
   border: 1.5px solid var(--border);
   display: grid;
   place-items: center;
@@ -150,7 +150,7 @@ const handleClick = () => {
 
 /* not_started */
 .roadmap-node.not_started .node-shape {
-  background: #fff;
+  background: var(--surface);
   border-color: var(--border);
 }
 

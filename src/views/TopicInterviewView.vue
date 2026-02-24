@@ -121,7 +121,7 @@ onMounted(() => {
 
 .btn--primary {
   background: var(--primary);
-  color: #fff;
+  color: var(--button-text);
   border-color: var(--text);
 }
 
@@ -170,7 +170,7 @@ onMounted(() => {
 
 .topic-tab.router-link-active {
   background: var(--primary);
-  color: #fff;
+  color: var(--button-text);
   box-shadow: 0 2px 8px rgba(10, 10, 10, 0.15);
 }
 
@@ -311,7 +311,7 @@ onMounted(() => {
 
 .interview-card--open .question-toggle {
   background: var(--primary);
-  color: #fff;
+  color: var(--button-text);
 }
 
 /* ── Answer ── */

@@ -67,6 +67,49 @@ const compatibilityByPair: Record<string, number> = {
   "devops:mobile": 49
 }
 
+const companyValueItems = [
+  {
+    title: "Персональный учебный маршрут",
+    description: "Подбираем траекторию по вашему уровню и целям, чтобы не тратить время на лишние темы.",
+    metric: "1 план"
+  },
+  {
+    title: "Практика под реальные вакансии",
+    description: "Даем тестовые задачи и подготовку к интервью, которые соответствуют ожиданиям компаний.",
+    metric: "100% практика"
+  },
+  {
+    title: "Измеримый прогресс",
+    description: "Показываем рост навыков по темам, чтобы вы видели, где уже сильны и что улучшить.",
+    metric: "0 хаоса"
+  }
+]
+
+const companyAboutStats = [
+  { value: "24/7", label: "доступ к платформе" },
+  { value: "AI", label: "рекомендации и поддержка" },
+  { value: "IT", label: "фокус на востребованные роли" }
+]
+
+const companyWhyItems = [
+  {
+    title: "Фокус на результате",
+    description: "Мы ведем не просто к изучению теории, а к трудоустройству и уверенным собеседованиям."
+  },
+  {
+    title: "Путь от обучения к карьере",
+    description: "В одном месте: дорожные карты, задачи, лидерборд, профиль и вакансии."
+  },
+  {
+    title: "Адаптация под ваш темп",
+    description: "Можно учиться короткими сессиями, не теряя целостности программы."
+  },
+  {
+    title: "Прозрачная ценность",
+    description: "Вы всегда понимаете, какой навык развиваете и зачем он нужен на рынке."
+  }
+]
+
 const pairKey = (first: string, second: string) => {
   return [first, second].sort().join(":")
 }
@@ -328,6 +371,57 @@ const generateCustomTrack = async () => {
       </div>
     </section>
 
+    <section class="company-promo">
+      <div class="company-promo-head">
+        <span class="company-promo-kicker">Что мы даем</span>
+        <h2 class="company-promo-title">Полный цикл развития специалиста</h2>
+      </div>
+      <div class="company-value-grid">
+        <article v-for="item in companyValueItems" :key="item.title" class="company-value-card">
+          <span class="company-value-metric">{{ item.metric }}</span>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="company-promo company-about">
+      <div class="company-about-content">
+        <span class="company-promo-kicker">О нас</span>
+        <h2 class="company-promo-title">Skilo помогает превратить обучение в понятный карьерный план</h2>
+        <p>
+          Мы создаем образовательную платформу, где студент или junior-специалист получает
+          структурированный маршрут развития и практику по актуальным IT-направлениям.
+        </p>
+        <p>
+          Наша цель — сократить дистанцию между “я учусь” и “я готов к реальной работе” с помощью
+          прозрачного трекинга навыков и задач, близких к реальным рабочим кейсам.
+        </p>
+      </div>
+      <div class="company-about-stats">
+        <article v-for="stat in companyAboutStats" :key="stat.label" class="company-about-stat">
+          <strong>{{ stat.value }}</strong>
+          <span>{{ stat.label }}</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="company-promo">
+      <div class="company-promo-head">
+        <span class="company-promo-kicker">Почему именно мы</span>
+        <h2 class="company-promo-title">Платформа, которая ведет к реальному результату</h2>
+      </div>
+      <div class="company-why-grid">
+        <article v-for="item in companyWhyItems" :key="item.title" class="company-why-card">
+          <span class="company-why-icon">✓</span>
+          <div>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.description }}</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <!-- ── My roadmaps ── -->
     <section class="roadmaps-section">
       <div class="section-head">
@@ -568,7 +662,7 @@ const generateCustomTrack = async () => {
 .intro-card {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--surface);
   padding: 28px;
   display: flex;
   flex-direction: column;
@@ -659,6 +753,156 @@ const generateCustomTrack = async () => {
 .feature-item:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(10, 10, 10, 0.07);
+}
+
+/* ── Company Promo ── */
+.company-promo {
+  display: grid;
+  gap: 16px;
+}
+
+.company-promo-head {
+  display: grid;
+  gap: 8px;
+  text-align: center;
+}
+
+.company-promo-kicker {
+  display: inline-flex;
+  justify-self: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+}
+
+.company-promo-title {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.company-value-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.company-value-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.company-value-metric {
+  display: inline-flex;
+  align-self: start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--primary) 55%, var(--surface));
+  background: color-mix(in srgb, var(--primary) 18%, var(--surface));
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.company-value-card h3,
+.company-why-card h3 {
+  margin: 0;
+  font-size: 17px;
+  color: var(--text);
+}
+
+.company-value-card p,
+.company-about-content p,
+.company-why-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.company-about {
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: stretch;
+}
+
+.company-about-content {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 20px;
+  display: grid;
+  gap: 10px;
+}
+
+.company-about-content .company-promo-kicker {
+  justify-self: start;
+}
+
+.company-about-stats {
+  display: grid;
+  gap: 10px;
+}
+
+.company-about-stat {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 16px;
+  display: grid;
+  gap: 6px;
+}
+
+.company-about-stat strong {
+  font-size: 26px;
+  line-height: 1;
+  color: var(--text);
+}
+
+.company-about-stat span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.company-why-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.company-why-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 16px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.company-why-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  background: color-mix(in srgb, var(--primary) 35%, var(--surface-soft));
 }
 
 .feature-icon {
@@ -766,7 +1010,7 @@ const generateCustomTrack = async () => {
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 18px;
-  background: #fff;
+  background: var(--surface);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -828,7 +1072,7 @@ const generateCustomTrack = async () => {
   font-family: inherit;
   font-size: 14px;
   color: var(--text);
-  background: #fff;
+  background: var(--surface);
 }
 
 .direction-pills {
@@ -841,7 +1085,7 @@ const generateCustomTrack = async () => {
   border: 1px solid var(--border);
   border-radius: 100px;
   padding: 7px 12px;
-  background: #fff;
+  background: var(--surface);
   color: #64748b;
   font-size: 13px;
   cursor: pointer;
@@ -902,7 +1146,7 @@ const generateCustomTrack = async () => {
 .generated-card {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--surface);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -946,7 +1190,7 @@ const generateCustomTrack = async () => {
 .saved-track-card {
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   padding: 12px;
   display: grid;
   gap: 8px;
@@ -976,7 +1220,7 @@ const generateCustomTrack = async () => {
 .roadmap-card {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--surface);
   display: flex;
   flex-direction: column;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -1129,6 +1373,16 @@ const generateCustomTrack = async () => {
   }
 
   .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .company-promo-title {
+    font-size: 22px;
+  }
+
+  .company-value-grid,
+  .company-about,
+  .company-why-grid {
     grid-template-columns: 1fr;
   }
 

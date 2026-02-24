@@ -258,7 +258,7 @@ const goToRoadmap = () => {
   padding: 4px 12px;
   border-radius: 100px;
   background: var(--primary);
-  color: #fff;
+  color: var(--button-text);
 }
 
 .progress-track {

@@ -243,7 +243,7 @@ onMounted(() => {
 .hero {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: linear-gradient(165deg, #ffffff 0%, #f7f7f7 100%);
+  background: linear-gradient(165deg, var(--surface) 0%, var(--surface-soft) 100%);
   padding: 18px;
   display: flex;
   justify-content: space-between;
@@ -271,7 +271,7 @@ onMounted(() => {
   min-width: 130px;
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   padding: 10px;
 }
 
@@ -296,7 +296,7 @@ onMounted(() => {
 .map-panel {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--surface);
   padding: 14px;
 }
 
@@ -325,7 +325,7 @@ onMounted(() => {
 .state {
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   padding: 24px;
 }
 
@@ -345,7 +345,7 @@ onMounted(() => {
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0 12px;
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
 }
 
@@ -376,7 +376,7 @@ onMounted(() => {
 }
 
 .secondary {
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
 }
 
@@ -387,7 +387,7 @@ onMounted(() => {
 
 .chip {
   border-radius: 100px;
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
   font-size: 12px;
   font-weight: 500;
@@ -430,7 +430,7 @@ onMounted(() => {
 .friend-card {
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   padding: 10px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -512,7 +512,7 @@ onMounted(() => {
   position: relative;
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: radial-gradient(circle at 50% -20%, var(--surface-soft) 0%, #fff 46%);
+  background: radial-gradient(circle at 50% -20%, var(--surface-soft) 0%, var(--surface) 46%);
   padding: 14px 12px 12px;
 }
 
@@ -558,7 +558,7 @@ onMounted(() => {
   position: relative;
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: linear-gradient(180deg, #fff 0%, #fbfbfb 100%);
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
   padding: 10px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -613,7 +613,7 @@ onMounted(() => {
 .leaf-item {
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   padding: 8px;
 }
 

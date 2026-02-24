@@ -661,7 +661,7 @@ onMounted(() => {
 
 .subtitle {
   margin-top: 8px;
-  color: #64748b;
+  color: var(--muted);
 }
 
 .tabs {
@@ -677,8 +677,8 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  border-color: #dbe3ef;
+  background: var(--surface);
+  border-color: var(--border);
   color: var(--text);
 }
 
@@ -689,9 +689,9 @@ onMounted(() => {
 }
 
 .card {
-  border: 1px solid #dbe3ef;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   padding: 18px;
 }
 
@@ -762,17 +762,18 @@ label {
 textarea,
 input,
 select {
-  border: 1px solid #dbe3ef;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px;
 }
 
 .vacancy-item,
 .candidate-item {
-  border: 1px solid #dbe3ef;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 14px;
   margin-bottom: 12px;
+  background: var(--surface-soft);
 }
 
 .candidate-item.clickable {
@@ -804,8 +805,8 @@ select {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #243b7d;
-  color: #fff;
+  background: var(--primary);
+  color: var(--button-text);
   font-weight: 700;
 }
 
@@ -817,23 +818,23 @@ select {
 }
 
 .tag {
-  border: 1px solid #dbe3ef;
-  background: #f8fafc;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 12px;
 }
 
 .tag.score {
-  border-color: #bfd6ff;
-  background: #edf4ff;
-  color: #233a7a;
+  border-color: var(--border);
+  background: var(--surface-soft);
+  color: var(--text);
 }
 
 .tag.readiness {
-  border-color: #fcd6a2;
-  background: #fff7ed;
-  color: #b45309;
+  border-color: var(--border);
+  background: var(--surface-soft);
+  color: var(--muted);
 }
 
 .tag.readiness.ok {
@@ -902,8 +903,8 @@ select {
 }
 
 .tags span {
-  border: 1px solid #dbe3ef;
-  background: #f8fafc;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 12px;
@@ -914,23 +915,23 @@ select {
 }
 
 .task-item {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px;
   margin-bottom: 8px;
-  background: #f8fafc;
+  background: var(--surface-soft);
 }
 
 .nested-form {
-  border: 1px solid #dbe3ef;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 12px;
   margin-top: 12px;
-  background: #fff;
+  background: var(--surface);
 }
 
 .muted {
-  color: #64748b;
+  color: var(--muted);
 }
 
 .modal {
@@ -945,9 +946,9 @@ select {
 
 .modal-content {
   width: min(600px, 100%);
-  border: 1px solid #dbe3ef;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   padding: 18px;
 }
 

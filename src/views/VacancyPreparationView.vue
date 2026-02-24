@@ -419,7 +419,7 @@ onMounted(() => {
 .section-card {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--surface);
   padding: 24px;
 }
 
@@ -517,7 +517,7 @@ onMounted(() => {
   padding: 8px 16px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   color: var(--muted);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -530,7 +530,7 @@ onMounted(() => {
 
 .mode-tabs button.active {
   background: var(--primary);
-  color: #fff;
+  color: var(--button-text);
   border-color: var(--text);
 }
 
@@ -565,7 +565,7 @@ onMounted(() => {
   height: 36px;
   border-radius: 10px;
   background: var(--primary);
-  color: #fff;
+  color: var(--button-text);
   font-size: 13px;
   font-weight: 700;
   display: flex;
@@ -767,7 +767,7 @@ onMounted(() => {
   font-family: inherit;
   font-size: 14px;
   color: var(--text);
-  background: #fff;
+  background: var(--surface);
   transition: border-color 0.15s ease;
   resize: vertical;
 }
@@ -825,7 +825,7 @@ onMounted(() => {
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
 }
 
 .leader-rank {
@@ -1002,7 +1002,7 @@ onMounted(() => {
 
 .test-option.selected .option-marker {
   background: var(--primary);
-  color: #fff;
+  color: var(--button-text);
 }
 
 /* Test Result */
@@ -1088,7 +1088,7 @@ onMounted(() => {
   padding: 10px 18px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   color: var(--muted);
   font-size: 13px;
   font-weight: 500;
