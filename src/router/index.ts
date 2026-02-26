@@ -27,6 +27,11 @@ const routes = [
     component: () => import("@/views/RoadmapsView.vue"),
   },
   {
+    path: "/daily-tasks",
+    name: "daily-tasks",
+    component: () => import("@/views/DailyTasksView.vue"),
+  },
+  {
     path: "/roadmaps/:id/assessment",
     name: "roadmap-assessment",
     component: () => import("@/views/RoadmapAssessmentView.vue"),

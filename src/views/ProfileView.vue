@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from "vue"
 import { mockProfileData, ProfileData } from "@/mocks/mockProfile"
+import { mockRoadmaps } from "@/mocks/mockRoadmaps"
 import { useRoadmapsStore } from "@/store/roadmaps"
 import { api, type UserActivityDay } from "@/services/api"
 import { useAuthStore } from "@/store/auth"
@@ -23,6 +24,18 @@ interface CertificatePreview {
   completedTests: number
 }
 
+interface KnowledgeAxis {
+  id: string
+  label: string
+  value: number
+}
+
+interface RadarAxisVisual extends KnowledgeAxis {
+  end: { x: number; y: number }
+  valuePoint: { x: number; y: number }
+  labelPoint: { x: number; y: number }
+}
+
 const profile = ref<ProfileData | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -36,6 +49,18 @@ const profilePoints = ref<number | null>(null)
 
 const roadmapsStore = useRoadmapsStore()
 const authStore = useAuthStore()
+const radarSize = 360
+const radarCenter = radarSize / 2
+const radarRadius = 124
+const radarLevels = [20, 40, 60, 80, 100]
+
+const shortLabelByRoadmap: Record<string, string> = {
+  ai: "AI",
+  frontend: "Frontend",
+  backend: "Backend",
+  devops: "DevOps",
+  mobile: "Mobile"
+}
 
 const userDetails = computed(() => {
   const profileUser = profile.value
@@ -73,6 +98,70 @@ const roadmapProgressRows = computed(() => {
       percent,
       completedTopics,
       totalTopics
+    }
+  })
+})
+
+const knowledgeAxes = computed<KnowledgeAxis[]>(() => {
+  return mockRoadmaps.map((roadmap) => {
+    const percent = roadmapsStore.getRoadmapProgress(roadmap.id)?.completionPercent ?? 0
+    const normalized = Math.min(100, Math.max(0, percent))
+
+    return {
+      id: roadmap.id,
+      label: shortLabelByRoadmap[roadmap.id] ?? roadmap.title,
+      value: normalized
+    }
+  })
+})
+
+const knowledgeAverage = computed(() => {
+  if (!knowledgeAxes.value.length) return 0
+  const total = knowledgeAxes.value.reduce((sum, axis) => sum + axis.value, 0)
+  return Math.round(total / knowledgeAxes.value.length)
+})
+
+const toRadarPoint = (index: number, total: number, ratio: number) => {
+  const safeTotal = Math.max(1, total)
+  const angle = (Math.PI * 2 * index) / safeTotal - Math.PI / 2
+  const radius = radarRadius * ratio
+
+  return {
+    x: radarCenter + Math.cos(angle) * radius,
+    y: radarCenter + Math.sin(angle) * radius
+  }
+}
+
+const radarAxes = computed<RadarAxisVisual[]>(() => {
+  const axes = knowledgeAxes.value
+  const total = axes.length
+
+  return axes.map((axis, index) => ({
+    ...axis,
+    end: toRadarPoint(index, total, 1),
+    valuePoint: toRadarPoint(index, total, axis.value / 100),
+    labelPoint: toRadarPoint(index, total, 1.15)
+  }))
+})
+
+const radarKnowledgePolygon = computed(() => {
+  return radarAxes.value
+    .map((axis) => `${axis.valuePoint.x},${axis.valuePoint.y}`)
+    .join(" ")
+})
+
+const radarGridPolygons = computed(() => {
+  return radarLevels.map((level) => {
+    const points = knowledgeAxes.value
+      .map((_, index) => {
+        const point = toRadarPoint(index, knowledgeAxes.value.length, level / 100)
+        return `${point.x},${point.y}`
+      })
+      .join(" ")
+
+    return {
+      level,
+      points
     }
   })
 })
@@ -434,6 +523,87 @@ onMounted(fetchProfile)
               </div>
               <span class="bar-label">{{ item.label }}</span>
               <span class="bar-value">{{ item.value }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Knowledge Radar -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Паутина знаний</h2>
+          <p class="section-note">Распределение уровня по ключевым направлениям.</p>
+        </div>
+
+        <div class="knowledge-shell">
+          <div class="knowledge-radar-card">
+            <svg
+              class="knowledge-radar"
+              :viewBox="`0 0 ${radarSize} ${radarSize}`"
+              aria-label="Диаграмма знаний по направлениям"
+            >
+              <g class="radar-grid">
+                <polygon
+                  v-for="item in radarGridPolygons"
+                  :key="`grid-${item.level}`"
+                  :points="item.points"
+                />
+              </g>
+
+              <g class="radar-axis">
+                <line
+                  v-for="axis in radarAxes"
+                  :key="`axis-${axis.id}`"
+                  :x1="radarCenter"
+                  :y1="radarCenter"
+                  :x2="axis.end.x"
+                  :y2="axis.end.y"
+                />
+              </g>
+
+              <polygon v-if="radarKnowledgePolygon" class="radar-shape" :points="radarKnowledgePolygon" />
+
+              <g class="radar-points">
+                <circle
+                  v-for="axis in radarAxes"
+                  :key="`point-${axis.id}`"
+                  :cx="axis.valuePoint.x"
+                  :cy="axis.valuePoint.y"
+                  r="4"
+                />
+              </g>
+
+              <g class="radar-labels">
+                <text
+                  v-for="axis in radarAxes"
+                  :key="`label-${axis.id}`"
+                  :x="axis.labelPoint.x"
+                  :y="axis.labelPoint.y"
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                >
+                  {{ axis.label }}
+                </text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="knowledge-stats">
+            <div class="knowledge-summary">
+              <span>Средний уровень</span>
+              <strong>{{ knowledgeAverage }}%</strong>
+            </div>
+
+            <div class="knowledge-list">
+              <article v-for="axis in radarAxes" :key="`stat-${axis.id}`" class="knowledge-item">
+                <div class="knowledge-item-head">
+                  <span>{{ axis.label }}</span>
+                  <strong>{{ axis.value }}%</strong>
+                </div>
+                <div class="knowledge-track">
+                  <span :style="{ width: `${axis.value}%` }" />
+                </div>
+              </article>
             </div>
           </div>
         </div>
@@ -907,6 +1077,137 @@ onMounted(fetchProfile)
   color: var(--text);
 }
 
+/* Knowledge Radar */
+.knowledge-shell {
+  display: grid;
+  grid-template-columns: minmax(290px, 1fr) minmax(220px, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.knowledge-radar-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 12px;
+}
+
+.knowledge-radar {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.radar-grid polygon {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.radar-axis line {
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+.radar-shape {
+  fill: rgba(255, 142, 60, 0.28);
+  stroke: var(--primary);
+  stroke-width: 2;
+}
+
+.radar-points circle {
+  fill: var(--primary);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.radar-labels text {
+  fill: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.knowledge-stats {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.knowledge-summary {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.knowledge-summary span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.knowledge-summary strong {
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.knowledge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.knowledge-item {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 10px;
+}
+
+.knowledge-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.knowledge-item-head span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.knowledge-item-head strong {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.knowledge-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 100px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.knowledge-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary);
+  transition: width 0.25s ease;
+}
+
 /* Buttons */
 .btn-primary {
   display: inline-flex;
@@ -1193,6 +1494,14 @@ onMounted(fetchProfile)
 
   .toggle-bar {
     flex-direction: column;
+  }
+
+  .knowledge-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .knowledge-summary strong {
+    font-size: 22px;
   }
 }
 </style>

@@ -131,7 +131,7 @@ onMounted(() => {
 }
 
 .btn--ghost {
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
   border-color: var(--border);
 }
@@ -165,7 +165,7 @@ onMounted(() => {
 
 .topic-tab:hover {
   color: var(--text);
-  background: #fff;
+  background: var(--surface);
 }
 
 .topic-tab.router-link-active {
@@ -238,7 +238,7 @@ onMounted(() => {
 .interview-card {
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   margin-bottom: 8px;
   overflow: hidden;
   transition: box-shadow 0.15s ease, transform 0.15s ease;
@@ -317,7 +317,7 @@ onMounted(() => {
 /* ── Answer ── */
 .interview-answer {
   padding: 16px 18px;
-  background: #fff;
+  background: var(--surface);
 }
 
 .interview-answer p {

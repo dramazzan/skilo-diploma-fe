@@ -2,7 +2,7 @@ import { mockRoadmapProgressResponse } from "@/mocks/mockData"
 
 import type { LeaderboardEntry } from "../types"
 import { getActivityFromUserActions } from "./roadmaps.helpers"
-import { getRoadmapProgressDb, getTopicResults } from "./storage"
+import { getDailyTasksDb, getRoadmapProgressDb, getTopicResults } from "./storage"
 
 const getAverageRoadmapProgress = (): number => {
   const db = getRoadmapProgressDb()
@@ -20,14 +20,16 @@ const getAverageRoadmapProgress = (): number => {
 
 export const getCurrentUserPointsSnapshot = () => {
   const topicResults = Object.values(getTopicResults())
+  const dailyTasks = Object.values(getDailyTasksDb()).flat()
   const passedTests = topicResults.filter((result) => result.passed).length
   const failedTests = Math.max(0, topicResults.length - passedTests)
   const scoreTotal = topicResults.reduce((sum, result) => sum + result.score, 0)
   const activityPoints = getActivityFromUserActions().reduce((sum, day) => sum + day.level, 0)
+  const dailyTaskPoints = dailyTasks.reduce((sum, task) => sum + (task.completed ? task.points : 0), 0)
   const progressPercent = getAverageRoadmapProgress()
   const progressBonus = progressPercent * 5
 
-  const points = passedTests * 140 + failedTests * 40 + scoreTotal + activityPoints + progressBonus
+  const points = passedTests * 140 + failedTests * 40 + scoreTotal + activityPoints + progressBonus + dailyTaskPoints
 
   return {
     points: Math.round(points),

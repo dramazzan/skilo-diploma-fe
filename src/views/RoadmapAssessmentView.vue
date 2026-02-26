@@ -211,7 +211,7 @@ const goToRoadmap = () => {
 .section-card {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--surface);
   padding: 28px 24px;
 }
 
@@ -295,7 +295,7 @@ const goToRoadmap = () => {
 
 .question-card.answered {
   border-color: var(--border);
-  background: #fff;
+  background: var(--surface);
 }
 
 .question-head {
@@ -349,7 +349,7 @@ const goToRoadmap = () => {
   padding: 10px 14px;
   border: 1.5px solid var(--border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   font-size: 14px;
   color: var(--text);
   cursor: pointer;

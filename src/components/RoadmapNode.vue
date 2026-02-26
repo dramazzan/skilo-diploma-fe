@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue"
 import type { RoadmapNode as RoadmapTreeNode, TopicStatus } from "@/mocks/mockRoadmaps"
+import { useDailyTasksStore } from "@/store/dailyTasks"
 
 const props = defineProps<{
   node: RoadmapTreeNode
@@ -14,6 +15,7 @@ const emit = defineEmits<{
 }>()
 
 const hovering = ref(false)
+const dailyTasks = useDailyTasksStore()
 
 const nodeSize = computed(() => props.size ?? 124)
 const isLocked = computed(() => props.node.status === "locked")
@@ -34,6 +36,8 @@ const nodeClass = computed(() => ({
   in_progress: props.node.status === "in_progress",
   completed: props.node.status === "completed"
 }))
+
+const nodeTask = computed(() => dailyTasks.getTaskForNode(props.node.id))
 
 const handleClick = () => {
   if (isLocked.value) return
@@ -58,6 +62,9 @@ const handleClick = () => {
       <div class="node-content">
         <p class="node-title">{{ node.title }}</p>
         <span class="node-status">{{ statusLabel }}</span>
+        <span v-if="nodeTask" class="node-daily" :class="{ done: nodeTask.completed }">
+          {{ nodeTask.completed ? `Тест ✓ +${nodeTask.points}` : `Тест +${nodeTask.points}` }}
+        </span>
       </div>
     </div>
 
@@ -138,6 +145,24 @@ const handleClick = () => {
   border: 1px solid var(--border);
   background: var(--surface-soft);
   white-space: nowrap;
+}
+
+.node-daily {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 100px;
+  border: 1px solid var(--primary);
+  background: rgba(255, 142, 60, 0.2);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.node-daily.done {
+  border-color: rgba(33, 150, 83, 0.35);
+  background: rgba(33, 150, 83, 0.16);
+  color: #1f8f51;
 }
 
 /* ── Status variants ── */

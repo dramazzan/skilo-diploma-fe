@@ -13,6 +13,7 @@ const STORAGE_KEYS = {
   roadmapCollections: "mock_user_roadmap_collections",
   topicResults: "topic_test_results",
   roadmapProgress: "user_roadmap_progress",
+  dailyTasks: "daily_tasks_db",
   vacancyTaskSubmissions: "vacancy_task_submissions",
   userFriends: "mock_user_friends",
   companyVacancies: "mock_company_vacancies",
@@ -41,6 +42,19 @@ export interface TopicResultLike {
   updatedAt: string
 }
 
+export interface DailyTaskLike {
+  id: string
+  date: string
+  roadmapId: string
+  roadmapTitle: string
+  nodeId: string
+  nodeTitle: string
+  description: string
+  points: number
+  completed: boolean
+  completedAt: string | null
+}
+
 export const getUsers = (): User[] =>
   readStorageJson<User[]>(STORAGE_KEYS.users, [])
 
@@ -67,6 +81,9 @@ export const getTopicResults = (): Record<string, TopicResultLike> =>
 
 export const getRoadmapProgressDb = (): Record<string, RoadmapProgressItem> =>
   readStorageJson<Record<string, RoadmapProgressItem>>(STORAGE_KEYS.roadmapProgress, {})
+
+export const getDailyTasksDb = (): Record<string, DailyTaskLike[]> =>
+  readStorageJson<Record<string, DailyTaskLike[]>>(STORAGE_KEYS.dailyTasks, {})
 
 export const getVacancyTaskSubmissionsDb = (): Record<string, VacancyTaskSubmission[]> =>
   readStorageJson<Record<string, VacancyTaskSubmission[]>>(STORAGE_KEYS.vacancyTaskSubmissions, {})

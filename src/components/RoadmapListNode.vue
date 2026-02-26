@@ -3,6 +3,7 @@ import { computed, ref } from "vue"
 import { useRouter } from "vue-router"
 import type { RoadmapNode } from "@/mocks/mockRoadmaps"
 import { useTopicProgressStore } from "@/store/topicProgress"
+import { useDailyTasksStore } from "@/store/dailyTasks"
 
 const props = withDefaults(defineProps<{
   node: RoadmapNode
@@ -13,8 +14,10 @@ const props = withDefaults(defineProps<{
 
 const router = useRouter()
 const topicProgress = useTopicProgressStore()
+const dailyTasks = useDailyTasksStore()
 const hasChildren = computed(() => Boolean(props.node.children?.length))
 const expanded = ref(props.depth === 0)
+const nodeTask = computed(() => dailyTasks.getTaskForNode(props.node.id))
 
 const toggle = () => {
   if (hasChildren.value) {
@@ -26,6 +29,11 @@ const openTopic = () => {
   if (props.node.status !== "locked" && !hasChildren.value) {
     router.push(`/topics/${props.node.id}`)
   }
+}
+
+const completeDailyTask = () => {
+  if (!nodeTask.value) return
+  router.push("/daily-tasks")
 }
 
 const getNodeStatusLabel = (node: RoadmapNode) => {
@@ -82,6 +90,18 @@ const getNodeClass = (node: RoadmapNode) => ({
         >
           {{ getNodeStatusLabel(node) }}
         </span>
+
+        <button
+          v-if="nodeTask"
+          type="button"
+          class="daily-task-chip"
+          :class="{ 'daily-task-chip--done': nodeTask.completed }"
+          :disabled="nodeTask.completed"
+          @click.stop="completeDailyTask"
+        >
+          <span class="daily-task-chip__points">+{{ nodeTask.points }}</span>
+          <span>{{ nodeTask.completed ? "Тест выполнен" : "Тест дня" }}</span>
+        </button>
       </div>
     </div>
 
@@ -213,6 +233,41 @@ const getNodeClass = (node: RoadmapNode) => ({
   background: var(--surface-soft);
   color: var(--muted);
   border-color: var(--border);
+}
+
+.daily-task-chip {
+  flex-shrink: 0;
+  border: 1px solid var(--primary) !important;
+  background: var(--primary) !important;
+  color: var(--button-text) !important;
+  border-radius: 100px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.daily-task-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10, 10, 10, 0.14);
+}
+
+.daily-task-chip__points {
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 100px;
+  padding: 2px 6px;
+  line-height: 1;
+}
+
+.daily-task-chip--done {
+  border-color: rgba(33, 150, 83, 0.35) !important;
+  background: rgba(33, 150, 83, 0.18) !important;
+  color: #1f8f51 !important;
+  cursor: default;
 }
 
 /* ── Children ── */

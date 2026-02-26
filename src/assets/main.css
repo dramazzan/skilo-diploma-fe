@@ -112,10 +112,7 @@ body {
   margin: 0;
   min-width: 320px;
   color: var(--text);
-  background:
-    radial-gradient(1200px 420px at 10% -10%, #e6efff 0%, transparent 60%),
-    radial-gradient(900px 380px at 100% 0%, #e8f5ff 0%, transparent 55%),
-    linear-gradient(180deg, var(--bg-b) 0%, var(--bg-a) 26%, var(--bg-a) 100%);
+  background: linear-gradient(180deg, var(--bg-b) 0%, var(--bg-a) 100%);
 }
 
 #app {
@@ -132,58 +129,51 @@ body {
 .top-nav {
   width: 100%;
   margin: 0;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--nav-border);
-  background: var(--nav-bg);
-  backdrop-filter: blur(6px);
-  box-shadow: var(--shadow-sm);
+  padding: 14px 0;
+  background: transparent;
 }
 
 .top-nav-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 16px;
   width: 100%;
   max-width: 1120px;
   margin: 0 auto;
   padding: 0 12px;
 }
 
+.top-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  flex: 1;
+  min-width: 0;
+}
+
 .top-brand {
-  font-size: 34px;
+  font-size: 28px;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--primary);
+  color: var(--text);
   line-height: 1;
-  text-align: center;
-}
-
-.top-nav-menu {
-  display: flex;
-  align-items: stretch;
-  gap: 8px;
-}
-
-.nav-section {
-  border: 1px solid var(--nav-section-border);
-  border-radius: 10px;
-  background: var(--nav-section-bg);
-  padding: 6px;
-}
-
-.nav-section-title {
-  margin: 0 0 4px;
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--nav-section-title);
+  flex-shrink: 0;
 }
 
 .top-nav-links {
   display: flex;
-  gap: 6px;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.top-nav-links::-webkit-scrollbar {
+  display: none;
 }
 
 .top-nav-links a {
@@ -191,17 +181,15 @@ body {
   align-items: center;
   gap: 6px;
   color: var(--nav-link);
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 6px 9px;
   font-size: 14px;
-  font-weight: 600;
-  transition: all 0.2s ease;
+  font-weight: 500;
+  line-height: 1.2;
+  transition: color 0.2s ease;
 }
 
 .top-nav-links a svg {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
@@ -211,43 +199,70 @@ body {
 }
 
 .top-nav-links a:hover {
-  border-color: var(--border);
-  background: var(--surface-soft);
+  color: var(--primary);
 }
 
 .top-nav-links a.router-link-active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: var(--button-text);
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+.top-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+button.top-logout {
+  border: none !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  box-shadow: none !important;
+}
+
+button.top-logout:hover {
+  background: transparent !important;
+  border: none !important;
+  color: var(--primary) !important;
+  transform: none;
+  box-shadow: none !important;
 }
 
 button.theme-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 6px 10px !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 10px !important;
-  background: var(--surface) !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
   color: var(--text) !important;
-  font-size: 13px;
-  font-weight: 600;
   line-height: 1;
-  box-shadow: none;
+  box-shadow: none !important;
+  min-width: auto;
 }
 
 button.theme-toggle:hover {
-  background: var(--surface-soft) !important;
-  border-color: var(--soft-border) !important;
-  color: var(--text) !important;
+  background: transparent !important;
+  border: none !important;
+  color: var(--primary) !important;
   transform: none;
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 .theme-toggle svg {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
@@ -269,41 +284,146 @@ button.theme-toggle:hover {
   padding: 24px 16px 28px;
 }
 
+.daily-reminder {
+  max-width: 1120px;
+  margin: 0 auto 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background:
+    radial-gradient(420px 160px at 100% 0%, rgba(255, 142, 60, 0.2), transparent 70%),
+    var(--surface);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+
+.daily-reminder-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.daily-reminder-text strong {
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+.daily-reminder-text p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.daily-reminder-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.daily-reminder-btn {
+  border: 1px solid var(--border) !important;
+  border-radius: 10px;
+  background: var(--surface-soft) !important;
+  color: var(--text) !important;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 10px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.daily-reminder-btn:hover {
+  background: var(--surface-soft) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.daily-reminder-btn--primary {
+  border-color: var(--primary) !important;
+  background: var(--primary) !important;
+  color: var(--button-text) !important;
+}
+
+.daily-reminder-btn--primary:hover {
+  background: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+  color: var(--button-text) !important;
+}
+
+.daily-reminder-enter-active,
+.daily-reminder-leave-active {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.daily-reminder-enter-from,
+.daily-reminder-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
 @media (max-width: 1080px) {
   .top-nav-inner {
-    flex-direction: column;
-    align-items: stretch;
+    gap: 12px;
+  }
+
+  .top-nav-left {
+    gap: 16px;
   }
 
   .top-brand {
-    align-self: center;
+    font-size: 24px;
   }
 
-  .top-nav-menu {
-    flex-wrap: wrap;
-  }
-
-  .theme-toggle {
-    align-self: center;
+  .top-nav-links {
+    gap: 14px;
   }
 }
 
 @media (max-width: 720px) {
-  .nav-section {
-    width: 100%;
+  .top-nav {
+    padding: 10px 0;
+  }
+
+  .top-nav-inner {
+    gap: 10px;
+  }
+
+  .top-brand {
+    font-size: 22px;
   }
 
   .top-nav-links {
-    flex-wrap: wrap;
+    gap: 12px;
   }
 
   .top-nav-links a {
-    flex: 1;
-    justify-content: center;
+    font-size: 13px;
   }
 
-  .theme-toggle {
+  .top-nav-actions {
+    gap: 12px;
+  }
+
+  button.top-logout {
+    font-size: 13px;
+  }
+
+  .daily-reminder {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .daily-reminder-actions {
     width: 100%;
+  }
+
+  .daily-reminder-btn {
+    flex: 1;
   }
 }
 
@@ -1373,12 +1493,12 @@ pre {
 
 @media (max-width: 640px) {
   .top-nav {
-    padding: 10px 12px;
+    padding: 10px 0;
   }
 
   .top-nav-inner {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
   }
 
   .app-main {

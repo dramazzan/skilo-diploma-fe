@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from "vue"
 import { useRouter } from "vue-router"
 import { useRoadmapsStore } from "@/store/roadmaps"
 import { useAuthStore } from "@/store/auth"
+import { useDailyTasksStore } from "@/store/dailyTasks"
 
 interface CustomRoadmapDraft {
   id: string
@@ -17,6 +18,7 @@ interface CustomRoadmapDraft {
 const router = useRouter()
 const roadmapsStore = useRoadmapsStore()
 const authStore = useAuthStore()
+const dailyTasksStore = useDailyTasksStore()
 const removingRoadmapId = ref<string | null>(null)
 const aiLoading = ref(false)
 const aiError = ref<string | null>(null)
@@ -205,9 +207,18 @@ const getProgressMeta = (roadmapId: string) => {
   return `${progress.completedTopics}/${progress.totalTopics} тем`
 }
 
+const dailyTasksSummary = computed(() => {
+  return {
+    pending: dailyTasksStore.pendingTodayCount,
+    earned: dailyTasksStore.earnedTodayPoints,
+    total: dailyTasksStore.todayTotalPoints
+  }
+})
+
 onMounted(() => {
   void roadmapsStore.loadUserRoadmapCollection(authStore.user?.id ?? null)
   void roadmapsStore.loadRoadmapProgress(authStore.user?.id ?? null)
+  dailyTasksStore.ensureTodayTasks()
 
   const rawTracks = localStorage.getItem(CUSTOM_TRACKS_STORAGE_KEY)
   if (!rawTracks) return
@@ -332,6 +343,18 @@ const generateCustomTrack = async () => {
         <div class="intro-text">
           <h1 class="intro-title">Платформа обучения Skilo</h1>
           <p class="intro-desc">Стройте свой путь по дорожным картам: оценка уровня, тесты и подготовка к интервью.</p>
+          <div class="daily-strip">
+            <div>
+              <p class="daily-strip-kicker">Ежедневные задания</p>
+              <p class="daily-strip-meta">
+                Выполнено сегодня: +{{ dailyTasksSummary.earned }} / +{{ dailyTasksSummary.total }} очков ·
+                Осталось задач: {{ dailyTasksSummary.pending }}
+              </p>
+            </div>
+            <button class="btn btn--primary" @click="router.push('/daily-tasks')">
+              Перейти к заданиям
+            </button>
+          </div>
         </div>
 
         <div class="stats-row">
@@ -692,6 +715,33 @@ const generateCustomTrack = async () => {
   margin: 0;
   max-width: 480px;
   line-height: 1.6;
+}
+
+.daily-strip {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--surface-soft) 0%, var(--surface) 100%);
+  padding: 10px 12px;
+}
+
+.daily-strip-kicker {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.daily-strip-meta {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.4;
 }
 
 /* ── Stats ── */
@@ -1365,6 +1415,11 @@ const generateCustomTrack = async () => {
 
   .intro-title {
     font-size: 20px;
+  }
+
+  .daily-strip {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .stats-row {

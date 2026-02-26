@@ -194,7 +194,7 @@ watch(viewMode, (value) => {
 }
 
 .btn--ghost {
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
   border-color: var(--border);
 }
@@ -216,7 +216,7 @@ watch(viewMode, (value) => {
 .legacy-list-wrap {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--surface);
   padding: 16px;
 }
 
@@ -240,7 +240,7 @@ watch(viewMode, (value) => {
   font-size: 13px;
   font-weight: 700;
   color: var(--text);
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 100px;
   padding: 2px 10px;
@@ -276,7 +276,7 @@ watch(viewMode, (value) => {
   font-size: 12px;
   font-weight: 500;
   color: var(--muted);
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 100px;
   padding: 3px 10px;

@@ -345,7 +345,7 @@ onBeforeUnmount(() => {
 }
 
 .btn--ghost {
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
   border-color: var(--border);
 }
@@ -379,7 +379,7 @@ onBeforeUnmount(() => {
 
 .topic-tab:hover {
   color: var(--text);
-  background: #fff;
+  background: var(--surface);
 }
 
 .topic-tab.router-link-active {
@@ -464,7 +464,7 @@ onBeforeUnmount(() => {
 .section-card {
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--surface);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -572,7 +572,7 @@ onBeforeUnmount(() => {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 18px;
-  background: #fff;
+  background: var(--surface);
 }
 
 .question-text {
@@ -596,7 +596,7 @@ onBeforeUnmount(() => {
   padding: 11px 14px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
 }
@@ -621,7 +621,7 @@ onBeforeUnmount(() => {
   height: 16px;
   border: 2px solid var(--border);
   border-radius: 100px;
-  background: #fff;
+  background: var(--surface);
   transition: border-color 0.15s ease, background 0.15s ease;
   position: relative;
 }
