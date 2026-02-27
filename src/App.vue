@@ -71,6 +71,10 @@ watch(theme, (nextTheme) => {
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01" /></svg>
               <span>Ежедневные задания</span>
             </router-link>
+            <router-link to="/skill-verification">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M6 7h12M5 11h14M7 15h10M10 19h4" /><path d="M12 11v8" /></svg>
+              <span>Подтверждение навыков</span>
+            </router-link>
             <router-link to="/friends">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M8.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M20 8v6M23 11h-6" /></svg>
               <span>Друзья</span>

@@ -24,6 +24,29 @@ interface CertificatePreview {
   completedTests: number
 }
 
+interface ResumePreview {
+  fullName: string
+  email: string
+  country: string
+  city: string
+  university: string
+  desiredRole: string
+  phone: string
+  portfolioUrl: string
+  githubUrl: string
+  linkedinUrl: string
+  summary: string
+  experience: string
+  achievements: string
+  skills: string[]
+  roadmapResults: Array<{
+    title: string
+    percent: number
+    status: string
+  }>
+  generatedAt: string
+}
+
 interface KnowledgeAxis {
   id: string
   label: string
@@ -40,7 +63,25 @@ const profile = ref<ProfileData | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 const generatingResume = ref(false)
+const generatedResume = ref<ResumePreview | null>(null)
+const resumeActionMessage = ref<string | null>(null)
+const resumeForm = ref({
+  desiredRole: "",
+  phone: "",
+  portfolioUrl: "",
+  githubUrl: "",
+  linkedinUrl: "",
+  summary: "",
+  experience: "",
+  achievements: "",
+  extraSkills: ""
+})
+const generatingCertificate = ref(false)
 const generatedCertificate = ref<CertificatePreview | null>(null)
+const certificateIdInput = ref("")
+const certificateAccessGranted = ref(false)
+const certificateAccessError = ref<string | null>(null)
+const certificateActionMessage = ref<string | null>(null)
 const activityDays = ref<UserActivityDay[]>([])
 const activityLoading = ref(true)
 const activityViewMode = ref<"heatmap" | "chart">("heatmap")
@@ -337,6 +378,55 @@ const getOverallLevel = (avgPercent: number) => {
   return "Базовый"
 }
 
+const parseCommaSeparatedValues = (input: string) => {
+  return input
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
+const buildResumePreview = (): ResumePreview | null => {
+  if (!profile.value) return null
+
+  const roadmapResults = roadmapProgressRows.value.map((item) => ({
+    title: item.title,
+    percent: item.percent,
+    status: getProgressStatus(item.percent)
+  }))
+
+  const strongestDirections = roadmapResults
+    .slice()
+    .sort((first, second) => second.percent - first.percent)
+    .slice(0, 3)
+    .map((item) => item.title)
+    .join(", ")
+
+  const summary = strongestDirections
+    ? `Развивает карьерный трек в направлениях: ${strongestDirections}.`
+    : "Активно формирует базу знаний по выбранным направлениям на платформе."
+
+  const extraSkills = parseCommaSeparatedValues(resumeForm.value.extraSkills)
+
+  return {
+    fullName: profile.value.fullName,
+    email: profile.value.email,
+    country: profile.value.country || "—",
+    city: profile.value.city || "—",
+    university: profile.value.university || "—",
+    desiredRole: resumeForm.value.desiredRole.trim(),
+    phone: resumeForm.value.phone.trim(),
+    portfolioUrl: resumeForm.value.portfolioUrl.trim(),
+    githubUrl: resumeForm.value.githubUrl.trim(),
+    linkedinUrl: resumeForm.value.linkedinUrl.trim(),
+    summary: resumeForm.value.summary.trim() || summary,
+    experience: resumeForm.value.experience.trim(),
+    achievements: resumeForm.value.achievements.trim(),
+    skills: [...new Set([...profile.value.skills, ...extraSkills])],
+    roadmapResults,
+    generatedAt: new Date().toLocaleString("ru-RU")
+  }
+}
+
 const buildCertificatePreview = (): CertificatePreview | null => {
   if (!profile.value) return null
 
@@ -344,17 +434,17 @@ const buildCertificatePreview = (): CertificatePreview | null => {
     ? Math.round(roadmapProgressRows.value.reduce((sum, item) => sum + item.percent, 0) / roadmapProgressRows.value.length)
     : 0
 
-  const certificateId = `ADP-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
+  const certificateId = `SKL-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
   const verificationCode = Math.random().toString(36).slice(2, 10).toUpperCase()
 
   return {
     fullName: profile.value.fullName,
     email: profile.value.email,
     certificateId,
-    title: "Certificate of Learning Progress",
+    title: "Skillo Skills Certificate",
     issueDate: new Date().toLocaleDateString("ru-RU"),
     verificationCode,
-    issuedBy: "Skilo Platform",
+    issuedBy: "Skillo Platform",
     overallLevel: getOverallLevel(avgProgress),
     skills: profile.value.skills,
     roadmapResults: roadmapProgressRows.value.map((item) => ({
@@ -366,13 +456,173 @@ const buildCertificatePreview = (): CertificatePreview | null => {
   }
 }
 
+const buildResumeText = (resume: ResumePreview) => {
+  const roadmapLines = resume.roadmapResults.length
+    ? resume.roadmapResults.map((item) => `- ${item.title}: ${item.percent}% (${item.status})`).join("\n")
+    : "- Нет данных по направлениям"
+
+  const links = [resume.portfolioUrl, resume.githubUrl, resume.linkedinUrl].filter(Boolean)
+  const linksText = links.length ? links.map((link) => `- ${link}`).join("\n") : "- Не указаны"
+
+  return [
+    "РЕЗЮМЕ (Skillo)",
+    `ФИО: ${resume.fullName}`,
+    `Желаемая позиция: ${resume.desiredRole || "—"}`,
+    `Email: ${resume.email}`,
+    `Телефон: ${resume.phone || "—"}`,
+    `Локация: ${resume.country}, ${resume.city}`,
+    `Университет: ${resume.university}`,
+    `Дата генерации: ${resume.generatedAt}`,
+    "",
+    `О себе: ${resume.summary}`,
+    resume.experience ? `Опыт: ${resume.experience}` : "Опыт: —",
+    resume.achievements ? `Достижения: ${resume.achievements}` : "Достижения: —",
+    "",
+    "Ссылки:",
+    linksText,
+    "",
+    "Навыки:",
+    resume.skills.length ? resume.skills.map((skill) => `- ${skill}`).join("\n") : "- Нет навыков",
+    "",
+    "Прогресс по направлениям:",
+    roadmapLines
+  ].join("\n")
+}
+
+const downloadResumeAsTxt = (resume: ResumePreview) => {
+  const body = buildResumeText(resume)
+  const blob = new Blob([body], { type: "text/plain;charset=utf-8" })
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement("a")
+  anchor.href = url
+  anchor.download = `resume-${resume.fullName.replace(/\s+/g, "-").toLowerCase()}.txt`
+  document.body.appendChild(anchor)
+  anchor.click()
+  anchor.remove()
+  URL.revokeObjectURL(url)
+}
+
+const handleResumeAction = async (action: "txt" | "copy") => {
+  if (!generatedResume.value) return
+
+  if (action === "txt") {
+    downloadResumeAsTxt(generatedResume.value)
+    resumeActionMessage.value = "Резюме в формате TXT скачано."
+    return
+  }
+
+  try {
+    await navigator.clipboard.writeText(buildResumeText(generatedResume.value))
+    resumeActionMessage.value = "Текст резюме скопирован в буфер обмена."
+  } catch {
+    resumeActionMessage.value = "Не удалось скопировать резюме автоматически. Попробуйте позже."
+  }
+}
+
+const verifyCertificateAccess = () => {
+  if (!generatedCertificate.value) return
+
+  const normalizedInput = certificateIdInput.value.trim().toUpperCase()
+  const expectedCertificateId = generatedCertificate.value.certificateId.toUpperCase()
+
+  if (!normalizedInput) {
+    certificateAccessGranted.value = false
+    certificateAccessError.value = "Введите ID подтверждения из письма."
+    certificateActionMessage.value = null
+    return
+  }
+
+  if (normalizedInput !== expectedCertificateId) {
+    certificateAccessGranted.value = false
+    certificateAccessError.value = "ID не совпадает. Проверьте письмо и попробуйте снова."
+    certificateActionMessage.value = null
+    return
+  }
+
+  certificateAccessGranted.value = true
+  certificateAccessError.value = null
+  certificateActionMessage.value = "ID подтвержден. Теперь доступны скачивание и публикация сертификата."
+}
+
+const buildCertificateShareText = (certificate: CertificatePreview) => {
+  return [
+    "Я подтвердил(а) навыки на платформе Skillo.",
+    `Сертификат: ${certificate.title}`,
+    `ID: ${certificate.certificateId}`,
+    `Уровень: ${certificate.overallLevel}`,
+    `Дата выдачи: ${certificate.issueDate}`
+  ].join("\n")
+}
+
+const downloadCertificateAsTxt = (certificate: CertificatePreview) => {
+  const body = [
+    `${certificate.title}`,
+    `ID сертификата: ${certificate.certificateId}`,
+    `Код проверки: ${certificate.verificationCode}`,
+    `Имя: ${certificate.fullName}`,
+    `Email: ${certificate.email}`,
+    `Дата выдачи: ${certificate.issueDate}`,
+    `Уровень: ${certificate.overallLevel}`,
+    `Пройдено тестов: ${certificate.completedTests}`
+  ].join("\n")
+
+  const blob = new Blob([body], { type: "text/plain;charset=utf-8" })
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement("a")
+  anchor.href = url
+  anchor.download = `certificate-${certificate.certificateId}.txt`
+  document.body.appendChild(anchor)
+  anchor.click()
+  anchor.remove()
+  URL.revokeObjectURL(url)
+}
+
+const handleCertificateAction = async (action: "pdf" | "docx" | "txt" | "linkedin" | "telegram") => {
+  if (!generatedCertificate.value || !certificateAccessGranted.value) return
+
+  if (action === "pdf" || action === "docx") {
+    certificateActionMessage.value = `${action.toUpperCase()} будет доступен в следующем обновлении.`
+    return
+  }
+
+  if (action === "txt") {
+    downloadCertificateAsTxt(generatedCertificate.value)
+    certificateActionMessage.value = "TXT сертификат скачан."
+    return
+  }
+
+  const shareText = buildCertificateShareText(generatedCertificate.value)
+
+  try {
+    await navigator.clipboard.writeText(shareText)
+    const channelLabel = action === "linkedin" ? "LinkedIn" : "Telegram"
+    certificateActionMessage.value = `Текст для ${channelLabel} скопирован в буфер обмена.`
+  } catch {
+    certificateActionMessage.value = "Не удалось скопировать текст автоматически. Попробуйте позже."
+  }
+}
+
 const generateResume = async () => {
   if (!profile.value) return
 
   generatingResume.value = true
   await new Promise((resolve) => setTimeout(resolve, 700))
-  generatedCertificate.value = buildCertificatePreview()
+  generatedResume.value = buildResumePreview()
+  resumeActionMessage.value = "Резюме сформировано."
   generatingResume.value = false
+}
+
+const generateCertificate = async () => {
+  if (!profile.value) return
+
+  generatingCertificate.value = true
+  await new Promise((resolve) => setTimeout(resolve, 700))
+  generatedCertificate.value = buildCertificatePreview()
+  certificateIdInput.value = ""
+  certificateAccessGranted.value = false
+  certificateAccessError.value = null
+  certificateActionMessage.value = `ID подтверждения для сертификата отправлен на email ${profile.value.email}.`
+  generatingCertificate.value = false
 }
 
 onMounted(fetchProfile)
@@ -609,16 +859,174 @@ onMounted(fetchProfile)
         </div>
       </section>
 
-      <!-- Certificate -->
+      <!-- Resume -->
       <section class="section">
         <div class="section-header">
-          <h2 class="section-title">Сертификат</h2>
-          <p class="section-note">Генерация сертификата на основе навыков и прогресса.</p>
+          <h2 class="section-title">Резюме</h2>
+          <p class="section-note">Заполните поля от себя и сформируйте резюме через платформу.</p>
         </div>
+
+        <details class="resume-fields-panel">
+          <summary>Добавить поля от себя (опционально)</summary>
+
+          <div class="resume-fields-body">
+            <div class="resume-form-grid">
+              <label class="resume-field">
+                <span>Желаемая позиция</span>
+                <input v-model="resumeForm.desiredRole" type="text" placeholder="Например: Frontend Developer" />
+              </label>
+
+              <label class="resume-field">
+                <span>Телефон</span>
+                <input v-model="resumeForm.phone" type="text" placeholder="+7 777 000 00 00" />
+              </label>
+
+              <label class="resume-field">
+                <span>Портфолио</span>
+                <input v-model="resumeForm.portfolioUrl" type="text" placeholder="https://portfolio.example" />
+              </label>
+
+              <label class="resume-field">
+                <span>GitHub</span>
+                <input v-model="resumeForm.githubUrl" type="text" placeholder="https://github.com/username" />
+              </label>
+
+              <label class="resume-field">
+                <span>LinkedIn</span>
+                <input v-model="resumeForm.linkedinUrl" type="text" placeholder="https://linkedin.com/in/username" />
+              </label>
+
+              <label class="resume-field resume-field--wide">
+                <span>Дополнительные навыки (через запятую)</span>
+                <input v-model="resumeForm.extraSkills" type="text" placeholder="TypeScript, Docker, SQL" />
+              </label>
+
+              <label class="resume-field resume-field--wide">
+                <span>О себе</span>
+                <textarea
+                  v-model="resumeForm.summary"
+                  rows="3"
+                  placeholder="Кратко опишите ваш профиль, сильные стороны и карьерные цели"
+                />
+              </label>
+
+              <label class="resume-field resume-field--wide">
+                <span>Опыт</span>
+                <textarea
+                  v-model="resumeForm.experience"
+                  rows="3"
+                  placeholder="Укажите ваш опыт: стажировки, проекты, коммерческая разработка"
+                />
+              </label>
+
+              <label class="resume-field resume-field--wide">
+                <span>Достижения</span>
+                <textarea
+                  v-model="resumeForm.achievements"
+                  rows="3"
+                  placeholder="Опишите ваши достижения: конкурсы, хакатоны, результаты проектов"
+                />
+              </label>
+            </div>
+          </div>
+        </details>
 
         <button class="btn-primary" :disabled="generatingResume" @click="generateResume">
           <span v-if="generatingResume" class="spinner" />
-          {{ generatingResume ? "Генерация..." : "Сгенерировать сертификат" }}
+          {{ generatingResume ? "Генерация..." : "Сгенерировать резюме" }}
+        </button>
+
+        <div v-if="generatedResume" class="resume-container">
+          <h3 class="cert-preview-title">Предпросмотр резюме</h3>
+
+          <article class="resume-card">
+            <header class="resume-head">
+              <h4>{{ generatedResume.fullName }}</h4>
+              <p v-if="generatedResume.desiredRole" class="resume-role">{{ generatedResume.desiredRole }}</p>
+              <p>{{ generatedResume.email }} · {{ generatedResume.country }}, {{ generatedResume.city }}</p>
+              <p v-if="generatedResume.phone">Телефон: {{ generatedResume.phone }}</p>
+              <p>{{ generatedResume.university }}</p>
+            </header>
+
+            <p class="resume-summary">{{ generatedResume.summary }}</p>
+
+            <section
+              v-if="generatedResume.portfolioUrl || generatedResume.githubUrl || generatedResume.linkedinUrl"
+              class="resume-section"
+            >
+              <h6>Ссылки</h6>
+              <div class="resume-links">
+                <a v-if="generatedResume.portfolioUrl" :href="generatedResume.portfolioUrl" target="_blank" rel="noreferrer">
+                  Портфолио
+                </a>
+                <a v-if="generatedResume.githubUrl" :href="generatedResume.githubUrl" target="_blank" rel="noreferrer">
+                  GitHub
+                </a>
+                <a v-if="generatedResume.linkedinUrl" :href="generatedResume.linkedinUrl" target="_blank" rel="noreferrer">
+                  LinkedIn
+                </a>
+              </div>
+            </section>
+
+            <section v-if="generatedResume.experience" class="resume-section">
+              <h6>Опыт</h6>
+              <p class="resume-free-text">{{ generatedResume.experience }}</p>
+            </section>
+
+            <section v-if="generatedResume.achievements" class="resume-section">
+              <h6>Достижения</h6>
+              <p class="resume-free-text">{{ generatedResume.achievements }}</p>
+            </section>
+
+            <section class="resume-section">
+              <h6>Ключевые навыки</h6>
+              <div class="cert-skills">
+                <span v-for="skill in generatedResume.skills" :key="`resume-skill-${skill}`">{{ skill }}</span>
+              </div>
+            </section>
+
+            <section class="resume-section">
+              <h6>Прогресс по направлениям</h6>
+              <div v-if="generatedResume.roadmapResults.length" class="cert-progress-list">
+                <div
+                  v-for="item in generatedResume.roadmapResults"
+                  :key="`resume-progress-${item.title}`"
+                  class="cert-progress-item"
+                >
+                  <div class="cert-progress-head">
+                    <strong>{{ item.title }}</strong>
+                    <span>{{ item.percent }}% - {{ item.status }}</span>
+                  </div>
+                  <div class="cert-progress-track">
+                    <span :style="{ width: `${item.percent}%` }" />
+                  </div>
+                </div>
+              </div>
+              <p v-else class="muted">Нет данных по направлениям.</p>
+            </section>
+
+            <p class="resume-meta">Обновлено: {{ generatedResume.generatedAt }}</p>
+          </article>
+
+          <div class="resume-actions">
+            <button class="btn-secondary" @click="handleResumeAction('txt')">Скачать TXT</button>
+            <button class="btn-secondary" @click="handleResumeAction('copy')">Скопировать текст</button>
+          </div>
+
+          <p v-if="resumeActionMessage" class="resume-action-note">{{ resumeActionMessage }}</p>
+        </div>
+      </section>
+
+      <!-- Certificate -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Сертификат Skillo</h2>
+          <p class="section-note">Сертификат от Skillo. Для скачивания и публикации требуется ID подтверждения.</p>
+        </div>
+
+        <button class="btn-primary" :disabled="generatingCertificate" @click="generateCertificate">
+          <span v-if="generatingCertificate" class="spinner" />
+          {{ generatingCertificate ? "Генерация..." : "Сгенерировать сертификат Skillo" }}
         </button>
 
         <div v-if="generatedCertificate" class="certificate-container">
@@ -678,16 +1086,50 @@ onMounted(fetchProfile)
 
             <footer class="cert-footer">
               <p>Пройдено тестов: <strong>{{ generatedCertificate.completedTests }}</strong></p>
-              <p>Статус: Сертификат учебного прогресса</p>
+              <p>Статус: Сертификат подтверждения навыков Skillo</p>
             </footer>
           </article>
 
           <div class="cert-actions">
-            <button class="btn-secondary" disabled>Скачать PDF (скоро)</button>
-            <button class="btn-secondary" disabled>Скачать DOCX (скоро)</button>
-            <button class="btn-secondary" disabled>Скачать TXT (скоро)</button>
-            <button class="btn-secondary" disabled>LinkedIn (скоро)</button>
-            <button class="btn-secondary" disabled>Telegram (скоро)</button>
+            <div class="cert-id-gate">
+              <p>Чтобы скачать и поделиться сертификатом, введите ID подтверждения из письма.</p>
+
+              <div class="cert-id-gate-row">
+                <input
+                  v-model="certificateIdInput"
+                  type="text"
+                  placeholder="Введите ID подтверждения"
+                />
+                <button class="btn-secondary" @click="verifyCertificateAccess">
+                  Подтвердить ID
+                </button>
+              </div>
+
+              <p v-if="certificateAccessError" class="cert-id-error">{{ certificateAccessError }}</p>
+              <p v-else-if="certificateAccessGranted" class="cert-id-success">
+                Доступ подтвержден. Вы можете скачать и поделиться сертификатом.
+              </p>
+            </div>
+
+            <div class="cert-actions-grid">
+              <button class="btn-secondary" :disabled="!certificateAccessGranted" @click="handleCertificateAction('pdf')">
+                Скачать PDF
+              </button>
+              <button class="btn-secondary" :disabled="!certificateAccessGranted" @click="handleCertificateAction('docx')">
+                Скачать DOCX
+              </button>
+              <button class="btn-secondary" :disabled="!certificateAccessGranted" @click="handleCertificateAction('txt')">
+                Скачать TXT
+              </button>
+              <button class="btn-secondary" :disabled="!certificateAccessGranted" @click="handleCertificateAction('linkedin')">
+                LinkedIn
+              </button>
+              <button class="btn-secondary" :disabled="!certificateAccessGranted" @click="handleCertificateAction('telegram')">
+                Telegram
+              </button>
+            </div>
+
+            <p v-if="certificateActionMessage" class="cert-action-note">{{ certificateActionMessage }}</p>
           </div>
         </div>
       </section>
@@ -1270,6 +1712,162 @@ onMounted(fetchProfile)
   animation: spin 0.6s linear infinite;
 }
 
+/* Resume */
+.resume-fields-panel {
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.resume-fields-panel > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.resume-fields-panel > summary::-webkit-details-marker {
+  display: none;
+}
+
+.resume-fields-panel[open] > summary {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-soft);
+}
+
+.resume-fields-body {
+  padding: 12px;
+}
+
+.resume-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.resume-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.resume-field > span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.resume-field--wide {
+  grid-column: 1 / -1;
+}
+
+.resume-container {
+  margin-top: 20px;
+}
+
+.resume-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 20px;
+}
+
+.resume-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.resume-head h4 {
+  margin: 0;
+  font-size: 21px;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.resume-head p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.resume-role {
+  font-size: 14px !important;
+  color: var(--text) !important;
+  font-weight: 600;
+}
+
+.resume-summary {
+  margin: 14px 0 0;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.resume-section {
+  padding-top: 14px;
+}
+
+.resume-section h6 {
+  margin: 0 0 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.resume-meta {
+  margin: 16px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.resume-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.resume-links a {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.resume-free-text {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.resume-actions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.resume-action-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
 /* Certificate */
 .certificate-container {
   margin-top: 20px;
@@ -1466,8 +2064,52 @@ onMounted(fetchProfile)
 .cert-actions {
   margin-top: 14px;
   display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cert-id-gate {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  padding: 10px;
+}
+
+.cert-id-gate p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.cert-id-gate-row {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  gap: 8px;
+}
+
+.cert-id-error {
+  margin-top: 6px !important;
+  color: #dc2626 !important;
+  font-weight: 600;
+}
+
+.cert-id-success {
+  margin-top: 6px !important;
+  color: #15803d !important;
+  font-weight: 600;
+}
+
+.cert-actions-grid {
+  display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.cert-action-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
 }
 
 /* Responsive */
@@ -1490,6 +2132,14 @@ onMounted(fetchProfile)
 
   .cert-footer {
     flex-direction: column;
+  }
+
+  .cert-id-gate-row {
+    grid-template-columns: 1fr;
+  }
+
+  .resume-form-grid {
+    grid-template-columns: 1fr;
   }
 
   .toggle-bar {

@@ -22,6 +22,11 @@ const routes = [
   },
   { path: "/profile", component: () => import("@/views/ProfileView.vue") },
   {
+    path: "/skill-verification",
+    name: "skill-verification",
+    component: () => import("@/views/SkillVerificationView.vue"),
+  },
+  {
     path: "/roadmaps",
     name: "roadmaps",
     component: () => import("@/views/RoadmapsView.vue"),
