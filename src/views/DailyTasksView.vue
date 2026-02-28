@@ -193,6 +193,11 @@ onMounted(() => {
       </div>
     </section>
 
+    <section class="flow-note info-flow">
+      <p>Короткая ежедневная сессия помогает закреплять темы быстрее, чем редкие длинные подходы.</p>
+      <p>Общий тест дня дает больше очков, поэтому выгодно закрывать сначала его, а потом задания по направлениям.</p>
+    </section>
+
     <section class="progress-shell">
       <div class="progress-head">
         <span>Прогресс дня</span>
@@ -350,8 +355,12 @@ onMounted(() => {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   color: var(--text);
+}
+
+.flow-note {
+  padding: 0 4px;
 }
 
 .btn-back {

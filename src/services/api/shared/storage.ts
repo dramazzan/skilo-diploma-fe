@@ -2,6 +2,7 @@ import { mockVacancies } from "@/mocks/mockVacancies"
 
 import type {
   CompanyCandidate,
+  FriendChallenge,
   RoadmapProgressItem,
   User,
   Vacancy,
@@ -16,6 +17,7 @@ const STORAGE_KEYS = {
   dailyTasks: "daily_tasks_db",
   vacancyTaskSubmissions: "vacancy_task_submissions",
   userFriends: "mock_user_friends",
+  friendChallenges: "mock_friend_challenges",
   companyVacancies: "mock_company_vacancies",
   companyCandidates: "mock_company_candidates"
 } as const
@@ -74,6 +76,13 @@ export const getFriendsDb = (): Record<string, number[]> =>
 
 export const saveFriendsDb = (db: Record<string, number[]>) => {
   writeStorageJson(STORAGE_KEYS.userFriends, db)
+}
+
+export const getFriendChallengesDb = (): Record<string, FriendChallenge[]> =>
+  readStorageJson<Record<string, FriendChallenge[]>>(STORAGE_KEYS.friendChallenges, {})
+
+export const saveFriendChallengesDb = (db: Record<string, FriendChallenge[]>) => {
+  writeStorageJson(STORAGE_KEYS.friendChallenges, db)
 }
 
 export const getTopicResults = (): Record<string, TopicResultLike> =>

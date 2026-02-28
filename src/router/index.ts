@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
-  { path: "/", redirect: "/roadmaps" },
+  { path: "/", component: () => import("@/views/HomeView.vue") },
   { path: "/login", component: () => import("@/views/auth/LoginView.vue") },
   {
     path: "/register",
@@ -14,6 +14,7 @@ const routes = [
   { path: "/leaders", component: () => import("@/views/LeadersView.vue") },
   { path: "/company", component: () => import("@/views/CompanyCabinetView.vue") },
   { path: "/friends", component: () => import("@/views/FriendsView.vue") },
+  { path: "/community", component: () => import("@/views/CommunityHubView.vue") },
   { path: "/vacancies", component: () => import("@/views/VacanciesView.vue") },
   {
     path: "/vacancies/:id/preparation",

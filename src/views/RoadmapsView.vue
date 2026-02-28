@@ -69,49 +69,6 @@ const compatibilityByPair: Record<string, number> = {
   "devops:mobile": 49
 }
 
-const companyValueItems = [
-  {
-    title: "Персональный учебный маршрут",
-    description: "Подбираем траекторию по вашему уровню и целям, чтобы не тратить время на лишние темы.",
-    metric: "1 план"
-  },
-  {
-    title: "Практика под реальные вакансии",
-    description: "Даем тестовые задачи и подготовку к интервью, которые соответствуют ожиданиям компаний.",
-    metric: "100% практика"
-  },
-  {
-    title: "Измеримый прогресс",
-    description: "Показываем рост навыков по темам, чтобы вы видели, где уже сильны и что улучшить.",
-    metric: "0 хаоса"
-  }
-]
-
-const companyAboutStats = [
-  { value: "24/7", label: "доступ к платформе" },
-  { value: "AI", label: "рекомендации и поддержка" },
-  { value: "IT", label: "фокус на востребованные роли" }
-]
-
-const companyWhyItems = [
-  {
-    title: "Фокус на результате",
-    description: "Мы ведем не просто к изучению теории, а к трудоустройству и уверенным собеседованиям."
-  },
-  {
-    title: "Путь от обучения к карьере",
-    description: "В одном месте: дорожные карты, задачи, лидерборд, профиль и вакансии."
-  },
-  {
-    title: "Адаптация под ваш темп",
-    description: "Можно учиться короткими сессиями, не теряя целостности программы."
-  },
-  {
-    title: "Прозрачная ценность",
-    description: "Вы всегда понимаете, какой навык развиваете и зачем он нужен на рынке."
-  }
-]
-
 const pairKey = (first: string, second: string) => {
   return [first, second].sort().join(":")
 }
@@ -336,113 +293,37 @@ const generateCustomTrack = async () => {
 
 <template>
   <div class="page">
-
-    <!-- ── Hero intro ── -->
-    <section class="intro-card">
-      <div class="intro-body">
-        <div class="intro-text">
-          <h1 class="intro-title">Платформа обучения Skilo</h1>
-          <p class="intro-desc">Стройте свой путь по дорожным картам: оценка уровня, тесты и подготовка к интервью.</p>
-          <div class="daily-strip">
-            <div>
-              <p class="daily-strip-kicker">Ежедневные задания</p>
-              <p class="daily-strip-meta">
-                Выполнено сегодня: +{{ dailyTasksSummary.earned }} / +{{ dailyTasksSummary.total }} очков ·
-                Осталось задач: {{ dailyTasksSummary.pending }}
-              </p>
-            </div>
-            <button class="btn btn--primary" @click="router.push('/daily-tasks')">
-              Перейти к заданиям
-            </button>
-          </div>
-        </div>
-
-        <div class="stats-row">
-          <div class="stat-item">
-            <strong class="stat-value">{{ myRoadmaps.length }}</strong>
-            <span class="stat-label">Мои направления</span>
-          </div>
-          <div class="stat-divider" />
-          <div class="stat-item">
-            <strong class="stat-value">{{ availableRoadmaps.length }}</strong>
-            <span class="stat-label">Доступно</span>
-          </div>
-          <div class="stat-divider" />
-          <div class="stat-item">
-            <strong class="stat-value">{{ completedRoadmaps }}</strong>
-            <span class="stat-label">Завершено</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="feature-grid">
-        <article class="feature-item">
-          <span class="feature-icon">🌿</span>
-          <h3 class="feature-title">Дерево навыков</h3>
-          <p class="feature-desc">Интерактивное дерево тем с логикой разблокировки и отслеживанием статусов.</p>
-        </article>
-        <article class="feature-item">
-          <span class="feature-icon">📝</span>
-          <h3 class="feature-title">Тесты по темам</h3>
-          <p class="feature-desc">Таймер, последовательные вопросы, результат прохождения и возможность пересдачи.</p>
-        </article>
-        <article class="feature-item">
-          <span class="feature-icon">💬</span>
-          <h3 class="feature-title">Подготовка к интервью</h3>
-          <p class="feature-desc">Частые вопросы по каждой теме с быстрым просмотром ответов.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="company-promo">
-      <div class="company-promo-head">
-        <span class="company-promo-kicker">Что мы даем</span>
-        <h2 class="company-promo-title">Полный цикл развития специалиста</h2>
-      </div>
-      <div class="company-value-grid">
-        <article v-for="item in companyValueItems" :key="item.title" class="company-value-card">
-          <span class="company-value-metric">{{ item.metric }}</span>
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.description }}</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="company-promo company-about">
-      <div class="company-about-content">
-        <span class="company-promo-kicker">О нас</span>
-        <h2 class="company-promo-title">Skilo помогает превратить обучение в понятный карьерный план</h2>
+    <section class="roadmaps-page-head">
+      <div class="roadmaps-head-main">
+        <p class="roadmaps-head-kicker">Раздел дорожных карт</p>
+        <h1>Ваши направления и персональные треки</h1>
         <p>
-          Мы создаем образовательную платформу, где студент или junior-специалист получает
-          структурированный маршрут развития и практику по актуальным IT-направлениям.
-        </p>
-        <p>
-          Наша цель — сократить дистанцию между “я учусь” и “я готов к реальной работе” с помощью
-          прозрачного трекинга навыков и задач, близких к реальным рабочим кейсам.
+          Здесь только работа с дорожными картами: выбор направлений, AI-конструктор трека и отслеживание прогресса.
         </p>
       </div>
-      <div class="company-about-stats">
-        <article v-for="stat in companyAboutStats" :key="stat.label" class="company-about-stat">
-          <strong>{{ stat.value }}</strong>
-          <span>{{ stat.label }}</span>
+      <div class="roadmaps-head-stats">
+        <article>
+          <strong>{{ myRoadmaps.length }}</strong>
+          <span>Мои направления</span>
+        </article>
+        <article>
+          <strong>{{ availableRoadmaps.length }}</strong>
+          <span>Доступно</span>
+        </article>
+        <article>
+          <strong>{{ completedRoadmaps }}</strong>
+          <span>Завершено</span>
+        </article>
+        <article>
+          <strong>{{ dailyTasksSummary.pending }}</strong>
+          <span>Задач сегодня</span>
         </article>
       </div>
     </section>
 
-    <section class="company-promo">
-      <div class="company-promo-head">
-        <span class="company-promo-kicker">Почему именно мы</span>
-        <h2 class="company-promo-title">Платформа, которая ведет к реальному результату</h2>
-      </div>
-      <div class="company-why-grid">
-        <article v-for="item in companyWhyItems" :key="item.title" class="company-why-card">
-          <span class="company-why-icon">✓</span>
-          <div>
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.description }}</p>
-          </div>
-        </article>
-      </div>
+    <section class="flow-note info-flow">
+      <p>Лучший темп для роста: небольшой, но регулярный прогресс по треку каждый день.</p>
+      <p>Фокусируйтесь на 1–2 направлениях одновременно, чтобы быстрее видеть реальный результат в навыках.</p>
     </section>
 
     <!-- ── My roadmaps ── -->
@@ -670,15 +551,81 @@ const generateCustomTrack = async () => {
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 /* ── Reset & Base ── */
 .page {
-  font-family: 'Inter', sans-serif;
+  font-family: inherit;
   color: var(--text);
   display: flex;
   flex-direction: column;
   gap: 32px;
+}
+
+.roadmaps-page-head {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.roadmaps-head-main {
+  display: grid;
+  gap: 8px;
+  max-width: 74ch;
+}
+
+.roadmaps-head-kicker {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+}
+
+.roadmaps-head-main h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(24px, 3.5vw, 36px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.roadmaps-head-main p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.roadmaps-head-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.roadmaps-head-stats article {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 10px;
+  display: grid;
+  gap: 4px;
+}
+
+.roadmaps-head-stats strong {
+  color: var(--text);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.roadmaps-head-stats span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.flow-note {
+  padding: 2px 2px 0;
 }
 
 /* ── Intro Card ── */
@@ -803,6 +750,93 @@ const generateCustomTrack = async () => {
 .feature-item:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(10, 10, 10, 0.07);
+}
+
+.visual-story-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.visual-story-item {
+  display: grid;
+  gap: 10px;
+  animation: visual-in 0.7s ease forwards;
+  animation-delay: var(--visual-delay, 0ms);
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.visual-story-item img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  object-fit: cover;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  animation: visual-float 6s ease-in-out infinite;
+}
+
+.visual-story-item:nth-child(2) img {
+  animation-delay: 0.3s;
+}
+
+.visual-story-item:nth-child(3) img {
+  animation-delay: 0.6s;
+}
+
+.visual-story-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.visual-story-copy h3 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.visual-story-copy p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.text-bridge {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.text-bridge-lead {
+  margin: 0;
+  max-width: 34ch;
+  font-size: clamp(24px, 3.8vw, 42px);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--text) 82%, var(--primary) 18%);
+}
+
+.text-bridge-sub {
+  margin: 0;
+  max-width: 56ch;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.text-bridge--progress .text-bridge-lead {
+  color: color-mix(in srgb, var(--text) 80%, #4f7ae8 20%);
+}
+
+.text-bridge--expand .text-bridge-lead {
+  color: color-mix(in srgb, var(--text) 78%, #ff8e3c 22%);
 }
 
 /* ── Company Promo ── */
@@ -1357,6 +1391,169 @@ const generateCustomTrack = async () => {
   background: var(--surface-soft);
 }
 
+.bottom-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bottom-highlights-head {
+  display: grid;
+  gap: 8px;
+}
+
+.bottom-highlights-head h2 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.bottom-highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.bottom-highlight-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+  padding: 16px;
+  display: grid;
+  gap: 8px;
+}
+
+.bottom-highlight-card h3 {
+  margin: 0;
+  font-size: 17px;
+  color: var(--text);
+}
+
+.bottom-highlight-card p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.bottom-cta {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.bottom-cta-lead {
+  margin: 0;
+  max-width: 34ch;
+  font-size: clamp(24px, 3.6vw, 40px);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: color-mix(in srgb, var(--text) 83%, var(--primary) 17%);
+}
+
+.bottom-cta-sub {
+  margin: 0;
+  max-width: 54ch;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.page-footer {
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  display: grid;
+  gap: 16px;
+}
+
+.page-footer-top {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(0, 1.1fr);
+  gap: 16px;
+}
+
+.page-footer-brand {
+  display: grid;
+  gap: 8px;
+}
+
+.page-footer-brand h3 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.page-footer-brand p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 40ch;
+}
+
+.page-footer-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.footer-column {
+  display: grid;
+  gap: 5px;
+}
+
+.footer-column h4 {
+  margin: 0 0 4px;
+  color: var(--text);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+.footer-column p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.page-footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-footer-bottom span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.footer-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-signals span {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface-soft);
+}
+
 /* ── Buttons ── */
 .btn {
   display: inline-flex;
@@ -1403,6 +1600,42 @@ const generateCustomTrack = async () => {
   box-shadow: 0 4px 12px rgba(10, 10, 10, 0.06);
 }
 
+@keyframes visual-float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.01);
+  }
+}
+
+@keyframes visual-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 980px) {
+  .roadmaps-head-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .visual-story-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visual-story-item,
+  .visual-story-item img {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* ── Adaptive ── */
 @media (max-width: 640px) {
   .intro-card {
@@ -1428,6 +1661,14 @@ const generateCustomTrack = async () => {
   }
 
   .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .visual-story-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .roadmaps-head-stats {
     grid-template-columns: 1fr;
   }
 

@@ -1,0 +1,21 @@
+<svg width="640" height="420" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg3" x1="70" y1="42" x2="586" y2="368" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF3E8"/>
+      <stop offset="1" stop-color="#EAF2FF"/>
+    </linearGradient>
+    <linearGradient id="signal" x1="192" y1="146" x2="454" y2="146" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8E3C"/>
+      <stop offset="1" stop-color="#6F9BF8"/>
+    </linearGradient>
+  </defs>
+  <rect x="32" y="24" width="576" height="372" rx="36" fill="url(#bg3)"/>
+  <circle cx="320" cy="204" r="36" fill="#FF8E3C"/>
+  <circle cx="320" cy="204" r="14" fill="white"/>
+  <path d="M208 204C208 142 258 92 320 92C382 92 432 142 432 204" stroke="url(#signal)" stroke-width="14" stroke-linecap="round"/>
+  <path d="M160 204C160 118 230 48 316 48C402 48 472 118 472 204" stroke="#9BB8FF" stroke-width="12" stroke-linecap="round"/>
+  <rect x="112" y="292" width="152" height="16" rx="8" fill="#FFCDA4"/>
+  <rect x="112" y="318" width="120" height="14" rx="7" fill="#FFDCC3"/>
+  <rect x="374" y="292" width="152" height="16" rx="8" fill="#A5BBFF"/>
+  <rect x="404" y="318" width="122" height="14" rx="7" fill="#C1D0FF"/>
+</svg>

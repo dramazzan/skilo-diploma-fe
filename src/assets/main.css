@@ -159,6 +159,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0;
+  min-height: 100vh;
 }
 
 .top-nav {
@@ -316,12 +317,113 @@ button.theme-toggle:hover {
 }
 
 .app-main {
-  padding: 24px 16px 28px;
+  padding: 30px 18px 38px;
+  flex: 1;
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+  padding: 18px 14px 16px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+}
+
+.site-footer-inner,
+.site-footer-bottom {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.site-footer-inner {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.9fr) minmax(0, 1.1fr);
+  gap: 16px;
+}
+
+.site-footer-brand {
+  display: grid;
+  gap: 7px;
+}
+
+.site-footer-brand h3 {
+  margin: 0;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.site-footer-brand p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 44ch;
+}
+
+.site-footer-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.site-footer-column {
+  display: grid;
+  gap: 5px;
+}
+
+.site-footer-column h4 {
+  margin: 0 0 4px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.site-footer-column a {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  transition: color 0.16s ease;
+}
+
+.site-footer-column a:hover {
+  color: var(--primary);
+}
+
+.site-footer-bottom {
+  border-top: 1px solid var(--border);
+  margin-top: 14px;
+  padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.site-footer-bottom span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.site-footer-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.site-footer-tags span {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .daily-reminder {
   max-width: 1120px;
-  margin: 0 auto 12px;
+  margin: 0 auto 18px;
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px 14px;
@@ -464,9 +566,17 @@ button.theme-toggle:hover {
   .top-nav-links {
     gap: 14px;
   }
+
+  .site-footer-inner {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 720px) {
+  .app-main {
+    padding: 22px 12px 26px;
+  }
+
   .top-nav {
     padding: 10px 0;
   }
@@ -506,6 +616,15 @@ button.theme-toggle:hover {
 
   .daily-reminder-btn {
     flex: 1;
+  }
+
+  .site-footer-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -644,7 +763,7 @@ pre {
   background: linear-gradient(180deg, var(--card-grad-start) 0%, var(--card-grad-end) 100%);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 20px;
+  padding: 24px;
   box-shadow: var(--shadow-sm);
 }
 
@@ -676,7 +795,7 @@ pre {
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
+  gap: 16px;
 }
 
 .feature-card,
@@ -704,7 +823,7 @@ pre {
 .actions-row {
   display: flex;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 14px;
 }
 
 .roadmap-card {
@@ -869,8 +988,27 @@ pre {
 .roadmaps-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 14px;
+  gap: 18px;
   align-items: stretch;
+}
+
+.info-flow {
+  max-width: 76ch;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.info-flow p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.info-flow p:first-child {
+  color: color-mix(in srgb, var(--text) 82%, var(--primary) 18%);
+  font-weight: 650;
 }
 
 @media (min-width: 740px) {

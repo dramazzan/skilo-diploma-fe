@@ -443,6 +443,11 @@ const submitDirectionAssessment = async () => {
       </div>
     </section>
 
+    <section class="flow-note info-flow">
+      <p>Чем конкретнее письменные ответы, тем точнее итоговая оценка вашего уровня по направлению.</p>
+      <p>Лучше проходить тесты по одному треку за раз, чтобы профиль уровней получился честным и полезным.</p>
+    </section>
+
     <div class="layout">
       <aside class="direction-list">
         <h2>Направления</h2>
@@ -570,7 +575,11 @@ const submitDirectionAssessment = async () => {
   padding: 10px 8px 36px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 22px;
+}
+
+.flow-note {
+  padding: 0 4px;
 }
 
 .btn-back {
@@ -633,7 +642,7 @@ const submitDirectionAssessment = async () => {
 .layout {
   display: grid;
   grid-template-columns: minmax(250px, 0.75fr) minmax(420px, 1.25fr);
-  gap: 12px;
+  gap: 18px;
 }
 
 .direction-list,

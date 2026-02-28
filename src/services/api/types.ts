@@ -256,3 +256,37 @@ export interface GlobalItMapResponse {
   roadmaps: GlobalItMapRoadmap[]
   participants: GlobalItMapParticipant[]
 }
+
+export type FriendChallengeStatus = "waiting_opponent" | "completed"
+
+export interface FriendChallenge {
+  id: string
+  challengerUserId: number
+  opponentUserId: number
+  opponentName: string
+  roadmapId: string
+  roadmapTitle: string
+  challengerScore: number
+  challengerDurationSec: number
+  opponentScore: number | null
+  opponentDurationSec: number | null
+  winnerUserId: number | null
+  status: FriendChallengeStatus
+  createdAt: string
+  completedAt: string | null
+  isNotificationRead: boolean
+}
+
+export interface CreateFriendChallengePayload {
+  opponentUserId: number
+  roadmapId: string
+  challengerScore: number
+  challengerDurationSec: number
+}
+
+export interface FriendChallengeNotification {
+  id: string
+  challengeId: string
+  message: string
+  createdAt: string
+}

@@ -16,6 +16,7 @@ const REVEAL_SELECTOR = [
   ".app-main .result-card",
   ".app-main .vacancy-card",
   ".app-main .friend-card",
+  ".app-main .community-post-card",
   ".app-main .leader-card",
   ".app-main .topic-card",
   ".app-main .daily-task-card",
@@ -36,6 +37,37 @@ let revealFrameId = 0;
 const dailyReminderMessage = computed(() => {
   return `Сегодня доступно ${dailyTasksStore.pendingTodayCount} заданий на +${Math.max(0, dailyTasksStore.todayTotalPoints - dailyTasksStore.earnedTodayPoints)} очков`;
 });
+
+const footerColumns = [
+  {
+    title: "Платформа",
+    links: [
+      { label: "О проекте", to: "/" },
+      { label: "Дорожные карты", to: "/roadmaps" },
+      { label: "Ежедневные задания", to: "/daily-tasks" },
+      { label: "Определение уровня", to: "/skill-levels" }
+    ]
+  },
+  {
+    title: "Карьера",
+    links: [
+      { label: "Подтверждение навыков", to: "/skill-verification" },
+      { label: "Вакансии", to: "/vacancies" },
+      { label: "Лидеры", to: "/leaders" },
+      { label: "Профиль", to: "/profile" }
+    ]
+  },
+  {
+    title: "Сообщество",
+    links: [
+      { label: "Публикации", to: "/community" },
+      { label: "Друзья", to: "/friends" },
+      { label: "Кабинет компании", to: "/company" }
+    ]
+  }
+];
+
+const currentYear = new Date().getFullYear();
 
 function applyTheme(nextTheme) {
   const normalizedTheme = nextTheme === "dark" ? "dark" : "light";
@@ -183,9 +215,13 @@ onBeforeUnmount(() => {
     <header class="top-nav">
       <div class="top-nav-inner">
         <div class="top-nav-left">
-          <router-link to="/roadmaps" class="top-brand">Skilo</router-link>
+          <router-link to="/" class="top-brand">Skilo</router-link>
 
           <nav class="top-nav-links" aria-label="Навигация">
+            <router-link to="/">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10 12 3l9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" /></svg>
+              <span>О проекте</span>
+            </router-link>
             <router-link to="/roadmaps">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4zM8 10h8M8 14h5" /></svg>
               <span>Дорожные карты</span>
@@ -205,6 +241,10 @@ onBeforeUnmount(() => {
             <router-link to="/friends">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M8.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M20 8v6M23 11h-6" /></svg>
               <span>Друзья</span>
+            </router-link>
+            <router-link to="/community">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9h12M6 13h8M4 5h16v14H9l-5 3z" /></svg>
+              <span>Сообщество</span>
             </router-link>
             <router-link to="/vacancies">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v13H3zM8 7V5h8v2M3 12h18" /></svg>
@@ -273,5 +313,36 @@ onBeforeUnmount(() => {
         </transition>
       </router-view>
     </main>
+
+    <footer class="site-footer">
+      <div class="site-footer-inner">
+        <div class="site-footer-brand">
+          <h3>Skilo</h3>
+          <p>Единая платформа развития навыков: обучение, практика, сообщество и карьерный рост.</p>
+        </div>
+
+        <div class="site-footer-columns">
+          <article v-for="column in footerColumns" :key="column.title" class="site-footer-column">
+            <h4>{{ column.title }}</h4>
+            <router-link
+              v-for="link in column.links"
+              :key="link.to"
+              :to="link.to"
+            >
+              {{ link.label }}
+            </router-link>
+          </article>
+        </div>
+      </div>
+
+      <div class="site-footer-bottom">
+        <span>© {{ currentYear }} Skilo. Все права защищены.</span>
+        <div class="site-footer-tags">
+          <span>Roadmaps</span>
+          <span>Practice</span>
+          <span>Career</span>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
