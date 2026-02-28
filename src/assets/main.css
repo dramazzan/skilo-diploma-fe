@@ -1,5 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap");
+
 :root {
-  font-family: "Manrope", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: "Golos Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   color-scheme: light;
   color: #0d0d0d;
