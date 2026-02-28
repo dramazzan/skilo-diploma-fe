@@ -1,15 +1,38 @@
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useDailyTasksStore } from "@/store/dailyTasks";
 import { useAuthStore } from "@/store/auth";
 
 const THEME_STORAGE_KEY = "skilo-theme";
+const REVEAL_SELECTOR = [
+  ".app-main .hero-card",
+  ".app-main .card",
+  ".app-main .profile-card",
+  ".app-main .roadmap-card",
+  ".app-main .assessment-card",
+  ".app-main .question-card",
+  ".app-main .direction-card",
+  ".app-main .result-card",
+  ".app-main .vacancy-card",
+  ".app-main .friend-card",
+  ".app-main .leader-card",
+  ".app-main .topic-card",
+  ".app-main .daily-task-card",
+  ".app-main section",
+  ".app-main article"
+].join(", ");
+
 const theme = ref("light");
 const isDarkTheme = computed(() => theme.value === "dark");
 const router = useRouter();
+const route = useRoute();
 const dailyTasksStore = useDailyTasksStore();
 const authStore = useAuthStore();
+let revealObserver = null;
+let revealMutationObserver = null;
+let revealFrameId = 0;
+
 const dailyReminderMessage = computed(() => {
   return `Сегодня доступно ${dailyTasksStore.pendingTodayCount} заданий на +${Math.max(0, dailyTasksStore.todayTotalPoints - dailyTasksStore.earnedTodayPoints)} очков`;
 });
@@ -38,6 +61,65 @@ function logout() {
   router.push("/login");
 }
 
+function shouldAnimateReveal(element) {
+  if (!(element instanceof HTMLElement)) return false;
+  if (element.classList.contains("reveal-visible")) return false;
+  if (element.closest(".daily-reminder")) return false;
+  if (element.closest('[role="dialog"]')) return false;
+  if (element.offsetHeight < 64 && element.offsetWidth < 180) return false;
+  return true;
+}
+
+function ensureRevealObserver() {
+  if (revealObserver || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const element = entry.target;
+        element.classList.add("reveal-visible");
+        observer.unobserve(element);
+      });
+    },
+    {
+      threshold: 0.12,
+      rootMargin: "0px 0px -8% 0px"
+    }
+  );
+
+  revealObserver = observer;
+}
+
+function applyRevealAnimations() {
+  ensureRevealObserver();
+  if (!revealObserver) return;
+
+  const revealElements = document.querySelectorAll(REVEAL_SELECTOR);
+
+  revealElements.forEach((element, index) => {
+    if (!shouldAnimateReveal(element)) return;
+    if (element.classList.contains("reveal-on-scroll")) return;
+
+    element.classList.add("reveal-on-scroll");
+    element.style.setProperty("--reveal-delay", `${Math.min(index, 8) * 35}ms`);
+    revealObserver.observe(element);
+  });
+}
+
+function scheduleRevealScan() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  if (revealFrameId) {
+    window.cancelAnimationFrame(revealFrameId);
+  }
+
+  revealFrameId = window.requestAnimationFrame(() => {
+    revealFrameId = 0;
+    applyRevealAnimations();
+  });
+}
+
 onMounted(() => {
   const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
   if (storedTheme === "light" || storedTheme === "dark") {
@@ -48,10 +130,51 @@ onMounted(() => {
   }
 
   dailyTasksStore.ensureTodayTasks();
+
+  nextTick(() => {
+    scheduleRevealScan();
+
+    const appMain = document.querySelector(".app-main");
+    if (!appMain) return;
+
+    revealMutationObserver = new MutationObserver(() => {
+      scheduleRevealScan();
+    });
+    revealMutationObserver.observe(appMain, {
+      childList: true,
+      subtree: true
+    });
+  });
 });
 
 watch(theme, (nextTheme) => {
   localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+});
+
+watch(
+  () => route.fullPath,
+  () => {
+    nextTick(() => {
+      scheduleRevealScan();
+    });
+  }
+);
+
+onBeforeUnmount(() => {
+  if (revealFrameId) {
+    window.cancelAnimationFrame(revealFrameId);
+    revealFrameId = 0;
+  }
+
+  if (revealObserver) {
+    revealObserver.disconnect();
+    revealObserver = null;
+  }
+
+  if (revealMutationObserver) {
+    revealMutationObserver.disconnect();
+    revealMutationObserver = null;
+  }
 });
 </script>
 
@@ -144,7 +267,11 @@ watch(theme, (nextTheme) => {
         </aside>
       </transition>
 
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <transition name="route-fade-slide" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </main>
   </div>
 </template>

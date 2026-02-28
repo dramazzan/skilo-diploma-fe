@@ -52,6 +52,9 @@
   --avatar-bg-start: #dbeafe;
   --avatar-bg-end: #e0f2fe;
   --loader-border: #d7deea;
+  --scroll-track: #e8ecf3;
+  --scroll-thumb: #c8d1df;
+  --scroll-thumb-hover: #b5c0d2;
 }
 
 :root[data-theme="dark"] {
@@ -104,10 +107,39 @@
   --avatar-bg-start: #314259;
   --avatar-bg-end: #2b3a4f;
   --loader-border: #3a4a5f;
+  --scroll-track: #1a2431;
+  --scroll-thumb: #45586f;
+  --scroll-thumb-hover: #58718c;
 }
 
 * {
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--scroll-thumb), var(--primary));
+  border-radius: 999px;
+  border: 2px solid var(--scroll-track);
+  min-height: 34px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--scroll-thumb-hover), var(--primary-hover));
 }
 
 body {
@@ -115,6 +147,7 @@ body {
   min-width: 320px;
   color: var(--text);
   background: linear-gradient(180deg, var(--bg-b) 0%, var(--bg-a) 100%);
+  scrollbar-gutter: stable;
 }
 
 #app {
@@ -366,6 +399,53 @@ button.theme-toggle:hover {
 .daily-reminder-leave-to {
   opacity: 0;
   transform: translateY(-4px);
+}
+
+.route-fade-slide-enter-active,
+.route-fade-slide-leave-active {
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.route-fade-slide-enter-from,
+.route-fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(16px) scale(0.995);
+  filter: saturate(0.96);
+  transition:
+    opacity 0.48s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 0.48s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    filter 0.42s ease var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.reveal-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: saturate(1);
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .route-fade-slide-enter-active,
+  .route-fade-slide-leave-active,
+  .reveal-on-scroll {
+    transition: none !important;
+  }
+
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
 }
 
 @media (max-width: 1080px) {
