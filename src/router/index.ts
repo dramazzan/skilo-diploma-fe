@@ -27,6 +27,11 @@ const routes = [
     component: () => import("@/views/SkillVerificationView.vue"),
   },
   {
+    path: "/skill-levels",
+    name: "skill-levels",
+    component: () => import("@/views/SkillLevelAssessmentView.vue"),
+  },
+  {
     path: "/roadmaps",
     name: "roadmaps",
     component: () => import("@/views/RoadmapsView.vue"),

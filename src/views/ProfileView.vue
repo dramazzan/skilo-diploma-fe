@@ -3,6 +3,7 @@ import { computed, ref, onMounted } from "vue"
 import { mockProfileData, ProfileData } from "@/mocks/mockProfile"
 import { mockRoadmaps } from "@/mocks/mockRoadmaps"
 import { useRoadmapsStore } from "@/store/roadmaps"
+import { useSkillLevelsStore } from "@/store/skillLevels"
 import { api, type UserActivityDay } from "@/services/api"
 import { useAuthStore } from "@/store/auth"
 
@@ -89,6 +90,7 @@ const activityChartRange = ref<"day" | "week" | "month" | "year">("week")
 const profilePoints = ref<number | null>(null)
 
 const roadmapsStore = useRoadmapsStore()
+const skillLevelsStore = useSkillLevelsStore()
 const authStore = useAuthStore()
 const radarSize = 360
 const radarCenter = radarSize / 2
@@ -101,6 +103,14 @@ const shortLabelByRoadmap: Record<string, string> = {
   backend: "Backend",
   devops: "DevOps",
   mobile: "Mobile"
+}
+
+const roleByRoadmapId: Record<string, string> = {
+  ai: "AI Engineer",
+  frontend: "Frontend Developer",
+  backend: "Backend Developer",
+  devops: "DevOps Engineer",
+  mobile: "Mobile Developer"
 }
 
 const userDetails = computed(() => {
@@ -141,6 +151,15 @@ const roadmapProgressRows = computed(() => {
       totalTopics
     }
   })
+})
+
+const directionLevelsRows = computed(() => {
+  return skillLevelsStore.allLevels
+    .map((result) => ({
+      ...result,
+      title: mockRoadmaps.find((roadmap) => roadmap.id === result.roadmapId)?.title ?? result.roadmapTitle
+    }))
+    .sort((first, second) => first.title.localeCompare(second.title, "ru"))
 })
 
 const knowledgeAxes = computed<KnowledgeAxis[]>(() => {
@@ -517,6 +536,22 @@ const handleResumeAction = async (action: "txt" | "copy") => {
   } catch {
     resumeActionMessage.value = "Не удалось скопировать резюме автоматически. Попробуйте позже."
   }
+}
+
+const buildResumeForDirection = async (roadmapId: string) => {
+  const levelResult = skillLevelsStore.getLevel(roadmapId)
+  const roadmap = mockRoadmaps.find((item) => item.id === roadmapId)
+  if (!levelResult || !roadmap) return
+
+  const role = roleByRoadmapId[roadmapId] ?? "Developer"
+  resumeForm.value.desiredRole = `${levelResult.levelLabel} ${role}`
+  resumeForm.value.summary = `Сфокусирован(а) на направлении "${roadmap.title}" и подтвердил(а) уровень ${levelResult.levelLabel}.`
+  resumeForm.value.experience =
+    resumeForm.value.experience.trim() ||
+    `Практика по ${roadmap.title}: тесты, учебные проекты и прохождение roadmap на платформе.`
+
+  await generateResume()
+  resumeActionMessage.value = `Резюме собрано по направлению "${roadmap.title}" (${levelResult.levelLabel}).`
 }
 
 const verifyCertificateAccess = () => {
@@ -1015,6 +1050,41 @@ onMounted(fetchProfile)
 
           <p v-if="resumeActionMessage" class="resume-action-note">{{ resumeActionMessage }}</p>
         </div>
+      </section>
+
+      <!-- Direction Levels -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Уровни по направлениям</h2>
+          <p class="section-note">
+            Пройдите тесты на странице определения уровня и соберите резюме под конкретное направление.
+          </p>
+        </div>
+
+        <router-link to="/skill-levels" class="levels-link">
+          Перейти к странице определения уровня
+        </router-link>
+
+        <div v-if="directionLevelsRows.length" class="direction-levels-list">
+          <article
+            v-for="item in directionLevelsRows"
+            :key="`direction-level-${item.roadmapId}`"
+            class="direction-level-card"
+          >
+            <div class="direction-level-main">
+              <strong>{{ item.title }}</strong>
+              <span>Уровень: {{ item.levelLabel }}</span>
+            </div>
+
+            <button class="btn-secondary" @click="buildResumeForDirection(item.roadmapId)">
+              Собрать резюме
+            </button>
+          </article>
+        </div>
+
+        <p v-else class="muted">
+          Уровни пока не определены. Пройдите тесты по направлениям.
+        </p>
       </section>
 
       <!-- Certificate -->
@@ -1868,6 +1938,46 @@ onMounted(fetchProfile)
   color: var(--muted);
 }
 
+.levels-link {
+  display: inline-flex;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.direction-levels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.direction-level-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-soft);
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.direction-level-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.direction-level-main strong {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.direction-level-main span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
 /* Certificate */
 .certificate-container {
   margin-top: 20px;
@@ -2140,6 +2250,11 @@ onMounted(fetchProfile)
 
   .resume-form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .direction-level-card {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .toggle-bar {
