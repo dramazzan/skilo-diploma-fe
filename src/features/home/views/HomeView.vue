@@ -3,6 +3,7 @@ import { useRouter } from "vue-router"
 import roadmapVisual from "@/assets/visual-roadmap.svg"
 import interviewVisual from "@/assets/visual-interview.svg"
 import communityVisual from "@/assets/visual-community.svg"
+import { primaryNavLinks } from "@/app/layout/config/navigation"
 import AmbientMotionLayer from "@/shared/ui/AmbientMotionLayer.vue"
 
 const router = useRouter()
@@ -67,6 +68,109 @@ const stats = [
   { value: "AI", label: "поддержка и рекомендации" },
   { value: "IT", label: "фокус на востребованные роли" }
 ]
+
+interface NavJourneyCopy {
+  headline: string
+  description: string
+  actionLabel: string
+  bridgeLead: string
+  bridgeText: string
+}
+
+const navJourneyCopyByPath: Record<string, NavJourneyCopy> = {
+  "/": {
+    headline: "О проекте: единая точка входа в экосистему Skillo",
+    description: "Этот раздел собирает общую картину платформы и помогает выбрать ближайший полезный шаг.",
+    actionLabel: "Вы на главной",
+    bridgeLead: "После обзора проекта переходите к основной рабочей зоне обучения.",
+    bridgeText: "Следующий шаг - открыть дорожные карты и выбрать направление развития."
+  },
+  "/roadmaps": {
+    headline: "Постройте маршрут обучения под конкретную цель",
+    description: "Дорожные карты собирают темы в логичную последовательность и убирают хаотичное обучение.",
+    actionLabel: "К дорожным картам",
+    bridgeLead: "Когда маршрут определен, появляется понятный ежедневный ритм.",
+    bridgeText: "Следующий шаг: закреплять темы короткими практиками, чтобы не терять темп."
+  },
+  "/daily-tasks": {
+    headline: "Закрепляйте прогресс ежедневными заданиями",
+    description: "Ежедневные тесты по вашим трекам помогают удерживать фокус и накапливать результат без перегруза.",
+    actionLabel: "К ежедневным заданиям",
+    bridgeLead: "Практика даёт данные о вашем уровне и готовности к проверке.",
+    bridgeText: "После серии заданий логично перейти к формальному подтверждению навыков."
+  },
+  "/skill-verification": {
+    headline: "Подтверждайте навыки в онлайн или офлайн формате",
+    description: "Записывайтесь на слот с экспертом и фиксируйте достигнутый уровень в формате сертификата.",
+    actionLabel: "К подтверждению навыков",
+    bridgeLead: "Подтверждение сильнее работает, когда есть честная стартовая оценка.",
+    bridgeText: "Перед углублением в треки полезно точно определить текущий уровень."
+  },
+  "/skill-levels": {
+    headline: "Определите текущий уровень по направлению",
+    description: "Оценка уровня показывает стартовую точку и помогает выбрать реалистичную нагрузку в треке.",
+    actionLabel: "Определить уровень",
+    bridgeLead: "Рост проще, когда рядом есть люди с похожими целями и темпом.",
+    bridgeText: "На следующем этапе подключайте социальный слой: совместный прогресс и обмен опытом."
+  },
+  "/friends": {
+    headline: "Добавляйте друзей и двигайтесь вместе",
+    description: "Сравнивайте прогресс, поддерживайте друг друга и сохраняйте регулярность обучения.",
+    actionLabel: "К друзьям",
+    bridgeLead: "Личные связи усиливаются, когда есть общее пространство обсуждений.",
+    bridgeText: "После этого переходите в сообщество за кейсами, постами и практическими идеями."
+  },
+  "/community": {
+    headline: "Обсуждайте практику и карьерные кейсы в сообществе",
+    description: "Публикации и дискуссии помогают быстрее находить рабочие подходы и видеть опыт других.",
+    actionLabel: "К сообществу",
+    bridgeLead: "Следующая цель после развития навыков - применять их в задачах рынка.",
+    bridgeText: "Переходите к вакансиям и соотносите свой прогресс с требованиями работодателей."
+  },
+  "/vacancies": {
+    headline: "Сопоставляйте навыки с актуальными вакансиями",
+    description: "Раздел вакансий показывает, какие требования закрыты, а какие темы еще нужно усилить.",
+    actionLabel: "К вакансиям",
+    bridgeLead: "Рынок - это диалог двух сторон: кандидата и работодателя.",
+    bridgeText: "Чтобы видеть вторую сторону процесса, откройте кабинет компании."
+  },
+  "/company": {
+    headline: "Изучайте роль компании в экосистеме платформы",
+    description: "Кабинет компании связывает требования рынка с развитием навыков пользователей.",
+    actionLabel: "К кабинету компании",
+    bridgeLead: "Когда цель ясна, полезно смотреть на ориентиры лучших участников.",
+    bridgeText: "Дальше переходите к таблице лидеров, чтобы понимать верхнюю планку прогресса."
+  },
+  "/leaders": {
+    headline: "Сверяйтесь с лидерами и измеряйте динамику",
+    description: "Рейтинг показывает текущий темп по платформе и помогает калибровать собственные цели.",
+    actionLabel: "К лидерам",
+    bridgeLead: "Финальная точка цикла - личный профиль с подтвержденными результатами.",
+    bridgeText: "В профиле собирается вся история развития: уровни, прогресс и достижения."
+  },
+  "/profile": {
+    headline: "Управляйте своей траекторией через профиль",
+    description: "Профиль объединяет уровни, активность, подтверждения и шаги, которые стоит сделать дальше.",
+    actionLabel: "К профилю",
+    bridgeLead: "Цикл завершен: теперь можно пересобрать цели и пройти маршрут заново.",
+    bridgeText: "Возвращайтесь к началу, обновляйте план и повторяйте цикл уже на более высоком уровне."
+  }
+}
+
+const navSequence = primaryNavLinks
+const navJourneyCards = navSequence.map((link) => {
+  const copy = navJourneyCopyByPath[link.to]
+
+  return {
+    to: link.to,
+    label: link.label,
+    headline: copy?.headline ?? `Раздел ${link.label}`,
+    description: copy?.description ?? "Откройте раздел, чтобы продолжить развитие на платформе.",
+    actionLabel: copy?.actionLabel ?? `Открыть ${link.label.toLowerCase()}`,
+    bridgeLead: copy?.bridgeLead ?? "",
+    bridgeText: copy?.bridgeText ?? ""
+  }
+})
 
 const navigate = (path: string) => {
   router.push(path)
@@ -172,6 +276,39 @@ const navigate = (path: string) => {
     <section class="text-bridge text-bridge--second">
       <p class="text-bridge-lead">Прогресс виден по шагам, поэтому проще удерживать темп и не терять мотивацию</p>
       <p class="text-bridge-sub">Даже короткие ежедневные сессии складываются в ощутимый рост навыков.</p>
+    </section>
+
+    <section class="nav-journey">
+      <div class="nav-journey-head">
+        <span>Маршрут по разделам</span>
+        <h2>Весь функционал платформы в порядке меню навигации</h2>
+        <p>
+          Ниже собраны все ключевые разделы Skillo по последовательности из бокового меню.
+          Переходите по шагам и используйте платформу как цельную систему роста.
+        </p>
+      </div>
+
+      <div class="nav-journey-list">
+        <template v-for="(item, index) in navJourneyCards" :key="item.to">
+          <article class="nav-journey-card ambient-host">
+            <AmbientMotionLayer mode="panel" edge-fade="soft" intensity="low" />
+            <div class="nav-journey-card-head">
+              <span>{{ index + 1 }}. {{ item.label }}</span>
+              <small>{{ item.to }}</small>
+            </div>
+            <h3>{{ item.headline }}</h3>
+            <p>{{ item.description }}</p>
+            <div class="nav-journey-actions">
+              <button class="primary" @click="navigate(item.to)">{{ item.actionLabel }}</button>
+            </div>
+          </article>
+
+          <section v-if="index < navJourneyCards.length - 1" class="nav-journey-bridge">
+            <p class="nav-journey-bridge-lead">{{ item.bridgeLead }}</p>
+            <p class="nav-journey-bridge-text">{{ item.bridgeText }}</p>
+          </section>
+        </template>
+      </div>
     </section>
 
     <section class="cta ambient-host">
@@ -588,6 +725,159 @@ const navigate = (path: string) => {
   line-height: 1.55;
 }
 
+.nav-journey {
+  display: grid;
+  gap: 14px;
+}
+
+.nav-journey-head {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+  padding: 18px;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  text-align: center;
+}
+
+.nav-journey-head span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.nav-journey-head h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(27px, 4vw, 38px);
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+  max-width: 30ch;
+}
+
+.nav-journey-head p {
+  margin: 0;
+  max-width: 66ch;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.nav-journey-list {
+  display: grid;
+  gap: 14px;
+}
+
+.nav-journey-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background:
+    radial-gradient(360px 210px at 100% 0%, rgba(255, 142, 60, 0.09), transparent 72%),
+    linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+  transition: border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.nav-journey-card:hover {
+  border-color: var(--soft-border);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-journey-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
+}
+
+.nav-journey-card-head span {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+}
+
+.nav-journey-card-head small {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.nav-journey-card h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 26px;
+  line-height: 1.16;
+  letter-spacing: -0.03em;
+  max-width: 34ch;
+}
+
+.nav-journey-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 70ch;
+}
+
+.nav-journey-actions {
+  margin-top: 2px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.nav-journey-actions button {
+  padding: 10px 14px;
+  border-radius: 11px;
+  font-size: 13px;
+}
+
+.nav-journey-actions .primary {
+  border: 1px solid var(--primary) !important;
+  background: var(--primary) !important;
+  color: var(--button-text) !important;
+}
+
+.nav-journey-actions .primary:hover {
+  border-color: var(--primary-hover) !important;
+  background: var(--primary-hover) !important;
+  color: var(--button-text) !important;
+}
+
+.nav-journey-bridge {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  text-align: center;
+  padding: 2px 8px;
+}
+
+.nav-journey-bridge-lead {
+  margin: 0;
+  max-width: 34ch;
+  font-size: clamp(21px, 3vw, 34px);
+  line-height: 1.1;
+  letter-spacing: -0.026em;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--text) 78%, var(--primary) 22%);
+}
+
+.nav-journey-bridge-text {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 .cta {
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -647,6 +937,10 @@ const navigate = (path: string) => {
   .about {
     grid-template-columns: 1fr;
   }
+
+  .nav-journey-card h3 {
+    font-size: 23px;
+  }
 }
 
 @media (max-width: 680px) {
@@ -676,6 +970,27 @@ const navigate = (path: string) => {
   }
 
   .hero-actions button {
+    width: 100%;
+  }
+
+  .nav-journey-card {
+    padding: 14px;
+  }
+
+  .nav-journey-card-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nav-journey-card h3 {
+    font-size: 21px;
+  }
+
+  .nav-journey-actions {
+    width: 100%;
+  }
+
+  .nav-journey-actions button {
     width: 100%;
   }
 }

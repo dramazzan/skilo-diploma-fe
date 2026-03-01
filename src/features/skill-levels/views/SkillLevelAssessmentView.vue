@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue"
-import { useRouter } from "vue-router"
 import {
   mockRoadmapAssessments,
   mockRoadmaps,
@@ -236,7 +235,6 @@ const extraTheoryQuestionsByRoadmap: Record<string, AssessmentQuestion[]> = Obje
   ])
 ) as Record<string, AssessmentQuestion[]>
 
-const router = useRouter()
 const authStore = useAuthStore()
 const roadmapsStore = useRoadmapsStore()
 const skillLevelsStore = useSkillLevelsStore()
@@ -426,10 +424,6 @@ const submitDirectionAssessment = async () => {
 
 <template>
   <div class="skill-level-page">
-    <button class="btn-back" @click="router.push('/roadmaps')">
-      ← Назад к дорожным картам
-    </button>
-
     <section class="hero-card">
       <div>
         <p class="hero-kicker">Определение уровня</p>
@@ -580,20 +574,6 @@ const submitDirectionAssessment = async () => {
 
 .flow-note {
   padding: 0 4px;
-}
-
-.btn-back {
-  border: none !important;
-  background: transparent !important;
-  color: var(--muted) !important;
-  padding: 0 !important;
-  width: fit-content;
-  box-shadow: none !important;
-}
-
-.btn-back:hover {
-  color: var(--text) !important;
-  transform: none !important;
 }
 
 .hero-card {

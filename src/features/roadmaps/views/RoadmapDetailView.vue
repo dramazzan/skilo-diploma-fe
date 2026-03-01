@@ -62,10 +62,6 @@ watch(viewMode, (value) => {
 
 <template>
   <div class="page roadmap-page">
-    <button class="btn btn--ghost" @click="$router.push('/roadmaps')">
-      ← Назад к дорожным картам
-    </button>
-
     <div v-if="!roadmap" class="empty-state">
       <h2>Roadmap не найден</h2>
     </div>

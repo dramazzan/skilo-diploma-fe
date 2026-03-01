@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue"
-import { useRouter } from "vue-router"
 import { useDailyTasksStore, type DailyTaskItem } from "@/features/daily-tasks/store/dailyTasks"
 
 type TaskFilter = "all" | "pending" | "completed"
@@ -13,7 +12,6 @@ interface RoadmapTaskGroup {
   total: number
 }
 
-const router = useRouter()
 const dailyTasksStore = useDailyTasksStore()
 const activeFilter = ref<TaskFilter>("all")
 const quizTaskId = ref<string | null>(null)
@@ -160,10 +158,6 @@ onMounted(() => {
 
 <template>
   <div class="daily-page">
-    <button class="btn-back" @click="router.push('/roadmaps')">
-      ← Назад к дорожным картам
-    </button>
-
     <section class="daily-hero">
       <div class="daily-hero-text">
         <p class="daily-kicker">Ежедневные задания</p>
@@ -361,27 +355,6 @@ onMounted(() => {
 
 .flow-note {
   padding: 0 4px;
-}
-
-.btn-back {
-  width: fit-content;
-  border: 1px solid var(--border) !important;
-  border-radius: 12px;
-  background: var(--surface) !important;
-  color: var(--text) !important;
-  padding: 8px 14px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
-}
-
-.btn-back:hover {
-  background: var(--surface-soft) !important;
-  border-color: var(--border) !important;
-  color: var(--text) !important;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
 }
 
 .daily-hero {

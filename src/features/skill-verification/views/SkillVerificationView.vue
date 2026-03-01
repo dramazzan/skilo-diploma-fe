@@ -270,11 +270,8 @@ onMounted(async () => {
 
 <template>
   <div class="verification-page">
-    <button type="button" class="back-link" @click="router.push('/profile')">
-      ← Вернуться в профиль
-    </button>
-
-    <section class="hero-card">
+    
+<section class="hero-card">
       <div>
         <p class="hero-kicker">Подтверждение навыков</p>
         <h1>Запись на онлайн/офлайн подтверждение на платформе</h1>
