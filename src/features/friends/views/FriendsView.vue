@@ -850,7 +850,7 @@ onBeforeUnmount(() => {
                     </strong>
                   </div>
                 </div>
-                <button type="button" class="secondary tiny" :disabled="challengeQuizSubmitting" @click="closeChallengeQuiz">
+                <button type="button" class="secondary tiny" :disabled="challengeQuizSubmitting" @click="closeChallengeQuiz()">
                   Завершить попытку
                 </button>
               </header>
@@ -896,7 +896,7 @@ onBeforeUnmount(() => {
                 </div>
 
                 <div class="challenge-quiz-actions">
-                  <button type="button" class="secondary" :disabled="challengeQuizSubmitting" @click="closeChallengeQuiz">
+                  <button type="button" class="secondary" :disabled="challengeQuizSubmitting" @click="closeChallengeQuiz()">
                     Отмена
                   </button>
                   <button

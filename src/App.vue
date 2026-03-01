@@ -360,7 +360,7 @@ onBeforeUnmount(() => {
             @click="toggleNavDrawer"
           >
             <span class="top-nav-menu-icon" aria-hidden="true" />
-            <span>Меню</span>
+
           </button>
 
           <router-link to="/" class="top-brand">Skillo</router-link>
@@ -500,3 +500,5 @@ onBeforeUnmount(() => {
     </footer>
   </div>
 </template>
+
+
