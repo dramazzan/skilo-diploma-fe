@@ -333,17 +333,25 @@ const navigate = (path: string) => {
 }
 
 .hero {
-  border: 1px solid var(--border);
-  border-radius: 16px;
+  position: relative;
+  width: 100vw;
+  margin: calc(-1 * (var(--top-nav-height) + 18px)) calc(50% - 50vw) 0;
+  border: none;
+  border-radius: 0;
   background:
     radial-gradient(420px 220px at 12% -8%, rgba(109, 152, 255, 0.16), transparent 72%),
     radial-gradient(400px 220px at 92% 0%, rgba(255, 142, 60, 0.15), transparent 70%),
     linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
-  padding: 28px 24px;
+  min-height: 100dvh;
+  --hero-block-pad: clamp(26px, 7vh, 64px);
+  padding: var(--hero-block-pad) max(16px, calc((100vw - 1120px) / 2));
+  padding-top: calc(var(--hero-block-pad) + var(--top-nav-height));
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   text-align: center;
+  box-shadow: inset 0 -1px 0 var(--border);
 }
 
 .badge {
@@ -951,7 +959,10 @@ const navigate = (path: string) => {
   }
 
   .hero {
+    margin-top: calc(-1 * (var(--top-nav-height) + 10px));
+    min-height: 100dvh;
     padding: 20px 16px;
+    padding-top: calc(20px + var(--top-nav-height));
   }
 
   .hero h1 {

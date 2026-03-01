@@ -334,118 +334,142 @@ const generateCustomTrack = async () => {
       </div>
 
       <div class="builder-card">
-        <div class="builder-grid">
-          <label class="builder-label">
-            Название вашей дорожки
-            <input v-model="aiForm.title" type="text" placeholder="Например: Fullstack + AI для карьерного роста" />
-          </label>
-          <label class="builder-label">
-            Режим генерации
-            <div class="mode-switch">
-              <button
-                type="button"
-                class="btn btn--ghost"
-                :class="{ 'mode-active': aiForm.generationMode === 'single' }"
-                :aria-pressed="aiForm.generationMode === 'single'"
-                @click="aiForm.generationMode = 'single'"
-              >
-                Один большой трек
+        <div class="builder-layout">
+          <div class="builder-main-column">
+            <div class="builder-block">
+              <p class="builder-block-title">Базовые параметры трека</p>
+
+              <div class="builder-stack">
+                <label class="builder-label">
+                  Название вашей дорожки
+                  <input v-model="aiForm.title" type="text" placeholder="Например: Fullstack + AI для карьерного роста" />
+                </label>
+
+                <label class="builder-label">
+                  Цель пользователя
+                  <textarea
+                    v-model="aiForm.goal"
+                    rows="3"
+                    placeholder="Например: устроиться на Junior/Middle роль за 6 месяцев и собрать сильное портфолио"
+                  />
+                </label>
+
+                <label class="builder-label">
+                  Интересы (через запятую)
+                  <input
+                    v-model="aiForm.interests"
+                    type="text"
+                    placeholder="Например: архитектура, микросервисы, алгоритмы, system design"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <aside class="builder-side-column">
+            <div class="builder-block">
+              <p class="builder-block-title">Режим генерации</p>
+              <div class="mode-switch">
+                <button
+                  type="button"
+                  class="btn btn--ghost"
+                  :class="{ 'mode-active': aiForm.generationMode === 'single' }"
+                  :aria-pressed="aiForm.generationMode === 'single'"
+                  @click="aiForm.generationMode = 'single'"
+                >
+                  Один большой трек
+                </button>
+                <button
+                  type="button"
+                  class="btn btn--ghost"
+                  :class="{ 'mode-active': aiForm.generationMode === 'multiple' }"
+                  :aria-pressed="aiForm.generationMode === 'multiple'"
+                  @click="aiForm.generationMode = 'multiple'"
+                >
+                  Несколько треков
+                </button>
+              </div>
+              <span class="mode-selected">
+                Выбран режим:
+                <strong>{{ aiForm.generationMode === "single" ? "Один большой трек" : "Несколько треков" }}</strong>
+              </span>
+            </div>
+
+            <div class="builder-block">
+              <p class="builder-block-title">Направления</p>
+              <div class="direction-pills">
+                <button
+                  v-for="roadmap in allRoadmaps"
+                  :key="roadmap.id"
+                  type="button"
+                  class="direction-pill"
+                  :class="{ active: isDirectionSelected(roadmap.id) }"
+                  @click="toggleDirection(roadmap.id)"
+                >
+                  {{ roadmap.title }}
+                </button>
+              </div>
+              <p class="builder-meta builder-meta--selected">
+                Выбрано: {{ aiForm.selectedDirectionIds.length }} из {{ allRoadmaps.length }}
+              </p>
+              <div v-if="selectedDirections.length" class="selected-directions">
+                <span v-for="direction in selectedDirections" :key="`selected-${direction.id}`">
+                  {{ direction.title }}
+                </span>
+              </div>
+            </div>
+
+            <div class="builder-block builder-ai-hint">
+              <p class="section-label">AI-рекомендации по связанным направлениям</p>
+              <div class="tags">
+                <span v-for="item in relatedSuggestions" :key="item.id">{{ item.title }}</span>
+                <span v-if="!relatedSuggestions.length">Выберите направление, чтобы получить рекомендации</span>
+              </div>
+              <div class="compatibility-block">
+                <div class="progress-head">
+                  <span class="section-label" style="margin: 0;">Совместимость выбранных направлений</span>
+                  <span class="badge">{{ compatibilityPercent }}%</span>
+                </div>
+                <div class="progress-track">
+                  <span class="progress-fill" :style="{ width: `${compatibilityPercent}%` }" />
+                </div>
+                <p v-if="weakCompatibilityPairs.length" class="builder-warning">
+                  Слабая связка: {{ weakCompatibilityPairs.join(", ") }}. Лучше генерировать в режиме "Несколько треков".
+                </p>
+              </div>
+              <p class="builder-meta">
+                Рекомендации и совместимость пересчитываются по мере выбора направлений.
+              </p>
+            </div>
+
+            <p v-if="aiError" class="builder-error">{{ aiError }}</p>
+
+            <div class="actions-row actions-row--builder">
+              <button class="btn btn--primary" :disabled="aiLoading" @click="generateCustomTrack">
+                {{ aiLoading ? "Генерация..." : "Собрать дорожку через AI" }}
               </button>
-              <button
-                type="button"
-                class="btn btn--ghost"
-                :class="{ 'mode-active': aiForm.generationMode === 'multiple' }"
-                :aria-pressed="aiForm.generationMode === 'multiple'"
-                @click="aiForm.generationMode = 'multiple'"
-              >
-                Несколько треков
-              </button>
             </div>
-            <span class="mode-selected">
-              Выбран режим:
-              <strong>{{ aiForm.generationMode === "single" ? "Один большой трек" : "Несколько треков" }}</strong>
-            </span>
-          </label>
-        </div>
-
-        <div class="builder-label">
-          Выберите нужные направления
-          <div class="direction-pills">
-            <button
-              v-for="roadmap in allRoadmaps"
-              :key="roadmap.id"
-              type="button"
-              class="direction-pill"
-              :class="{ active: isDirectionSelected(roadmap.id) }"
-              @click="toggleDirection(roadmap.id)"
-            >
-              {{ roadmap.title }}
-            </button>
-          </div>
-        </div>
-
-        <label class="builder-label">
-          Цель пользователя
-          <textarea
-            v-model="aiForm.goal"
-            rows="3"
-            placeholder="Например: устроиться на Junior/Middle роль за 6 месяцев и собрать сильное портфолио"
-          />
-        </label>
-
-        <label class="builder-label">
-          Интересы (через запятую)
-          <input
-            v-model="aiForm.interests"
-            type="text"
-            placeholder="Например: архитектура, микросервисы, алгоритмы, system design"
-          />
-        </label>
-
-        <div class="builder-ai-hint">
-          <p class="section-label">AI-рекомендации по связанным направлениям</p>
-          <div class="tags">
-            <span v-for="item in relatedSuggestions" :key="item.id">{{ item.title }}</span>
-            <span v-if="!relatedSuggestions.length">Выберите направление, чтобы получить рекомендации</span>
-          </div>
-          <div class="compatibility-block">
-            <div class="progress-head">
-              <span class="section-label" style="margin: 0;">Совместимость выбранных направлений</span>
-              <span class="badge">{{ compatibilityPercent }}%</span>
-            </div>
-            <div class="progress-track">
-              <span class="progress-fill" :style="{ width: `${compatibilityPercent}%` }" />
-            </div>
-            <p v-if="weakCompatibilityPairs.length" class="builder-warning">
-              Слабая связка: {{ weakCompatibilityPairs.join(", ") }}. Лучше генерировать в режиме "Несколько треков".
-            </p>
-          </div>
-          <p class="builder-meta">
-            Рекомендации и совместимость пересчитываются по мере выбора направлений.
-          </p>
-        </div>
-
-        <p v-if="aiError" class="builder-error">{{ aiError }}</p>
-
-        <div class="actions-row actions-row--builder">
-          <button class="btn btn--primary" :disabled="aiLoading" @click="generateCustomTrack">
-            {{ aiLoading ? "Генерация..." : "Собрать дорожку через AI" }}
-          </button>
+          </aside>
         </div>
       </div>
 
-      <div v-for="generatedTrack in generatedTracks" :key="generatedTrack.id" class="generated-card">
-        <div class="generated-head">
-          <h3>{{ generatedTrack.title }}</h3>
-          <span class="badge">Создано</span>
+      <div v-if="generatedTracks.length" class="generated-output">
+        <p class="section-label">Сгенерированные треки</p>
+        <div class="generated-grid">
+          <div v-for="generatedTrack in generatedTracks" :key="generatedTrack.id" class="generated-card">
+            <div class="generated-head">
+              <h3>{{ generatedTrack.title }}</h3>
+              <span class="badge">Создано</span>
+            </div>
+            <p class="roadmap-desc">{{ generatedTrack.goal }}</p>
+            <p class="builder-meta">
+              Направления: {{ generatedTrack.directionIds.map((id) => roadmapTitlesMap[id] ?? id).join(", ") }}
+            </p>
+            <ul class="milestones-list">
+              <li v-for="item in generatedTrack.milestones" :key="item">{{ item }}</li>
+            </ul>
+          </div>
         </div>
-        <p class="roadmap-desc">{{ generatedTrack.goal }}</p>
-        <p class="builder-meta">
-          Направления: {{ generatedTrack.directionIds.map((id) => roadmapTitlesMap[id] ?? id).join(", ") }}
-        </p>
-        <ul class="milestones-list">
-          <li v-for="item in generatedTrack.milestones" :key="item">{{ item }}</li>
-        </ul>
       </div>
 
       <div v-if="customTracks.length > 0" class="saved-tracks">
@@ -1091,36 +1115,101 @@ const generateCustomTrack = async () => {
 }
 
 .builder-card {
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 18px;
-  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
+  border-radius: 18px;
+  padding: 20px;
+  background:
+    radial-gradient(460px 190px at -5% -20%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 72%),
+    radial-gradient(360px 220px at 100% -12%, rgba(255, 142, 60, 0.17), transparent 72%),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 94%, transparent) 0%, var(--surface-soft) 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 12px 34px rgba(10, 10, 10, 0.08);
+}
+
+.builder-layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.builder-main-column,
+.builder-side-column {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.builder-grid {
+.builder-block {
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 95%, var(--surface-soft));
+  padding: 13px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
+}
+
+.builder-block-title {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.builder-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.builder-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, color-mix(in srgb, var(--primary) 7%, transparent) 0%, transparent 58%);
+  pointer-events: none;
+}
+
+.builder-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 42%, transparent);
+  pointer-events: none;
 }
 
 .mode-switch {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
+  padding: 4px;
+  border-radius: 13px;
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  background: color-mix(in srgb, var(--surface) 88%, var(--surface-soft));
+}
+
+.mode-switch .btn {
+  border-radius: 10px;
+  min-height: 38px;
 }
 
 .mode-switch .btn.mode-active {
-  background: var(--primary);
+  background: linear-gradient(125deg, var(--primary) 0%, var(--primary-hover) 100%);
   color: #fff;
   border-color: var(--primary);
-  box-shadow: 0 6px 18px rgba(31, 45, 122, 0.28);
+  box-shadow: 0 7px 18px color-mix(in srgb, var(--primary) 36%, transparent);
 }
 
 .mode-switch .btn.mode-active:hover {
-  background: var(--primary-hover);
+  background: linear-gradient(125deg, var(--primary-hover) 0%, var(--primary) 100%);
   border-color: var(--primary-hover);
 }
 
@@ -1131,9 +1220,14 @@ const generateCustomTrack = async () => {
 }
 
 .mode-selected {
-  margin-top: 2px;
+  margin-top: 4px;
+  width: fit-content;
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: color-mix(in srgb, var(--surface) 90%, var(--surface-soft));
   font-size: 12px;
-  color: #64748b;
+  color: var(--muted);
 }
 
 .mode-selected strong {
@@ -1141,60 +1235,111 @@ const generateCustomTrack = async () => {
 }
 
 .builder-label {
+  position: relative;
+  z-index: 1;
   display: grid;
-  gap: 6px;
-  font-size: 13px;
-  color: #64748b;
+  gap: 7px;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  font-weight: 700;
 }
 
 .builder-label input,
 .builder-label textarea,
 .builder-label select {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
+  border-radius: 12px;
+  padding: 11px 13px;
   font-family: inherit;
   font-size: 14px;
   color: var(--text);
+  background: color-mix(in srgb, var(--surface) 94%, var(--surface-soft));
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.builder-label input::placeholder,
+.builder-label textarea::placeholder {
+  color: color-mix(in srgb, var(--muted) 86%, transparent);
+}
+
+.builder-label input:focus,
+.builder-label textarea:focus,
+.builder-label select:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--primary) 56%, var(--border));
   background: var(--surface);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 16%, transparent);
+}
+
+.builder-label textarea {
+  min-height: 96px;
+  resize: vertical;
 }
 
 .direction-pills {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.direction-pill {
+  border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
+  border-radius: 11px;
+  padding: 8px 12px;
+  background: color-mix(in srgb, var(--surface) 95%, var(--surface-soft));
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.direction-pill:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--soft-border) 92%, transparent);
+  background: var(--surface);
+  box-shadow: 0 5px 16px rgba(10, 10, 10, 0.08);
+}
+
+.direction-pill.active {
+  border-color: color-mix(in srgb, var(--primary) 76%, transparent);
+  background: linear-gradient(125deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: #fff;
+  box-shadow: 0 7px 18px color-mix(in srgb, var(--primary) 34%, transparent);
+}
+
+.builder-ai-hint {
+  position: static;
+  z-index: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.builder-ai-hint .section-label {
+  margin: 0;
+}
+
+.builder-ai-hint .tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.direction-pill {
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 7px 12px;
-  background: var(--surface);
-  color: #64748b;
-  font-size: 13px;
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-}
-
-.direction-pill:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(10, 10, 10, 0.08);
-}
-
-.direction-pill.active {
-  background: var(--primary);
-  color: #fff;
-  border-color: var(--primary);
-}
-
-.builder-ai-hint {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface-soft);
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.builder-ai-hint .tags span {
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  background: color-mix(in srgb, var(--surface) 94%, var(--surface-soft));
 }
 
 .builder-meta {
@@ -1203,38 +1348,100 @@ const generateCustomTrack = async () => {
   color: var(--muted);
 }
 
+.builder-meta--selected {
+  font-weight: 600;
+}
+
+.selected-directions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.selected-directions span {
+  border: 1px solid color-mix(in srgb, var(--primary) 36%, transparent);
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 12px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--primary) 14%, var(--surface));
+}
+
 .compatibility-block {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: 12px;
+  padding: 10px;
+  background: color-mix(in srgb, var(--surface) 90%, var(--surface-soft));
 }
 
 .builder-warning {
   margin: 0;
-  color: #b45309;
+  color: #92400e;
   font-size: 12px;
+  border: 1px solid color-mix(in srgb, #f59e0b 36%, transparent);
+  background: color-mix(in srgb, #f59e0b 16%, transparent);
+  border-radius: 10px;
+  padding: 8px 10px;
 }
 
 .builder-error {
   margin: 0;
+  border: 1px solid color-mix(in srgb, #be123c 34%, transparent);
+  background: color-mix(in srgb, #be123c 14%, transparent);
+  border-radius: 11px;
+  padding: 9px 11px;
   font-size: 13px;
   color: #be123c;
+  font-weight: 600;
 }
 
 .actions-row--builder {
+  position: relative;
+  z-index: 1;
+  justify-content: stretch;
   padding: 0;
   border-top: 0;
   background: transparent;
 }
 
+.actions-row--builder .btn--primary {
+  width: 100%;
+  min-width: 0;
+  border-radius: 12px;
+  padding-inline: 20px;
+}
+
+.generated-output {
+  display: grid;
+  gap: 10px;
+}
+
+.generated-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 12px;
+}
+
 .generated-card {
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--surface);
-  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
+  border-radius: 16px;
+  background:
+    radial-gradient(420px 170px at 0% 0%, color-mix(in srgb, var(--primary) 8%, transparent), transparent 72%),
+    linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 11px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.generated-card:hover {
+  border-color: var(--soft-border);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .generated-head {
@@ -1246,7 +1453,7 @@ const generateCustomTrack = async () => {
 
 .generated-head h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 18px;
   color: var(--text);
 }
 
@@ -1254,9 +1461,10 @@ const generateCustomTrack = async () => {
   margin: 0;
   padding-left: 18px;
   display: grid;
-  gap: 6px;
-  color: #64748b;
+  gap: 7px;
+  color: var(--muted);
   font-size: 13px;
+  line-height: 1.5;
 }
 
 .saved-tracks {
@@ -1272,12 +1480,18 @@ const generateCustomTrack = async () => {
 }
 
 .saved-track-card {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface);
-  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+  padding: 13px;
   display: grid;
   gap: 8px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.saved-track-card:hover {
+  border-color: var(--soft-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .saved-track-card h4 {
@@ -1622,6 +1836,14 @@ const generateCustomTrack = async () => {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .builder-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .direction-pills {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .visual-story-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1682,11 +1904,29 @@ const generateCustomTrack = async () => {
     grid-template-columns: 1fr;
   }
 
-  .builder-grid {
-    grid-template-columns: 1fr;
+  .builder-card {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .builder-layout {
+    gap: 10px;
   }
 
   .mode-switch {
+    grid-template-columns: 1fr;
+  }
+
+  .direction-pills {
+    grid-template-columns: 1fr;
+  }
+
+  .actions-row--builder .btn--primary {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .generated-grid {
     grid-template-columns: 1fr;
   }
 

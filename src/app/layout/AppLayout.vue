@@ -65,6 +65,7 @@ watch(
     :class="{
       'nav-docked': isDesktopNavPinned,
       'nav-docked-collapsed': isDesktopNavPinned && !isDesktopNavVisible,
+      'nav-menu-open': !isAuthRoute && isSideNavOpen && !isDesktopNavPinned,
       'auth-layout': isAuthRoute
     }"
   >
