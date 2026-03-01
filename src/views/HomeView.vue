@@ -3,6 +3,7 @@ import { useRouter } from "vue-router"
 import roadmapVisual from "@/assets/visual-roadmap.svg"
 import interviewVisual from "@/assets/visual-interview.svg"
 import communityVisual from "@/assets/visual-community.svg"
+import AmbientMotionLayer from "@/components/AmbientMotionLayer.vue"
 
 const router = useRouter()
 
@@ -74,9 +75,10 @@ const navigate = (path: string) => {
 
 <template>
   <div class="home">
-    <section class="hero">
-      <span class="badge">О проекте Skilo</span>
-      <h1>Skilo: платформа роста в <span class="accent">IT</span></h1>
+    <section class="hero ambient-host">
+      <AmbientMotionLayer mode="hero" edge-fade="wide" intensity="medium" />
+      <span class="badge">О проекте Skillo</span>
+      <h1>Skillo: платформа роста в <span class="accent">IT</span></h1>
       <p>Единая среда, где обучение, практика, оценка уровня и карьерный трек работают как один процесс.</p>
 
       <div class="hero-actions">
@@ -121,7 +123,8 @@ const navigate = (path: string) => {
       <p class="text-bridge-sub">Так легче держать фокус и понимать, какой следующий шаг даст максимум пользы.</p>
     </section>
 
-    <section class="values">
+    <section class="values ambient-host">
+      <AmbientMotionLayer mode="panel" edge-fade="soft" intensity="low" />
       <div class="values-head">
         <span>Что внутри проекта</span>
         <h2>Полный цикл развития специалиста</h2>
@@ -135,9 +138,10 @@ const navigate = (path: string) => {
     </section>
 
     <section class="about">
-      <div class="about-copy">
+      <div class="about-copy ambient-host">
+        <AmbientMotionLayer mode="soft" edge-fade="soft" intensity="low" />
         <span class="about-kicker">О платформе</span>
-        <h2>Skilo сокращает путь от обучения к реальной работе</h2>
+        <h2>Skillo сокращает путь от обучения к реальной работе</h2>
         <p>
           Проект объединяет дорожные карты, задания, интервью-подготовку и подтверждение навыков.
           Вы двигаетесь по прозрачному маршруту и видите результат каждого этапа.
@@ -154,8 +158,9 @@ const navigate = (path: string) => {
       </div>
     </section>
 
-    <section class="why">
-      <h2>Почему пользователи выбирают Skilo</h2>
+    <section class="why ambient-host">
+      <AmbientMotionLayer mode="panel" edge-fade="soft" intensity="low" />
+      <h2>Почему пользователи выбирают Skillo</h2>
       <div class="why-grid">
         <article v-for="item in whyCards" :key="item.title" class="why-card">
           <h3>{{ item.title }}</h3>
@@ -169,7 +174,8 @@ const navigate = (path: string) => {
       <p class="text-bridge-sub">Даже короткие ежедневные сессии складываются в ощутимый рост навыков.</p>
     </section>
 
-    <section class="cta">
+    <section class="cta ambient-host">
+      <AmbientMotionLayer mode="cta" edge-fade="wide" intensity="medium" />
       <h2>Начните с определения уровня и выберите трек под свою цель</h2>
       <p>Платформа подскажет точку старта и поможет собрать следующий реалистичный шаг.</p>
       <div class="hero-actions">
@@ -266,23 +272,52 @@ const navigate = (path: string) => {
 }
 
 .story-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+  padding: 8px;
   display: grid;
   gap: 10px;
   opacity: 0;
   transform: translateY(10px);
   animation: story-in 0.66s ease forwards;
   animation-delay: var(--story-delay, 0ms);
+  transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.story-card::after {
+  content: "";
+  position: absolute;
+  inset: -42% 45% auto -45%;
+  height: 180px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.24) 0%, transparent 72%);
+  opacity: 0;
+  transition: opacity 0.24s ease;
+  pointer-events: none;
 }
 
 .story-card img {
   width: 100%;
   aspect-ratio: 16 / 10;
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px solid var(--border);
   background: var(--surface-soft);
   object-fit: cover;
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
   animation: story-float 6s ease-in-out infinite;
+}
+
+.story-card:hover {
+  border-color: var(--soft-border);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+.story-card:hover::after {
+  opacity: 1;
 }
 
 .story-card:nth-child(2) img {
@@ -337,6 +372,10 @@ const navigate = (path: string) => {
 }
 
 .values {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 88%, transparent) 0%, var(--surface-soft) 100%);
+  padding: 16px 14px;
   display: grid;
   gap: 14px;
 }
@@ -369,12 +408,31 @@ const navigate = (path: string) => {
 }
 
 .value-card {
+  position: relative;
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
   padding: 16px;
   display: grid;
   gap: 8px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.value-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--text) 14%, transparent) 0%, transparent 85%);
+  opacity: 0.65;
+}
+
+.value-card:hover {
+  border-color: var(--soft-border);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 .value-card h3 {
@@ -439,6 +497,12 @@ const navigate = (path: string) => {
   padding: 14px;
   display: grid;
   gap: 5px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.about-stats article:hover {
+  border-color: var(--soft-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .about-stats strong {
@@ -453,6 +517,10 @@ const navigate = (path: string) => {
 }
 
 .why {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 90%, transparent) 0%, var(--surface-soft) 100%);
+  padding: 16px 14px;
   display: grid;
   gap: 12px;
 }
@@ -473,12 +541,38 @@ const navigate = (path: string) => {
 }
 
 .why-card {
+  position: relative;
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--surface);
   padding: 14px;
   display: grid;
   gap: 7px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.why-card::before {
+  content: "";
+  position: absolute;
+  inset: auto -28% -58% auto;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 72%);
+  opacity: 0;
+  transition: opacity 0.24s ease;
+  pointer-events: none;
+}
+
+.why-card:hover {
+  border-color: var(--soft-border);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.why-card:hover::before {
+  opacity: 1;
 }
 
 .why-card h3 {

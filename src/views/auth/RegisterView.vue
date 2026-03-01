@@ -42,7 +42,7 @@ const handleRegister = async () => {
   <section class="auth-page">
     <div class="auth-container auth-shell">
       <aside class="auth-side">
-        <p class="auth-kicker">Skilo</p>
+        <p class="auth-kicker">Skillo</p>
         <h1>Создание аккаунта</h1>
         <p class="auth-text">
           Пройдите быструю регистрацию и получите доступ к roadmap-платформе, вакансиям и заданиям.

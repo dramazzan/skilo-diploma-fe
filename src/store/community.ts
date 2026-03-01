@@ -161,7 +161,7 @@ const createSeedPosts = (): CommunityPost[] => {
         "Мы открыли новый поток стажировки в backend-направлении. В отборе смотрим на умение проектировать API-контракты, писать тесты и работать с логами/метриками. Для подготовки рекомендуем пройти дорожку Backend, затем тренажер интервью по системному мышлению и надежности.",
       focusArea: "backend",
       tags: ["Backend", "Стажировка", "Интервью"],
-      authorName: "Skilo Partner Team",
+      authorName: "Skillo Partner Team",
       authorType: "company",
       authorUserId: null,
       createdAt: "2026-02-25T08:50:00.000Z",
@@ -304,7 +304,7 @@ export const useCommunityStore = defineStore("community", () => {
       content: payload.content.trim(),
       focusArea: payload.focusArea.trim().toLowerCase(),
       tags: payload.tags.map((tag) => tag.trim()).filter(Boolean),
-      authorName: payload.authorName.trim() || "Участник Skilo",
+      authorName: payload.authorName.trim() || "Участник Skillo",
       authorType: payload.authorType,
       authorUserId: payload.authorUserId,
       createdAt,
@@ -366,7 +366,7 @@ export const useCommunityStore = defineStore("community", () => {
       ...post.comments,
       {
         id: createCommentId(),
-        authorName: payload.authorName.trim() || "Участник Skilo",
+        authorName: payload.authorName.trim() || "Участник Skillo",
         authorType: payload.authorType,
         text: nextText,
         createdAt: new Date().toISOString()

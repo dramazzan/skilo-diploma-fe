@@ -59,10 +59,10 @@ const formatDisplayName = (raw: string) => {
 
 const currentAuthorName = computed(() => {
   const email = authStore.user?.email
-  if (!email) return "Участник Skilo"
+  if (!email) return "Участник Skillo"
   const localPart = email.split("@")[0] ?? "Участник"
   const pretty = formatDisplayName(localPart)
-  return pretty || "Участник Skilo"
+  return pretty || "Участник Skillo"
 })
 
 const postDraft = ref({
@@ -220,7 +220,7 @@ onMounted(() => {
   <div class="community-page">
     <section class="hero-card">
       <div class="hero-main">
-        <p class="hero-kicker">Сообщество Skilo</p>
+        <p class="hero-kicker">Сообщество Skillo</p>
         <h1>Новости, мнения и истории разработчиков и компаний</h1>
         <p class="hero-note">
           Публикуйте посты, обсуждайте их в комментариях, ставьте лайки. Каждый новый пост сначала проходит модерацию,

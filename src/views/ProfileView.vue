@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from "vue"
+import { useRouter } from "vue-router"
 import { mockProfileData, ProfileData } from "@/mocks/mockProfile"
 import { mockRoadmaps } from "@/mocks/mockRoadmaps"
 import { useRoadmapsStore } from "@/store/roadmaps"
@@ -92,6 +93,7 @@ const profilePoints = ref<number | null>(null)
 const roadmapsStore = useRoadmapsStore()
 const skillLevelsStore = useSkillLevelsStore()
 const authStore = useAuthStore()
+const router = useRouter()
 const radarSize = 360
 const radarCenter = radarSize / 2
 const radarRadius = 124
@@ -660,6 +662,11 @@ const generateCertificate = async () => {
   generatingCertificate.value = false
 }
 
+const logoutFromProfile = () => {
+  authStore.logout()
+  router.push("/login")
+}
+
 onMounted(fetchProfile)
 </script>
 
@@ -682,11 +689,14 @@ onMounted(fetchProfile)
 
       <!-- Header -->
       <div class="profile-header">
-        <div class="avatar">{{ profile.fullName?.charAt(0) }}</div>
-        <div>
-          <h1>{{ profile.fullName }}</h1>
-          <p class="email">{{ profile.email }}</p>
+        <div class="profile-header-main">
+          <div class="avatar">{{ profile.fullName?.charAt(0) }}</div>
+          <div>
+            <h1>{{ profile.fullName }}</h1>
+            <p class="email">{{ profile.email }}</p>
+          </div>
         </div>
+        <button type="button" class="profile-logout-btn" @click="logoutFromProfile">Выход</button>
       </div>
 
       <!-- Meta Stats -->
@@ -1252,9 +1262,32 @@ onMounted(fetchProfile)
 /* Header */
 .profile-header {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.profile-header-main {
+  display: flex;
   align-items: center;
   gap: 18px;
-  margin-bottom: 28px;
+}
+
+.profile-logout-btn {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.profile-logout-btn:hover {
+  border-color: var(--soft-border);
+  background: var(--surface-soft);
+  color: var(--text);
 }
 
 .avatar {
@@ -2226,6 +2259,19 @@ onMounted(fetchProfile)
 @media (max-width: 640px) {
   .profile-page {
     padding: 32px 16px 60px;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .profile-header-main {
+    gap: 14px;
+  }
+
+  .profile-logout-btn {
+    width: 100%;
   }
 
   .meta-grid {

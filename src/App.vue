@@ -2,9 +2,11 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useDailyTasksStore } from "@/store/dailyTasks";
-import { useAuthStore } from "@/store/auth";
+import AmbientMotionLayer from "@/components/AmbientMotionLayer.vue";
 
 const THEME_STORAGE_KEY = "skilo-theme";
+const DESKTOP_NAV_MEDIA_QUERY = "(min-width: 1100px)";
+const DESKTOP_NAV_VISIBILITY_KEY = "skilo-desktop-nav-visible";
 const REVEAL_SELECTOR = [
   ".app-main .hero-card",
   ".app-main .card",
@@ -26,13 +28,79 @@ const REVEAL_SELECTOR = [
 
 const theme = ref("light");
 const isDarkTheme = computed(() => theme.value === "dark");
+const isNavDrawerOpen = ref(false);
+const isDesktopNavPinned = ref(false);
+const isDesktopNavVisible = ref(true);
 const router = useRouter();
 const route = useRoute();
 const dailyTasksStore = useDailyTasksStore();
-const authStore = useAuthStore();
 let revealObserver = null;
 let revealMutationObserver = null;
 let revealFrameId = 0;
+let desktopNavMediaQuery = null;
+let onDesktopNavChange = null;
+
+const isSideNavOpen = computed(() => {
+  return isDesktopNavPinned.value ? isDesktopNavVisible.value : isNavDrawerOpen.value;
+});
+
+const primaryNavLinks = [
+  {
+    to: "/",
+    label: "О проекте",
+    iconPaths: ["M3 10 12 3l9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"]
+  },
+  {
+    to: "/roadmaps",
+    label: "Дорожные карты",
+    iconPaths: ["M4 6h16v12H4zM8 10h8M8 14h5"]
+  },
+  {
+    to: "/daily-tasks",
+    label: "Ежедневные задания",
+    iconPaths: ["M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"]
+  },
+  {
+    to: "/skill-verification",
+    label: "Подтверждение навыков",
+    iconPaths: ["M8 3h8M6 7h12M5 11h14M7 15h10M10 19h4", "M12 11v8"]
+  },
+  {
+    to: "/skill-levels",
+    label: "Определение уровня",
+    iconPaths: ["M4 19h16M7 19V9M12 19V5M17 19v-7"]
+  },
+  {
+    to: "/friends",
+    label: "Друзья",
+    iconPaths: ["M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M8.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M20 8v6M23 11h-6"]
+  },
+  {
+    to: "/community",
+    label: "Сообщество",
+    iconPaths: ["M6 9h12M6 13h8M4 5h16v14H9l-5 3z"]
+  },
+  {
+    to: "/vacancies",
+    label: "Вакансии",
+    iconPaths: ["M3 7h18v13H3zM8 7V5h8v2M3 12h18"]
+  },
+  {
+    to: "/company",
+    label: "Кабинет компании",
+    iconPaths: ["M3 21h18M5 21V7l7-4 7 4v14M9 10h6M9 14h6"]
+  },
+  {
+    to: "/leaders",
+    label: "Лидеры",
+    iconPaths: ["M8 4h8v2h3v2a5 5 0 0 1-5 5h-4a5 5 0 0 1-5-5V6h3zM12 13v4M9 21h6"]
+  },
+  {
+    to: "/profile",
+    label: "Профиль",
+    iconPaths: ["M20 21a8 8 0 0 0-16 0M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"]
+  }
+];
 
 const dailyReminderMessage = computed(() => {
   return `Сегодня доступно ${dailyTasksStore.pendingTodayCount} заданий на +${Math.max(0, dailyTasksStore.todayTotalPoints - dailyTasksStore.earnedTodayPoints)} очков`;
@@ -79,6 +147,29 @@ function toggleTheme() {
   applyTheme(isDarkTheme.value ? "light" : "dark");
 }
 
+function closeNavDrawer() {
+  if (isDesktopNavPinned.value) {
+    isDesktopNavVisible.value = false;
+    return;
+  }
+
+  isNavDrawerOpen.value = false;
+}
+
+function toggleNavDrawer() {
+  if (isDesktopNavPinned.value) {
+    isDesktopNavVisible.value = !isDesktopNavVisible.value;
+  } else {
+    isNavDrawerOpen.value = !isNavDrawerOpen.value;
+  }
+}
+
+function handleNavLinkClick() {
+  if (!isDesktopNavPinned.value) {
+    closeNavDrawer();
+  }
+}
+
 function openDailyTasksFromReminder() {
   dailyTasksStore.dismissReminderForToday();
   router.push("/daily-tasks");
@@ -86,11 +177,6 @@ function openDailyTasksFromReminder() {
 
 function dismissDailyReminder() {
   dailyTasksStore.dismissReminderForToday();
-}
-
-function logout() {
-  authStore.logout();
-  router.push("/login");
 }
 
 function shouldAnimateReveal(element) {
@@ -153,6 +239,22 @@ function scheduleRevealScan() {
 }
 
 onMounted(() => {
+  desktopNavMediaQuery = window.matchMedia(DESKTOP_NAV_MEDIA_QUERY);
+  onDesktopNavChange = (event) => {
+    isDesktopNavPinned.value = event.matches;
+    if (event.matches) {
+      isNavDrawerOpen.value = false;
+    }
+  };
+
+  onDesktopNavChange(desktopNavMediaQuery);
+  desktopNavMediaQuery.addEventListener("change", onDesktopNavChange);
+
+  const storedDesktopNavVisibility = localStorage.getItem(DESKTOP_NAV_VISIBILITY_KEY);
+  if (storedDesktopNavVisibility === "0") {
+    isDesktopNavVisible.value = false;
+  }
+
   const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
   if (storedTheme === "light" || storedTheme === "dark") {
     applyTheme(storedTheme);
@@ -183,9 +285,25 @@ watch(theme, (nextTheme) => {
   localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
 });
 
+watch(isDesktopNavVisible, (isVisible) => {
+  localStorage.setItem(DESKTOP_NAV_VISIBILITY_KEY, isVisible ? "1" : "0");
+});
+
+watch(isNavDrawerOpen, (isOpen) => {
+  if (isDesktopNavPinned.value) {
+    document.body.style.overflow = "";
+    return;
+  }
+
+  document.body.style.overflow = isOpen ? "hidden" : "";
+});
+
 watch(
   () => route.fullPath,
   () => {
+    if (!isDesktopNavPinned.value) {
+      closeNavDrawer();
+    }
     nextTick(() => {
       scheduleRevealScan();
     });
@@ -207,66 +325,48 @@ onBeforeUnmount(() => {
     revealMutationObserver.disconnect();
     revealMutationObserver = null;
   }
+
+  if (desktopNavMediaQuery) {
+    if (onDesktopNavChange) {
+      desktopNavMediaQuery.removeEventListener("change", onDesktopNavChange);
+      onDesktopNavChange = null;
+    }
+    desktopNavMediaQuery = null;
+  }
+
+  document.body.style.overflow = "";
 });
 </script>
 
 <template>
-  <div class="app-shell">
+  <div
+    class="app-shell"
+    :class="{ 'nav-docked': isDesktopNavPinned, 'nav-docked-collapsed': isDesktopNavPinned && !isDesktopNavVisible }"
+  >
     <header class="top-nav">
       <div class="top-nav-inner">
         <div class="top-nav-left">
-          <router-link to="/" class="top-brand">Skilo</router-link>
+          <button
+            type="button"
+            class="top-nav-menu"
+            :aria-expanded="isSideNavOpen ? 'true' : 'false'"
+            aria-controls="side-navigation"
+            aria-label="Меню навигации"
+            @click="toggleNavDrawer"
+          >
+            <span class="top-nav-menu-icon" aria-hidden="true" />
+            <span>Меню</span>
+          </button>
 
-          <nav class="top-nav-links" aria-label="Навигация">
-            <router-link to="/">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10 12 3l9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" /></svg>
-              <span>О проекте</span>
-            </router-link>
-            <router-link to="/roadmaps">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4zM8 10h8M8 14h5" /></svg>
-              <span>Дорожные карты</span>
-            </router-link>
-            <router-link to="/daily-tasks">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01" /></svg>
-              <span>Ежедневные задания</span>
-            </router-link>
-            <router-link to="/skill-verification">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M6 7h12M5 11h14M7 15h10M10 19h4" /><path d="M12 11v8" /></svg>
-              <span>Подтверждение навыков</span>
-            </router-link>
-            <router-link to="/skill-levels">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M7 19V9M12 19V5M17 19v-7" /></svg>
-              <span>Определение уровня</span>
-            </router-link>
-            <router-link to="/friends">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M8.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M20 8v6M23 11h-6" /></svg>
-              <span>Друзья</span>
-            </router-link>
-            <router-link to="/community">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9h12M6 13h8M4 5h16v14H9l-5 3z" /></svg>
-              <span>Сообщество</span>
-            </router-link>
-            <router-link to="/vacancies">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v13H3zM8 7V5h8v2M3 12h18" /></svg>
-              <span>Вакансии</span>
-            </router-link>
-            <router-link to="/company">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h6M9 14h6" /></svg>
-              <span>Кабинет компании</span>
-            </router-link>
-            <router-link to="/leaders">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v2h3v2a5 5 0 0 1-5 5h-4a5 5 0 0 1-5-5V6h3zM12 13v4M9 21h6" /></svg>
-              <span>Лидеры</span>
-            </router-link>
-            <router-link to="/profile">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8" /></svg>
-              <span>Профиль</span>
-            </router-link>
-          </nav>
+          <router-link to="/" class="top-brand">Skillo</router-link>
         </div>
 
         <div class="top-nav-actions">
-          <button type="button" class="top-logout" @click="logout">Выход</button>
+          <router-link to="/profile" class="top-profile-link" aria-label="Профиль">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 21a8 8 0 0 0-16 0M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8" />
+            </svg>
+          </router-link>
 
           <button
             type="button"
@@ -289,9 +389,54 @@ onBeforeUnmount(() => {
       </div>
     </header>
 
+    <transition name="nav-drawer-fade">
+      <div
+        v-if="isSideNavOpen && !isDesktopNavPinned"
+        class="side-nav-backdrop"
+        aria-hidden="true"
+        @click="closeNavDrawer"
+      />
+    </transition>
+
+    <aside
+      id="side-navigation"
+      class="side-nav ambient-host"
+      :class="{ open: isSideNavOpen }"
+      role="navigation"
+      aria-label="Основная навигация"
+      :aria-hidden="isSideNavOpen ? 'false' : 'true'"
+    >
+      <AmbientMotionLayer mode="panel" edge-fade="soft" intensity="low" />
+      <header class="side-nav-head">
+        <router-link to="/" class="top-brand" @click="closeNavDrawer">Skillo</router-link>
+        <button type="button" class="side-nav-close" aria-label="Закрыть меню" @click="closeNavDrawer">
+          Закрыть
+        </button>
+      </header>
+
+      <nav class="side-nav-links" aria-label="Разделы платформы">
+        <router-link
+          v-for="link in primaryNavLinks"
+          :key="link.to"
+          :to="link.to"
+          @click="handleNavLinkClick"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path v-for="(path, index) in link.iconPaths" :key="`${link.to}-${index}`" :d="path" />
+          </svg>
+          <span>{{ link.label }}</span>
+        </router-link>
+      </nav>
+
+      <footer class="side-nav-footer" aria-label="Информация меню">
+        <small>Skillo • навигация платформы</small>
+      </footer>
+    </aside>
+
     <main class="app-main">
       <transition name="daily-reminder">
-        <aside v-if="dailyTasksStore.isReminderVisible" class="daily-reminder">
+        <aside v-if="dailyTasksStore.isReminderVisible" class="daily-reminder ambient-host">
+          <AmbientMotionLayer mode="panel" edge-fade="soft" intensity="low" />
           <div class="daily-reminder-text">
             <strong>Ежедневное напоминание</strong>
             <p>{{ dailyReminderMessage }}</p>
@@ -314,10 +459,11 @@ onBeforeUnmount(() => {
       </router-view>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer ambient-host">
+      <AmbientMotionLayer mode="panel" edge-fade="soft" intensity="low" />
       <div class="site-footer-inner">
         <div class="site-footer-brand">
-          <h3>Skilo</h3>
+          <h3>Skillo</h3>
           <p>Единая платформа развития навыков: обучение, практика, сообщество и карьерный рост.</p>
         </div>
 
@@ -336,7 +482,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="site-footer-bottom">
-        <span>© {{ currentYear }} Skilo. Все права защищены.</span>
+        <span>© {{ currentYear }} Skillo. Все права защищены.</span>
         <div class="site-footer-tags">
           <span>Roadmaps</span>
           <span>Practice</span>

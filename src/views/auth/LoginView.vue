@@ -40,7 +40,7 @@ const handleLogin = async () => {
   <section class="auth-page">
     <div class="auth-container auth-shell">
       <aside class="auth-side">
-        <p class="auth-kicker">Skilo</p>
+        <p class="auth-kicker">Skillo</p>
         <h1>Вход в личный кабинет</h1>
         <p class="auth-text">
           Продолжайте обучение, отслеживайте прогресс и работайте с дорожными картами в одном месте.

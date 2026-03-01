@@ -31,7 +31,7 @@ export const createCompanyService = () => ({
         const db = getCompanyVacanciesDb()
         const created: Vacancy = {
           id: `vac-company-${Date.now()}`,
-          company: "Skilo Company",
+          company: "Skillo Company",
           title: payload.title,
           level: payload.level,
           location: payload.location,
