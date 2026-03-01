@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, onBeforeUnmount, ref } from "vue"
 import { useRouter } from "vue-router"
 import roadmapVisual from "@/assets/visual-roadmap.svg"
 import interviewVisual from "@/assets/visual-interview.svg"
@@ -172,14 +173,182 @@ const navJourneyCards = navSequence.map((link) => {
   }
 })
 
+interface HeroSparkle {
+  id: number
+  x: number
+  y: number
+  size: number
+  driftX: number
+  driftY: number
+  duration: number
+  delay: number
+  hue: number
+  expiresAt: number
+}
+
+const heroSparkles = ref<HeroSparkle[]>([])
+const MAX_HERO_SPARKLES = 34
+const HERO_SPARKLE_INTERVAL_MS = 46
+
+let heroSparkleId = 0
+let lastHeroSparkleAt = 0
+let homeMouseFrameId = 0
+let pendingPointerX = 0
+let pendingPointerY = 0
+
+const heroRef = ref<HTMLElement | null>(null)
+const heroPointer = ref({ x: 50, y: 50, active: false })
+
+const heroPointerStyle = computed(() => ({
+  "--hero-glow-x": `${heroPointer.value.x}%`,
+  "--hero-glow-y": `${heroPointer.value.y}%`,
+  "--hero-glow-opacity": heroPointer.value.active ? "1" : "0"
+}))
+
+const shouldReduceMotion = () => {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+}
+
+const spawnHeroSparkles = (clientX: number, clientY: number, burst = 1) => {
+  if (shouldReduceMotion()) return
+
+  const now = performance.now()
+  const nextSparkles = heroSparkles.value.filter((item) => item.expiresAt > now)
+
+  for (let index = 0; index < burst; index += 1) {
+    const angle = Math.random() * Math.PI * 2
+    const radius = 3 + Math.random() * 18
+    const id = ++heroSparkleId
+    const duration = 620 + Math.random() * 520
+    const delay = Math.random() * 90
+    const expiresAt = now + duration + delay + 140
+
+    const sparkle: HeroSparkle = {
+      id,
+      x: clientX + Math.cos(angle) * radius * 0.46,
+      y: clientY + Math.sin(angle) * radius * 0.46,
+      size: 4 + Math.random() * 8,
+      driftX: (Math.random() - 0.5) * 44,
+      driftY: -16 - Math.random() * 42,
+      duration,
+      delay,
+      hue: 196 + Math.random() * 18,
+      expiresAt
+    }
+
+    nextSparkles.push(sparkle)
+  }
+
+  if (nextSparkles.length > MAX_HERO_SPARKLES) {
+    nextSparkles.splice(0, nextSparkles.length - MAX_HERO_SPARKLES)
+  }
+
+  heroSparkles.value = nextSparkles
+}
+
+const heroSparkleStyle = (sparkle: HeroSparkle) => {
+  return {
+    left: `${sparkle.x}px`,
+    top: `${sparkle.y}px`,
+    "--sparkle-size": `${sparkle.size}px`,
+    "--sparkle-dx": `${sparkle.driftX}px`,
+    "--sparkle-dy": `${sparkle.driftY}px`,
+    "--sparkle-duration": `${sparkle.duration}ms`,
+    "--sparkle-delay": `${sparkle.delay}ms`,
+    "--sparkle-hue": `${sparkle.hue}`
+  }
+}
+
+const updateHeroPointer = (clientX: number, clientY: number) => {
+  const heroElement = heroRef.value
+  if (!heroElement) {
+    heroPointer.value.active = false
+    return
+  }
+
+  const rect = heroElement.getBoundingClientRect()
+  const isInsideHero =
+    clientX >= rect.left &&
+    clientX <= rect.right &&
+    clientY >= rect.top &&
+    clientY <= rect.bottom
+
+  if (!isInsideHero) {
+    heroPointer.value.active = false
+    return
+  }
+
+  const x = ((clientX - rect.left) / rect.width) * 100
+  const y = ((clientY - rect.top) / rect.height) * 100
+
+  heroPointer.value.x = Math.min(100, Math.max(0, x))
+  heroPointer.value.y = Math.min(100, Math.max(0, y))
+  heroPointer.value.active = true
+}
+
+const handleHomeMouseEnter = () => {
+  lastHeroSparkleAt = 0
+}
+
+const handleHomeMouseMove = (event: MouseEvent) => {
+  pendingPointerX = event.clientX
+  pendingPointerY = event.clientY
+
+  if (homeMouseFrameId) return
+
+  homeMouseFrameId = window.requestAnimationFrame(() => {
+    homeMouseFrameId = 0
+
+    updateHeroPointer(pendingPointerX, pendingPointerY)
+
+    const now = performance.now()
+    if (now - lastHeroSparkleAt < HERO_SPARKLE_INTERVAL_MS) return
+
+    const burst = Math.random() > 0.76 ? 2 : 1
+    spawnHeroSparkles(pendingPointerX, pendingPointerY, burst)
+    lastHeroSparkleAt = now
+  })
+}
+
+const handleHomeMouseLeave = () => {
+  if (homeMouseFrameId) {
+    window.cancelAnimationFrame(homeMouseFrameId)
+    homeMouseFrameId = 0
+  }
+
+  heroPointer.value = { x: 50, y: 50, active: false }
+}
+
 const navigate = (path: string) => {
   router.push(path)
 }
+
+onBeforeUnmount(() => {
+  if (homeMouseFrameId) {
+    window.cancelAnimationFrame(homeMouseFrameId)
+  }
+})
 </script>
 
 <template>
   <div class="home">
-    <section class="hero ambient-host">
+    <div class="page-sparkle-layer" aria-hidden="true">
+      <span
+        v-for="sparkle in heroSparkles"
+        :key="sparkle.id"
+        class="hero-sparkle"
+        :style="heroSparkleStyle(sparkle)"
+      />
+    </div>
+    <section
+      ref="heroRef"
+      class="hero ambient-host"
+      :style="heroPointerStyle"
+      @mouseenter="handleHomeMouseEnter"
+      @mousemove="handleHomeMouseMove"
+      @mouseleave="handleHomeMouseLeave"
+    >
       <AmbientMotionLayer mode="hero" edge-fade="wide" intensity="medium" />
       <span class="badge">О проекте Skillo</span>
       <h1>Skillo: платформа роста в <span class="accent">IT</span></h1>
@@ -325,6 +494,11 @@ const navigate = (path: string) => {
 
 <style scoped>
 .home {
+  --about-accent: #2f9bd8;
+  --about-accent-strong: #1f7fba;
+  --about-accent-soft: #8fd4ff;
+  --about-accent-hover: #41a8e2;
+  position: relative;
   max-width: 1120px;
   margin: 0 auto;
   display: flex;
@@ -334,6 +508,8 @@ const navigate = (path: string) => {
 
 .hero {
   position: relative;
+  overflow: hidden;
+  isolation: isolate;
   width: 100vw;
   margin: calc(-1 * (var(--top-nav-height) + 18px)) calc(50% - 50vw) 0;
   border: none;
@@ -352,6 +528,118 @@ const navigate = (path: string) => {
   align-items: center;
   text-align: center;
   box-shadow: inset 0 -1px 0 var(--border);
+  transition: box-shadow 0.26s ease, filter 0.26s ease;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -24%;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      560px 380px at var(--hero-glow-x, 50%) var(--hero-glow-y, 50%),
+      color-mix(in srgb, var(--about-accent) 40%, transparent) 0%,
+      color-mix(in srgb, var(--about-accent) 22%, transparent) 28%,
+      color-mix(in srgb, var(--about-accent) 10%, transparent) 48%,
+      transparent 72%
+    ),
+    radial-gradient(
+      190px 140px at calc(var(--hero-glow-x, 50%) + 8%) calc(var(--hero-glow-y, 50%) - 6%),
+      color-mix(in srgb, var(--about-accent-soft) 28%, transparent) 0%,
+      transparent 76%
+    );
+  opacity: var(--hero-glow-opacity, 0);
+  filter: saturate(128%);
+  transform: scale(0.98);
+  transition: opacity 0.22s ease, transform 0.26s ease, filter 0.26s ease;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(130deg, color-mix(in srgb, var(--about-accent) 14%, transparent) -8%, transparent 48%),
+    radial-gradient(600px 300px at 90% 0%, color-mix(in srgb, var(--about-accent) 11%, transparent) 0%, transparent 78%);
+  opacity: 0;
+  transition: opacity 0.24s ease;
+}
+
+.hero:hover {
+  box-shadow:
+    inset 0 -1px 0 var(--border),
+    inset 0 0 0 1px color-mix(in srgb, var(--about-accent) 30%, transparent),
+    0 26px 60px color-mix(in srgb, var(--about-accent) 12%, transparent);
+  filter: saturate(1.02);
+}
+
+.hero:hover::before {
+  opacity: 0.78;
+  transform: scale(1.03);
+  filter: saturate(120%);
+}
+
+.hero:hover::after {
+  opacity: 0.62;
+}
+
+.page-sparkle-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-sparkle {
+  --sparkle-size: 8px;
+  --sparkle-dx: 0px;
+  --sparkle-dy: -24px;
+  --sparkle-duration: 880ms;
+  --sparkle-delay: 0ms;
+  --sparkle-hue: 206;
+  position: absolute;
+  width: var(--sparkle-size);
+  height: var(--sparkle-size);
+  transform: translate(-50%, -50%) scale(0.35) rotate(0deg);
+  border-radius: 999px;
+  background: radial-gradient(
+    circle,
+    hsla(var(--sparkle-hue), 92%, 72%, 0.86) 0%,
+    hsla(var(--sparkle-hue), 86%, 62%, 0.34) 62%,
+    transparent 100%
+  );
+  filter: drop-shadow(0 0 9px hsla(var(--sparkle-hue), 90%, 64%, 0.42));
+  opacity: 0;
+  animation: hero-sparkle-trail var(--sparkle-duration) cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--sparkle-delay);
+  will-change: transform, opacity;
+}
+
+.hero-sparkle::before,
+.hero-sparkle::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--sparkle-size) * 1.8);
+  height: 1.5px;
+  border-radius: 99px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsla(var(--sparkle-hue), 92%, 74%, 0.78) 50%,
+    transparent 100%
+  );
+  transform: translate(-50%, -50%);
+}
+
+.hero-sparkle::after {
+  transform: translate(-50%, -50%) rotate(90deg);
 }
 
 .badge {
@@ -376,7 +664,7 @@ const navigate = (path: string) => {
 }
 
 .hero h1 .accent {
-  background: linear-gradient(120deg, var(--primary) 0%, #5c80ef 100%);
+  background: linear-gradient(120deg, var(--about-accent-strong) 0%, var(--about-accent) 55%, #66c4ee 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -501,7 +789,7 @@ const navigate = (path: string) => {
   line-height: 1.06;
   letter-spacing: -0.03em;
   font-weight: 700;
-  color: color-mix(in srgb, var(--text) 80%, var(--primary) 20%);
+  color: color-mix(in srgb, var(--text) 82%, var(--about-accent) 18%);
 }
 
 .text-bridge-sub {
@@ -513,7 +801,7 @@ const navigate = (path: string) => {
 }
 
 .text-bridge--second .text-bridge-lead {
-  color: color-mix(in srgb, var(--text) 78%, #5c80ef 22%);
+  color: color-mix(in srgb, var(--text) 78%, var(--about-accent) 22%);
 }
 
 .values {
@@ -849,14 +1137,14 @@ const navigate = (path: string) => {
 }
 
 .nav-journey-actions .primary {
-  border: 1px solid var(--primary) !important;
-  background: var(--primary) !important;
+  border: 1px solid color-mix(in srgb, var(--about-accent-strong) 78%, #ffffff 22%) !important;
+  background: linear-gradient(135deg, var(--about-accent-strong) 0%, var(--about-accent) 100%) !important;
   color: var(--button-text) !important;
 }
 
 .nav-journey-actions .primary:hover {
-  border-color: var(--primary-hover) !important;
-  background: var(--primary-hover) !important;
+  border-color: color-mix(in srgb, var(--about-accent-hover) 82%, #ffffff 18%) !important;
+  background: linear-gradient(135deg, #2a91ca 0%, var(--about-accent-hover) 100%) !important;
   color: var(--button-text) !important;
 }
 
@@ -875,7 +1163,7 @@ const navigate = (path: string) => {
   line-height: 1.1;
   letter-spacing: -0.026em;
   font-weight: 700;
-  color: color-mix(in srgb, var(--text) 78%, var(--primary) 22%);
+  color: color-mix(in srgb, var(--text) 78%, var(--about-accent) 22%);
 }
 
 .nav-journey-bridge-text {
@@ -930,6 +1218,22 @@ const navigate = (path: string) => {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes hero-sparkle-trail {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.32) rotate(0deg);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--sparkle-dx)), calc(-50% + var(--sparkle-dy))) scale(1.25) rotate(28deg);
   }
 }
 
@@ -1007,6 +1311,15 @@ const navigate = (path: string) => {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .page-sparkle-layer {
+    display: none;
+  }
+
+  .hero::before,
+  .hero::after {
+    transition: none !important;
+  }
+
   .story-card,
   .story-card img {
     animation: none !important;

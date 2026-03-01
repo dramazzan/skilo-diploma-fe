@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 import { mockRoadmaps, type Roadmap } from "@/shared/mocks/mockRoadmaps"
 import { useAuthStore } from "@/features/auth/store/auth"
@@ -137,6 +137,7 @@ const selectedSlotId = ref<string>("")
 const formError = ref<string | null>(null)
 const successMessage = ref<string | null>(null)
 const bookings = ref<VerificationBooking[]>(parseStoredBookings())
+let bookingsPersistTimer: number | null = null
 
 const directionOptions = computed<Roadmap[]>(() => {
   return roadmapsStore.myRoadmaps.length ? roadmapsStore.myRoadmaps : mockRoadmaps
@@ -207,7 +208,14 @@ watch([selectedMode, selectedDate], () => {
 watch(
   bookings,
   (next) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+    if (bookingsPersistTimer) {
+      window.clearTimeout(bookingsPersistTimer)
+    }
+
+    bookingsPersistTimer = window.setTimeout(() => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+      bookingsPersistTimer = null
+    }, 140)
   },
   { deep: true }
 )
@@ -265,6 +273,11 @@ const cancelBooking = (bookingId: string) => {
 
 onMounted(async () => {
   await roadmapsStore.loadUserRoadmapCollection(authStore.user?.id ?? null)
+})
+
+onBeforeUnmount(() => {
+  if (!bookingsPersistTimer) return
+  window.clearTimeout(bookingsPersistTimer)
 })
 </script>
 

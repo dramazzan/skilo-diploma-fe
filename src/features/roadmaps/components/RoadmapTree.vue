@@ -32,8 +32,10 @@ const selectedNode = ref<RoadmapTreeNode | null>(null)
 const nodeSize = 124
 const transform = reactive({ x: 0, y: 0, scale: 1 })
 const dragging = reactive({ active: false, startX: 0, startY: 0, baseX: 0, baseY: 0 })
+const dragPointer = reactive({ x: 0, y: 0 })
 let resizeObserver: ResizeObserver | null = null
 let hasAutoCentered = false
+let dragFrameId = 0
 
 const isUnlocked = (status: TopicStatus) => status !== "locked"
 
@@ -253,13 +255,28 @@ const onPointerDown = (event: PointerEvent) => {
 const onPointerMove = (event: PointerEvent) => {
   if (!dragging.active) return
 
-  transform.x = dragging.baseX + (event.clientX - dragging.startX)
-  transform.y = dragging.baseY + (event.clientY - dragging.startY)
+  dragPointer.x = event.clientX
+  dragPointer.y = event.clientY
+
+  if (dragFrameId) return
+
+  dragFrameId = window.requestAnimationFrame(() => {
+    dragFrameId = 0
+    transform.x = dragging.baseX + (dragPointer.x - dragging.startX)
+    transform.y = dragging.baseY + (dragPointer.y - dragging.startY)
+  })
 }
 
 const onPointerUp = (event: PointerEvent) => {
   if (!dragging.active) return
 
+  if (dragFrameId) {
+    window.cancelAnimationFrame(dragFrameId)
+    dragFrameId = 0
+  }
+
+  transform.x = dragging.baseX + (event.clientX - dragging.startX)
+  transform.y = dragging.baseY + (event.clientY - dragging.startY)
   dragging.active = false
   viewportRef.value?.releasePointerCapture(event.pointerId)
 }
@@ -303,6 +320,9 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  if (dragFrameId) {
+    window.cancelAnimationFrame(dragFrameId)
+  }
   resizeObserver?.disconnect()
 })
 </script>
@@ -348,7 +368,7 @@ onBeforeUnmount(() => {
       @pointerup="onPointerUp"
       @pointercancel="onPointerUp"
     >
-      <div class="tree-stage" :style="stageStyle">
+      <div class="tree-stage" :class="{ dragging: dragging.active }" :style="stageStyle">
         <svg class="tree-connections" :viewBox="`0 0 ${layout.width} ${layout.height}`" xmlns="http://www.w3.org/2000/svg">
           <RoadmapConnection
             v-for="connection in layout.connections"
@@ -550,6 +570,10 @@ onBeforeUnmount(() => {
   top: 0;
   transform-origin: 0 0;
   transition: transform 0.15s ease-out;
+}
+
+.tree-stage.dragging {
+  transition: none;
 }
 
 .tree-connections {

@@ -14,9 +14,7 @@ const REVEAL_SELECTOR = [
   ".app-main .community-post-card",
   ".app-main .leader-card",
   ".app-main .topic-card",
-  ".app-main .daily-task-card",
-  ".app-main section",
-  ".app-main article"
+  ".app-main .daily-task-card"
 ].join(", ")
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)"

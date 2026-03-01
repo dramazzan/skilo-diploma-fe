@@ -59,6 +59,11 @@
   --scroll-track: #e5e5e5;
   --scroll-thumb: #b9b9b9;
   --scroll-thumb-hover: #9f9f9f;
+  --ambient-spot-a: rgba(56, 149, 216, 0.18);
+  --ambient-spot-b: rgba(130, 205, 255, 0.15);
+  --ambient-spot-c: rgba(255, 175, 106, 0.11);
+  --ambient-spot-d: rgba(64, 178, 166, 0.09);
+  --ambient-veil: rgba(255, 255, 255, 0.24);
   --docked-nav-width: 292px;
   --top-nav-height: 74px;
 }
@@ -120,6 +125,11 @@
   --scroll-track: #191919;
   --scroll-thumb: #565656;
   --scroll-thumb-hover: #727272;
+  --ambient-spot-a: rgba(70, 170, 236, 0.24);
+  --ambient-spot-b: rgba(112, 204, 255, 0.18);
+  --ambient-spot-c: rgba(255, 170, 108, 0.1);
+  --ambient-spot-d: rgba(66, 176, 162, 0.11);
+  --ambient-veil: rgba(10, 13, 19, 0.32);
 }
 
 * {
@@ -166,10 +176,49 @@ body {
 }
 
 .app-shell {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   gap: 0;
   min-height: 100vh;
+}
+
+.app-shell::before,
+.app-shell::after {
+  content: "";
+  position: fixed;
+  inset: -14% -12% -12% -12%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app-shell::before {
+  background:
+    radial-gradient(560px 320px at 8% 14%, var(--ambient-spot-a) 0%, transparent 72%),
+    radial-gradient(520px 290px at 86% 16%, var(--ambient-spot-b) 0%, transparent 74%),
+    radial-gradient(440px 250px at 18% 82%, var(--ambient-spot-c) 0%, transparent 76%),
+    radial-gradient(500px 280px at 88% 84%, var(--ambient-spot-d) 0%, transparent 74%),
+    radial-gradient(420px 220px at 50% 58%, color-mix(in srgb, var(--ambient-spot-a) 44%, transparent) 0%, transparent 78%);
+  opacity: 0.92;
+  filter: blur(0.6px) saturate(108%);
+  animation: app-ambient-drift 36s ease-in-out infinite alternate;
+}
+
+.app-shell::after {
+  inset: -22% -18% -18% -18%;
+  background:
+    radial-gradient(680px 360px at 50% -4%, color-mix(in srgb, var(--ambient-spot-b) 58%, transparent) 0%, transparent 80%),
+    radial-gradient(600px 320px at 52% 108%, color-mix(in srgb, var(--ambient-spot-c) 52%, transparent) 0%, transparent 82%),
+    radial-gradient(460px 240px at 50% 52%, var(--ambient-veil) 0%, transparent 82%);
+  opacity: 0.74;
+  filter: blur(1px) saturate(104%);
+  animation: app-ambient-drift-reverse 46s cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
+}
+
+.app-shell > * {
+  position: relative;
+  z-index: 1;
 }
 
 .ambient-host {
@@ -871,6 +920,11 @@ button.theme-toggle:hover {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .app-shell::before,
+  .app-shell::after {
+    animation: none !important;
   }
 
   .route-fade-slide-enter-active,
@@ -2102,6 +2156,30 @@ pre {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes app-ambient-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-2%, 1.6%, 0) scale(1.04);
+  }
+  100% {
+    transform: translate3d(1.8%, -1.2%, 0) scale(1.02);
+  }
+}
+
+@keyframes app-ambient-drift-reverse {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.02);
+  }
+  50% {
+    transform: translate3d(2%, -1.4%, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(-1.6%, 1.2%, 0) scale(1.03);
   }
 }
 
