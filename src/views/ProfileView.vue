@@ -1220,11 +1220,29 @@ onMounted(fetchProfile)
 
 <style scoped>
 .profile-page {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 48px 20px 80px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 42px 20px 76px;
+  font-family: inherit;
   color: var(--text);
+  position: relative;
+  isolation: isolate;
+}
+
+.profile-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(420px 220px at 2% 0%, rgba(28, 28, 28, 0.06), transparent 72%),
+    radial-gradient(360px 200px at 98% 4%, rgba(28, 28, 28, 0.05), transparent 74%);
+}
+
+.profile-content {
+  display: grid;
+  gap: 14px;
 }
 
 /* States */
@@ -1262,10 +1280,14 @@ onMounted(fetchProfile)
 /* Header */
 .profile-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 14px;
-  margin-bottom: 28px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+  box-shadow: var(--shadow-sm);
+  padding: 18px;
 }
 
 .profile-header-main {
@@ -1323,15 +1345,22 @@ onMounted(fetchProfile)
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin-bottom: 32px;
+  margin-bottom: 0;
 }
 
 .meta-card {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
-  background: var(--surface);
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
   text-align: center;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.meta-card:hover {
+  border-color: var(--soft-border);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 .meta-card span {
@@ -1363,17 +1392,32 @@ onMounted(fetchProfile)
 
 /* Sections */
 .section {
-  padding: 24px 0;
-  border-top: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+  box-shadow: var(--shadow-sm);
+  padding: 18px;
 }
 
 .section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--muted);
   margin: 0 0 16px;
+}
+
+.section-title::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text);
+  opacity: 0.55;
 }
 
 .section-header {
@@ -1410,6 +1454,12 @@ onMounted(fetchProfile)
   background: var(--surface-soft);
   color: var(--text);
   border: 1px solid var(--border);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.tag:hover {
+  border-color: var(--soft-border);
+  background: var(--surface);
 }
 
 /* Achievements */
@@ -1449,7 +1499,7 @@ onMounted(fetchProfile)
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 12px 14px;
-  background: var(--surface-soft);
+  background: linear-gradient(180deg, var(--surface-soft) 0%, var(--surface) 100%);
 }
 
 .detail-item span {
@@ -1635,6 +1685,7 @@ onMounted(fetchProfile)
   border-radius: 12px;
   background: var(--surface);
   padding: 12px;
+  box-shadow: var(--shadow-sm);
 }
 
 .knowledge-radar {
@@ -1679,6 +1730,7 @@ onMounted(fetchProfile)
   border-radius: 12px;
   background: var(--surface-soft);
   padding: 12px;
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1877,6 +1929,7 @@ onMounted(fetchProfile)
   border-radius: 14px;
   background: var(--surface);
   padding: 20px;
+  box-shadow: var(--shadow-sm);
 }
 
 .resume-head {
@@ -2028,6 +2081,7 @@ onMounted(fetchProfile)
   border-radius: 14px;
   background: var(--surface);
   padding: 28px 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .cert-header {
@@ -2259,6 +2313,10 @@ onMounted(fetchProfile)
 @media (max-width: 640px) {
   .profile-page {
     padding: 32px 16px 60px;
+  }
+
+  .section {
+    padding: 16px;
   }
 
   .profile-header {

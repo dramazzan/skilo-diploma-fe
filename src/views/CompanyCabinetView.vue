@@ -396,81 +396,83 @@ onMounted(() => {
       </div>
     </section>
 
-    <section v-else-if="activeTab === 'manage'" class="card">
+    <section v-else-if="activeTab === 'manage'" class="card manage-vacancies">
       <h2>Ваши вакансии</h2>
       <p v-if="!vacancies.length" class="muted">Пока нет опубликованных вакансий.</p>
 
-      <div v-for="vacancy in vacancies" :key="vacancy.id" class="vacancy-item">
-        <div class="vacancy-head">
-          <div>
-            <h3>{{ vacancy.title }}</h3>
-            <p>{{ vacancy.location }} · {{ vacancy.level }}</p>
-          </div>
-          <div class="actions">
-            <button class="secondary" @click="startEditVacancy(vacancy)">Редактировать</button>
-            <button class="secondary" @click="removeVacancy(vacancy.id)">Удалить</button>
-          </div>
-        </div>
-
-        <p class="vacancy-summary">{{ vacancy.summary }}</p>
-        <div class="tags">
-          <span v-for="tag in vacancy.tags" :key="tag">{{ tag }}</span>
-        </div>
-
-        <div v-if="editVacancyId === vacancy.id" class="nested-form">
-          <h4>Редактирование вакансии</h4>
-          <div class="form-grid">
-            <label>Название<input v-model="editForm.title" type="text" /></label>
-            <label>Уровень
-              <select v-model="editForm.level">
-                <option value="junior">Junior</option>
-                <option value="middle">Middle</option>
-                <option value="senior">Senior</option>
-              </select>
-            </label>
-            <label>Локация<input v-model="editForm.location" type="text" /></label>
-            <label>Формат занятости
-              <select v-model="editForm.employment">
-                <option value="full-time">Полная занятость</option>
-                <option value="part-time">Частичная занятость</option>
-                <option value="internship">Стажировка</option>
-                <option value="remote">Удаленно</option>
-              </select>
-            </label>
-            <label>Зарплата<input v-model="editForm.salaryRange" type="text" /></label>
-            <label>Стек<input v-model="editForm.stack" type="text" /></label>
-          </div>
-          <label>Описание<textarea v-model="editForm.description" rows="3" /></label>
-          <div class="actions">
-            <button class="primary" :disabled="actionLoading" @click="saveVacancy(vacancy.id)">Сохранить изменения</button>
-            <button class="secondary" @click="cancelEditVacancy">Отмена</button>
-          </div>
-        </div>
-
-        <div class="tasks-block">
-          <h4>Тестовые задания</h4>
-          <p v-if="!vacancy.realTasks.length" class="muted">Заданий пока нет.</p>
-
-          <article v-for="task in vacancy.realTasks" :key="task.id" class="task-item">
-            <div class="task-head">
-              <strong>{{ task.title }}</strong>
-              <span>{{ task.estimatedHours }} ч.</span>
+      <div v-else class="vacancy-list">
+        <div v-for="vacancy in vacancies" :key="vacancy.id" class="vacancy-item">
+          <div class="vacancy-head">
+            <div>
+              <h3>{{ vacancy.title }}</h3>
+              <p>{{ vacancy.location }} · {{ vacancy.level }}</p>
             </div>
-            <p>{{ task.brief }}</p>
             <div class="actions">
-              <button class="secondary" @click="startEditTask(vacancy.id, task)">Редактировать задачу</button>
-              <button class="secondary" @click="removeTask(vacancy.id, task.id)">Удалить задачу</button>
+              <button class="secondary" @click="startEditVacancy(vacancy)">Редактировать</button>
+              <button class="secondary" @click="removeVacancy(vacancy.id)">Удалить</button>
             </div>
-          </article>
+          </div>
 
-          <div class="nested-form">
-            <h4>Добавить задание</h4>
-            <label>Название<input v-model="getTaskDraft(vacancy.id).title" type="text" /></label>
-            <label>Описание<textarea v-model="getTaskDraft(vacancy.id).brief" rows="2" /></label>
-            <label>Требования<textarea v-model="getTaskDraft(vacancy.id).requirementsText" rows="3" /></label>
-            <label>Что сдаёт кандидат<textarea v-model="getTaskDraft(vacancy.id).deliverablesText" rows="2" /></label>
-            <label>Часы<input v-model.number="getTaskDraft(vacancy.id).estimatedHours" type="number" min="1" /></label>
-            <button class="primary" :disabled="actionLoading" @click="addTask(vacancy.id)">Добавить задание</button>
+          <p class="vacancy-summary">{{ vacancy.summary }}</p>
+          <div class="tags">
+            <span v-for="tag in vacancy.tags" :key="tag">{{ tag }}</span>
+          </div>
+
+          <div v-if="editVacancyId === vacancy.id" class="nested-form">
+            <h4>Редактирование вакансии</h4>
+            <div class="form-grid">
+              <label>Название<input v-model="editForm.title" type="text" /></label>
+              <label>Уровень
+                <select v-model="editForm.level">
+                  <option value="junior">Junior</option>
+                  <option value="middle">Middle</option>
+                  <option value="senior">Senior</option>
+                </select>
+              </label>
+              <label>Локация<input v-model="editForm.location" type="text" /></label>
+              <label>Формат занятости
+                <select v-model="editForm.employment">
+                  <option value="full-time">Полная занятость</option>
+                  <option value="part-time">Частичная занятость</option>
+                  <option value="internship">Стажировка</option>
+                  <option value="remote">Удаленно</option>
+                </select>
+              </label>
+              <label>Зарплата<input v-model="editForm.salaryRange" type="text" /></label>
+              <label>Стек<input v-model="editForm.stack" type="text" /></label>
+            </div>
+            <label>Описание<textarea v-model="editForm.description" rows="3" /></label>
+            <div class="actions">
+              <button class="primary" :disabled="actionLoading" @click="saveVacancy(vacancy.id)">Сохранить изменения</button>
+              <button class="secondary" @click="cancelEditVacancy">Отмена</button>
+            </div>
+          </div>
+
+          <div class="tasks-block">
+            <h4>Тестовые задания</h4>
+            <p v-if="!vacancy.realTasks.length" class="muted">Заданий пока нет.</p>
+
+            <article v-for="task in vacancy.realTasks" :key="task.id" class="task-item">
+              <div class="task-head">
+                <strong>{{ task.title }}</strong>
+                <span>{{ task.estimatedHours }} ч.</span>
+              </div>
+              <p>{{ task.brief }}</p>
+              <div class="actions">
+                <button class="secondary" @click="startEditTask(vacancy.id, task)">Редактировать задачу</button>
+                <button class="secondary" @click="removeTask(vacancy.id, task.id)">Удалить задачу</button>
+              </div>
+            </article>
+
+            <div class="nested-form">
+              <h4>Добавить задание</h4>
+              <label>Название<input v-model="getTaskDraft(vacancy.id).title" type="text" /></label>
+              <label>Описание<textarea v-model="getTaskDraft(vacancy.id).brief" rows="2" /></label>
+              <label>Требования<textarea v-model="getTaskDraft(vacancy.id).requirementsText" rows="3" /></label>
+              <label>Что сдаёт кандидат<textarea v-model="getTaskDraft(vacancy.id).deliverablesText" rows="2" /></label>
+              <label>Часы<input v-model.number="getTaskDraft(vacancy.id).estimatedHours" type="number" min="1" /></label>
+              <button class="primary" :disabled="actionLoading" @click="addTask(vacancy.id)">Добавить задание</button>
+            </div>
           </div>
         </div>
       </div>
@@ -695,6 +697,16 @@ onMounted(() => {
   padding: 18px;
 }
 
+.manage-vacancies {
+  display: grid;
+  gap: 12px;
+}
+
+.vacancy-list {
+  display: grid;
+  gap: 14px;
+}
+
 .status {
   margin: 8px 0;
   padding: 10px;
@@ -772,8 +784,16 @@ select {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 14px;
-  margin-bottom: 12px;
   background: var(--surface-soft);
+}
+
+.vacancy-item {
+  display: grid;
+  gap: 12px;
+}
+
+.candidate-item {
+  margin-bottom: 12px;
 }
 
 .candidate-item.clickable {
@@ -885,7 +905,7 @@ select {
 }
 
 .vacancy-summary {
-  margin: 10px 0;
+  margin: 0;
 }
 
 .actions {
@@ -899,7 +919,7 @@ select {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 0;
 }
 
 .tags span {
@@ -911,15 +931,23 @@ select {
 }
 
 .tasks-block {
-  margin-top: 12px;
+  margin-top: 2px;
+  display: grid;
+  gap: 10px;
+}
+
+.tasks-block > h4 {
+  margin: 0;
 }
 
 .task-item {
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 0;
   background: var(--surface-soft);
+  display: grid;
+  gap: 8px;
 }
 
 .nested-form {
@@ -928,6 +956,10 @@ select {
   padding: 12px;
   margin-top: 12px;
   background: var(--surface);
+}
+
+.manage-vacancies .vacancy-head h3 + p {
+  margin-top: 4px;
 }
 
 .muted {

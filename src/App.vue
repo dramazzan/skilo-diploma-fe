@@ -43,6 +43,7 @@ let onDesktopNavChange = null;
 const isSideNavOpen = computed(() => {
   return isDesktopNavPinned.value ? isDesktopNavVisible.value : isNavDrawerOpen.value;
 });
+const isAuthRoute = computed(() => route.meta.layout === "auth");
 
 const primaryNavLinks = [
   {
@@ -341,9 +342,13 @@ onBeforeUnmount(() => {
 <template>
   <div
     class="app-shell"
-    :class="{ 'nav-docked': isDesktopNavPinned, 'nav-docked-collapsed': isDesktopNavPinned && !isDesktopNavVisible }"
+    :class="{
+      'nav-docked': isDesktopNavPinned,
+      'nav-docked-collapsed': isDesktopNavPinned && !isDesktopNavVisible,
+      'auth-layout': isAuthRoute
+    }"
   >
-    <header class="top-nav">
+    <header v-if="!isAuthRoute" class="top-nav">
       <div class="top-nav-inner">
         <div class="top-nav-left">
           <button
@@ -391,7 +396,7 @@ onBeforeUnmount(() => {
 
     <transition name="nav-drawer-fade">
       <div
-        v-if="isSideNavOpen && !isDesktopNavPinned"
+        v-if="!isAuthRoute && isSideNavOpen && !isDesktopNavPinned"
         class="side-nav-backdrop"
         aria-hidden="true"
         @click="closeNavDrawer"
@@ -399,6 +404,7 @@ onBeforeUnmount(() => {
     </transition>
 
     <aside
+      v-if="!isAuthRoute"
       id="side-navigation"
       class="side-nav ambient-host"
       :class="{ open: isSideNavOpen }"
@@ -409,8 +415,10 @@ onBeforeUnmount(() => {
       <AmbientMotionLayer mode="panel" edge-fade="soft" intensity="low" />
       <header class="side-nav-head">
         <router-link to="/" class="top-brand" @click="closeNavDrawer">Skillo</router-link>
-        <button type="button" class="side-nav-close" aria-label="Закрыть меню" @click="closeNavDrawer">
-          Закрыть
+        <button type="button" class="side-nav-icon-btn" aria-label="Закрыть навигацию" @click="closeNavDrawer">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m9 6 6 6-6 6" />
+          </svg>
         </button>
       </header>
 
@@ -433,9 +441,9 @@ onBeforeUnmount(() => {
       </footer>
     </aside>
 
-    <main class="app-main">
+    <main class="app-main" :class="{ 'app-main--auth': isAuthRoute }">
       <transition name="daily-reminder">
-        <aside v-if="dailyTasksStore.isReminderVisible" class="daily-reminder ambient-host">
+        <aside v-if="!isAuthRoute && dailyTasksStore.isReminderVisible" class="daily-reminder ambient-host">
           <AmbientMotionLayer mode="panel" edge-fade="soft" intensity="low" />
           <div class="daily-reminder-text">
             <strong>Ежедневное напоминание</strong>
@@ -459,7 +467,7 @@ onBeforeUnmount(() => {
       </router-view>
     </main>
 
-    <footer class="site-footer ambient-host">
+    <footer v-if="!isAuthRoute" class="site-footer ambient-host">
       <AmbientMotionLayer mode="panel" edge-fade="soft" intensity="low" />
       <div class="site-footer-inner">
         <div class="site-footer-brand">

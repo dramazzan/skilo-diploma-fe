@@ -122,22 +122,29 @@ const handleSubmit = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-a);
-  padding: 40px 20px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: transparent;
+  padding: 32px 18px;
+  font-family: inherit;
   color: var(--text);
 }
 
 .container {
   width: 100%;
-  max-width: 560px;
+  max-width: 620px;
+  border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
+  border-radius: 22px;
+  padding: clamp(20px, 3.2vw, 34px);
+  background:
+    radial-gradient(360px 180px at 100% 0, color-mix(in srgb, var(--primary) 8%, transparent) 0%, transparent 64%),
+    linear-gradient(180deg, var(--card-grad-start) 0%, var(--card-grad-end) 100%);
+  box-shadow: var(--shadow-md);
 }
 
 /* Steps */
 .steps {
   display: flex;
   gap: 6px;
-  margin-bottom: 40px;
+  margin-bottom: 28px;
 }
 
 .step {
@@ -158,7 +165,7 @@ const handleSubmit = async () => {
 
 /* Header */
 header {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 header h1 {
@@ -180,31 +187,37 @@ header p {
 .interests-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 28px;
+  gap: 12px;
+  margin-bottom: 22px;
 }
 
 .interest-card {
   position: relative;
-  background: #fff;
+  background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: 14px;
-  padding: 22px 20px;
+  padding: 18px 16px;
   text-align: left;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
   font-family: inherit;
-  color: inherit;
+  color: var(--text);
 }
 
 .interest-card:hover {
-  border-color: var(--border);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border-color: var(--soft-border);
+  background: var(--surface-soft);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
 }
 
 .interest-card.selected {
-  border-color: var(--text);
-  background: var(--surface-soft);
+  border-color: var(--primary);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--primary) 12%, var(--surface)) 0%,
+    var(--surface-soft) 100%
+  );
 }
 
 .card-check {
@@ -218,20 +231,22 @@ header p {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--button-text);
+  background: transparent;
   transition: all 0.15s ease;
 }
 
 .interest-card.selected .card-check {
   background: var(--primary);
-  border-color: var(--text);
+  border-color: var(--primary);
 }
 
 .card-icon {
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background: var(--surface-soft);
+  border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+  background: color-mix(in srgb, var(--surface-soft) 90%, var(--surface));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -242,7 +257,8 @@ header p {
 
 .interest-card.selected .card-icon {
   background: var(--primary);
-  color: #fff;
+  border-color: var(--primary);
+  color: var(--button-text);
 }
 
 .interest-card h3 {
@@ -262,12 +278,12 @@ header p {
 /* Error */
 .error-msg {
   font-size: 14px;
-  color: #dc2626;
+  color: #b91c1c;
   margin: 0 0 16px;
   padding: 10px 14px;
-  background: #fef2f2;
+  background: color-mix(in srgb, #b91c1c 10%, var(--surface));
   border-radius: 10px;
-  border: 1px solid #fecaca;
+  border: 1px solid color-mix(in srgb, #b91c1c 28%, var(--border));
 }
 
 /* Actions */
@@ -287,7 +303,7 @@ header p {
   align-items: center;
   gap: 8px;
   padding: 12px 28px;
-  border: none;
+  border: 1px solid var(--primary);
   border-radius: 10px;
   background: var(--primary);
   color: var(--button-text);
@@ -305,7 +321,9 @@ header p {
 }
 
 .submit-btn.disabled {
-  background: var(--border);
+  border-color: var(--border);
+  background: var(--surface-soft);
+  color: var(--muted);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -314,10 +332,38 @@ header p {
 .spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(13, 13, 13, 0.25);
+  border: 2px solid color-mix(in srgb, var(--button-text) 30%, transparent);
   border-top-color: var(--button-text);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
+}
+
+:global(:root[data-theme="dark"]) .container {
+  background:
+    radial-gradient(360px 180px at 100% 0, rgba(255, 255, 255, 0.06) 0%, transparent 64%),
+    linear-gradient(180deg, var(--card-grad-start) 0%, var(--card-grad-end) 100%);
+}
+
+:global(:root[data-theme="dark"]) .interest-card {
+  background: color-mix(in srgb, var(--surface) 92%, black);
+}
+
+:global(:root[data-theme="dark"]) .interest-card:hover {
+  background: color-mix(in srgb, var(--surface-soft) 88%, black);
+}
+
+:global(:root[data-theme="dark"]) .interest-card.selected {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--primary) 18%, var(--surface)) 0%,
+    color-mix(in srgb, var(--surface-soft) 86%, black) 100%
+  );
+}
+
+:global(:root[data-theme="dark"]) .error-msg {
+  color: #fca5a5;
+  background: color-mix(in srgb, #7f1d1d 52%, var(--surface));
+  border-color: color-mix(in srgb, #f87171 36%, var(--border));
 }
 
 @keyframes spin {
@@ -326,6 +372,15 @@ header p {
 
 /* Responsive */
 @media (max-width: 520px) {
+  .onboarding {
+    padding: 20px 10px;
+  }
+
+  .container {
+    border-radius: 18px;
+    padding: 16px;
+  }
+
   .interests-grid {
     grid-template-columns: 1fr;
   }
