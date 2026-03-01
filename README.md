@@ -1,37 +1,62 @@
-# ai-diploma-fe
+# Skillo Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue 3 + Vite frontend for the Skillo platform.
 
-## Recommended IDE Setup
+## Architecture
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+The project uses a **feature-based structure**:
 
-## Recommended Browser Setup
+- `src/app` - app-level bootstrap concerns (router setup).
+- `src/features/*` - domain modules (views, stores, feature API layer, feature components/utils).
+- `src/shared/*` - reusable cross-feature modules (UI primitives, base API client, mocks, shared types).
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+Current high-level structure:
 
-## Customize configuration
+```text
+src/
+  app/
+    router/
+  features/
+    auth/
+    home/
+    leaders/
+    company/
+    friends/
+    community/
+    vacancies/
+    profile/
+    skill-verification/
+    skill-levels/
+    daily-tasks/
+    roadmaps/
+  shared/
+    api/
+    ui/
+    mocks/
+    types/
+```
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Conventions
 
-## Project Setup
+- Keep business rules in feature `store/`, `api/`, or composables.
+- Keep views focused on rendering + orchestration.
+- Avoid direct usage of shared base client in views; use feature `api/` wrappers.
+- Put cross-feature UI and utilities in `src/shared`.
+- Use lazy-loaded routes in `src/app/router/index.ts`.
+
+## Setup
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## Run (dev)
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+## Build (prod)
 
 ```sh
 npm run build

@@ -1,8 +1,8 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useDailyTasksStore } from "@/store/dailyTasks";
-import AmbientMotionLayer from "@/components/AmbientMotionLayer.vue";
+import { useDailyTasksStore } from "@/features/daily-tasks/store/dailyTasks";
+import AmbientMotionLayer from "@/shared/ui/AmbientMotionLayer.vue";
 
 const THEME_STORAGE_KEY = "skilo-theme";
 const DESKTOP_NAV_MEDIA_QUERY = "(min-width: 1100px)";
