@@ -44,6 +44,11 @@ const routes = [
     component: () => import("@/features/skill-levels/views/SkillLevelAssessmentView.vue"),
   },
   {
+    path: "/knowledge-graph",
+    name: "knowledge-graph",
+    component: () => import("@/features/knowledge-graph/views/KnowledgeGraphView.vue"),
+  },
+  {
     path: "/roadmaps",
     name: "roadmaps",
     component: () => import("@/features/roadmaps/views/RoadmapsView.vue"),

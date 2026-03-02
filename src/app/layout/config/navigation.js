@@ -25,6 +25,11 @@ export const primaryNavLinks = [
     iconPaths: ["M4 19h16M7 19V9M12 19V5M17 19v-7"]
   },
   {
+    to: "/knowledge-graph",
+    label: "Knowledge graph",
+    iconPaths: ["M5 19V9l5-4 5 4v10", "M5 13h10", "M12 9v10"]
+  },
+  {
     to: "/friends",
     label: "Друзья",
     iconPaths: ["M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M8.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M20 8v6M23 11h-6"]
@@ -63,7 +68,8 @@ export const footerColumns = [
       { label: "О проекте", to: "/" },
       { label: "Дорожные карты", to: "/roadmaps" },
       { label: "Ежедневные задания", to: "/daily-tasks" },
-      { label: "Определение уровня", to: "/skill-levels" }
+      { label: "Определение уровня", to: "/skill-levels" },
+      { label: "Knowledge graph", to: "/knowledge-graph" }
     ]
   },
   {
