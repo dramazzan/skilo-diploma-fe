@@ -1,4 +1,5 @@
 <script setup>
+import logoS from "@/assets/logo-s-ai.svg"
 import AmbientMotionLayer from "@/shared/ui/AmbientMotionLayer.vue"
 
 defineProps({
@@ -27,7 +28,10 @@ defineEmits(["close-nav", "nav-link-click"])
     <AmbientMotionLayer mode="panel" edge-fade="soft" intensity="low" />
 
     <header class="side-nav-head">
-      <router-link to="/" class="top-brand" @click="$emit('close-nav')">Skillo</router-link>
+      <router-link to="/" class="top-brand" aria-label="Skillo" @click="$emit('close-nav')">
+        <img :src="logoS" alt="" class="top-brand-icon" width="34" height="34" />
+        <span>Skillo</span>
+      </router-link>
       <button type="button" class="side-nav-icon-btn" aria-label="Закрыть навигацию" @click="$emit('close-nav')">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="m9 6 6 6-6 6" />

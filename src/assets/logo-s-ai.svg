@@ -1,0 +1,50 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="112" y1="112" x2="912" y2="912" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0B1020"/>
+      <stop offset="1" stop-color="#1E2A49"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="250" y1="250" x2="770" y2="770" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#68E0FF"/>
+      <stop offset="0.52" stop-color="#7A8CFF"/>
+      <stop offset="1" stop-color="#5FF2C7"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 512) rotate(90) scale(420)">
+      <stop offset="0" stop-color="#7A8CFF" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#7A8CFF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softGlow" x="124" y="124" width="776" height="776" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="20"/>
+    </filter>
+  </defs>
+
+  <rect x="72" y="72" width="880" height="880" rx="220" fill="url(#bg)"/>
+  <circle cx="512" cy="512" r="330" fill="url(#halo)"/>
+
+  <g opacity="0.24" filter="url(#softGlow)">
+    <path d="M730 302C661 226 542 199 438 221C348 240 289 293 289 360C289 426 349 474 451 494C557 514 640 530 689 575C736 619 744 676 707 731C651 812 499 850 358 796C302 774 250 744 217 702" stroke="url(#accent)" stroke-width="92" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <path d="M730 302C661 226 542 199 438 221C348 240 289 293 289 360C289 426 349 474 451 494C557 514 640 530 689 575C736 619 744 676 707 731C651 812 499 850 358 796C302 774 250 744 217 702" stroke="url(#accent)" stroke-width="76" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <g fill="url(#accent)">
+    <circle cx="730" cy="302" r="26"/>
+    <circle cx="289" cy="360" r="20"/>
+    <circle cx="689" cy="575" r="19"/>
+    <circle cx="217" cy="702" r="26"/>
+  </g>
+
+  <g stroke="url(#accent)" stroke-width="12" stroke-linecap="round" opacity="0.75">
+    <path d="M702 252L764 220"/>
+    <path d="M263 336L208 300"/>
+    <path d="M711 603L778 632"/>
+    <path d="M191 736L136 774"/>
+  </g>
+
+  <g fill="url(#accent)" opacity="0.9">
+    <circle cx="778" cy="220" r="10"/>
+    <circle cx="208" cy="300" r="10"/>
+    <circle cx="778" cy="632" r="9"/>
+    <circle cx="136" cy="774" r="9"/>
+  </g>
+</svg>

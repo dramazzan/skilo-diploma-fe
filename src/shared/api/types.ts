@@ -1,14 +1,48 @@
 import type { VacancyItem, VacancyTask as MockVacancyTask } from "@/shared/mocks/mockVacancies"
 
+export type UserRole = "student" | "company"
+
+export interface CompanyProfile {
+  companyName: string
+  bin: string
+  industry: string
+  contactPerson: string
+  phone: string
+  website: string
+}
+
+export interface LoginPayload {
+  email: string
+  password: string
+  role: UserRole
+}
+
+export interface RegisterPayload {
+  email: string
+  password: string
+  role: UserRole
+  country?: string
+  city?: string
+  university?: string
+  companyName?: string
+  bin?: string
+  industry?: string
+  contactPerson?: string
+  phone?: string
+  website?: string
+}
+
 export interface User {
   id: number
   email: string
   password: string
+  role: UserRole
   firstLogin: boolean
   createdAt: string
   country: string
   city: string
   university: string
+  companyProfile: CompanyProfile | null
 }
 
 export interface AuthResponse {

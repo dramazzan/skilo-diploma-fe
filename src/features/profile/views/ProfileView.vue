@@ -664,7 +664,7 @@ const generateCertificate = async () => {
 
 const logoutFromProfile = () => {
   authStore.logout()
-  router.push("/login")
+  router.push("/auth")
 }
 
 onMounted(fetchProfile)

@@ -1,10 +1,10 @@
-import { api, type AuthResponse } from "@/shared/api/client"
+import { api, type AuthResponse, type LoginPayload, type RegisterPayload } from "@/shared/api/client"
 
 export const authApi = {
-  login(email: string, password: string): Promise<AuthResponse> {
-    return api.login(email, password)
+  login(payload: LoginPayload): Promise<AuthResponse> {
+    return api.login(payload)
   },
-  register(email: string, password: string): Promise<AuthResponse> {
-    return api.register(email, password)
+  register(payload: RegisterPayload): Promise<AuthResponse> {
+    return api.register(payload)
   }
 }

@@ -3,6 +3,11 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
   { path: "/", component: () => import("@/features/home/views/HomeView.vue") },
   {
+    path: "/auth",
+    component: () => import("@/features/auth/views/AuthEntryView.vue"),
+    meta: { layout: "auth", public: true }
+  },
+  {
     path: "/login",
     component: () => import("@/features/auth/views/LoginView.vue"),
     meta: { layout: "auth", public: true }
@@ -71,7 +76,26 @@ const routes = [
   { path: "/:pathMatch(.*)*", redirect: "/roadmaps" },
 ];
 
-export default createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+const roleAwareAuthPaths = new Set(["/login", "/register"])
+const allowedRoles = new Set(["student", "company"])
+
+router.beforeEach((to) => {
+  if (!roleAwareAuthPaths.has(to.path)) return true
+
+  const role = typeof to.query.role === "string" ? to.query.role : ""
+  if (allowedRoles.has(role)) return true
+
+  return {
+    path: "/auth",
+    query: {
+      next: to.path
+    }
+  }
+})
+
+export default router

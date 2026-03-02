@@ -6,11 +6,13 @@ export const mockLoginResponse: AuthResponse = {
   user: {
     id: 1,
     email: "test@example.com",
+    role: "student",
     firstLogin: true,
     createdAt: new Date().toISOString(),
     country: "Казахстан",
     city: "Алматы",
-    university: "Satbayev University"
+    university: "Satbayev University",
+    companyProfile: null
   }
 }
 

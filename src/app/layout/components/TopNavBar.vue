@@ -1,4 +1,6 @@
 <script setup>
+import logoS from "@/assets/logo-s-ai.svg"
+
 defineProps({
   isSideNavOpen: {
     type: Boolean,
@@ -28,7 +30,10 @@ defineEmits(["toggle-nav", "toggle-theme"])
           <span class="top-nav-menu-icon" aria-hidden="true" />
         </button>
 
-        <router-link to="/" class="top-brand">Skillo</router-link>
+        <router-link to="/" class="top-brand" aria-label="Skillo">
+          <img :src="logoS" alt="" class="top-brand-icon" width="34" height="34" />
+          <span>Skillo</span>
+        </router-link>
       </div>
 
       <div class="top-nav-actions">
