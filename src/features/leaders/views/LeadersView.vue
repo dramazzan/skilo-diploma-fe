@@ -6,6 +6,7 @@ import {
   type LeaderboardResponse
 } from "@/features/leaders/api/leaders.api"
 import { useAuthStore } from "@/features/auth/store/auth"
+import { resolveApiError } from "@/shared/utils/resolveApiError"
 
 const authStore = useAuthStore()
 const loading = ref(true)
@@ -90,8 +91,8 @@ const loadLeaders = async () => {
     loading.value = true
     error.value = null
     leaderboard.value = await leadersApi.getLeaderboard(authStore.user?.id ?? null)
-  } catch {
-    error.value = "Не удалось загрузить рейтинг"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось загрузить рейтинг").message
   } finally {
     loading.value = false
   }

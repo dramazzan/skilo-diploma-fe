@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from "vue"
 import { useRouter } from "vue-router"
 import { vacanciesApi, type Vacancy, type VacancyTaskLeaderboardResponse } from "@/features/vacancies/api/vacancies.api"
+import { resolveApiError } from "@/shared/utils/resolveApiError"
 
 const router = useRouter()
 const loading = ref(true)
@@ -44,8 +45,8 @@ const loadVacancies = async () => {
       vacancies.value.map(async (item) => [item.id, await vacanciesApi.getVacancyTaskLeaderboard(item.id, null)] as const)
     )
     leaderboardByVacancy.value = Object.fromEntries(leaderboardEntries)
-  } catch {
-    error.value = "Не удалось загрузить вакансии"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось загрузить вакансии").message
   } finally {
     loading.value = false
   }

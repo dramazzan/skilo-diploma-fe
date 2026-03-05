@@ -78,7 +78,18 @@ const routes = [
     name: "topic",
     component: () => import("@/features/roadmaps/views/TopicView.vue"),
   },
-  { path: "/:pathMatch(.*)*", redirect: "/roadmaps" },
+  {
+    path: "/error/service-unavailable",
+    name: "service-unavailable",
+    component: () => import("@/features/system/views/ServiceUnavailableView.vue"),
+    meta: { layout: "auth", public: true }
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "not-found",
+    component: () => import("@/features/system/views/NotFoundView.vue"),
+    meta: { layout: "auth", public: true }
+  },
 ];
 
 const router = createRouter({
@@ -90,6 +101,7 @@ const roleAwareAuthPaths = new Set(["/login", "/register"])
 const allowedRoles = new Set(["student", "company"])
 
 router.beforeEach((to) => {
+  // Guard role-specific auth screens. If role is missing, user first selects it on /auth.
   if (!roleAwareAuthPaths.has(to.path)) return true
 
   const role = typeof to.query.role === "string" ? to.query.role : ""
@@ -101,6 +113,29 @@ router.beforeEach((to) => {
       next: to.path
     }
   }
+})
+
+const isRecoverableRouteLoadError = (error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error)
+  return (
+    /fetch dynamically imported module/i.test(message) ||
+    /importing a module script failed/i.test(message) ||
+    /load failed/i.test(message) ||
+    /network\s?error/i.test(message)
+  )
+}
+
+router.onError((error, to) => {
+  // If a lazy chunk cannot be loaded (offline/CDN issue), route to a stable fallback page.
+  if (!isRecoverableRouteLoadError(error)) return
+  if (to.name === "service-unavailable") return
+
+  router.replace({
+    name: "service-unavailable",
+    query: {
+      from: to.fullPath
+    }
+  })
 })
 
 export default router

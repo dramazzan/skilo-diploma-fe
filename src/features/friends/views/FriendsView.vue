@@ -9,6 +9,7 @@ import {
 } from "@/features/friends/api/friends.api"
 import { mockRoadmapAssessments } from "@/shared/mocks/mockRoadmaps"
 import { useAuthStore } from "@/features/auth/store/auth"
+import { resolveApiError } from "@/shared/utils/resolveApiError"
 
 const authStore = useAuthStore()
 
@@ -112,8 +113,8 @@ const loadData = async () => {
     globalMap.value = mapData
     ensureChallengeRoadmapSelection()
     await loadChallenges(userId)
-  } catch {
-    error.value = "Не удалось загрузить страницу друзей"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось загрузить страницу друзей").message
   } finally {
     loading.value = false
   }
@@ -138,8 +139,8 @@ const addFriend = async () => {
     await refreshMap()
     await loadChallenges(userId)
     addEmail.value = ""
-  } catch (err: any) {
-    addError.value = err?.message ?? "Не удалось добавить друга"
+  } catch (err) {
+    addError.value = resolveApiError(err, "Не удалось добавить друга").message
   } finally {
     saving.value = false
   }
@@ -533,8 +534,8 @@ const submitChallengeQuiz = async () => {
     closeChallengeQuiz()
 
     challengeMessage.value = `Вы прошли тест и бросили вызов ${draft.opponentName}. Ваш результат скрыт до прохождения теста другом.`
-  } catch (err: any) {
-    const message = err?.message ?? "Не удалось отправить вызов"
+  } catch (err) {
+    const message = resolveApiError(err, "Не удалось отправить вызов").message
     challengeQuizError.value = message
     challengeError.value = message
   } finally {

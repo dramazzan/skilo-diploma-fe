@@ -8,6 +8,7 @@ import {
   type CompanyVacancyTaskPayload,
   type Vacancy
 } from "@/features/company/api/company.api"
+import { resolveApiError } from "@/shared/utils/resolveApiError"
 
 type CompanyTab = "publish" | "manage" | "candidates"
 
@@ -96,8 +97,8 @@ const loadData = async () => {
     ])
     vacancies.value = vacancyList
     candidates.value = candidateList
-  } catch {
-    error.value = "Не удалось загрузить кабинет компании"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось загрузить кабинет компании").message
   } finally {
     loading.value = false
   }
@@ -126,8 +127,8 @@ const createVacancy = async () => {
     })
     await loadData()
     activeTab.value = "manage"
-  } catch {
-    error.value = "Не удалось опубликовать вакансию"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось опубликовать вакансию").message
   } finally {
     actionLoading.value = false
   }
@@ -159,8 +160,8 @@ const saveVacancy = async (vacancyId: string) => {
     success.value = "Вакансия обновлена"
     editVacancyId.value = null
     await loadData()
-  } catch {
-    error.value = "Не удалось обновить вакансию"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось обновить вакансию").message
   } finally {
     actionLoading.value = false
   }
@@ -173,8 +174,8 @@ const removeVacancy = async (vacancyId: string) => {
     await companyApi.deleteCompanyVacancy(vacancyId)
     success.value = "Вакансия удалена"
     await loadData()
-  } catch {
-    error.value = "Не удалось удалить вакансию"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось удалить вакансию").message
   } finally {
     actionLoading.value = false
   }
@@ -220,8 +221,8 @@ const addTask = async (vacancyId: string) => {
     }
     success.value = "Тестовое задание добавлено"
     await loadData()
-  } catch {
-    error.value = "Не удалось добавить тестовое задание"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось добавить тестовое задание").message
   } finally {
     actionLoading.value = false
   }
@@ -266,8 +267,8 @@ const saveTask = async () => {
     success.value = "Тестовое задание обновлено"
     cancelEditTask()
     await loadData()
-  } catch {
-    error.value = "Не удалось обновить тестовое задание"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось обновить тестовое задание").message
   } finally {
     actionLoading.value = false
   }
@@ -280,8 +281,8 @@ const removeTask = async (vacancyId: string, taskId: string) => {
     await companyApi.deleteCompanyVacancyTask(vacancyId, taskId)
     success.value = "Тестовое задание удалено"
     await loadData()
-  } catch {
-    error.value = "Не удалось удалить тестовое задание"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось удалить тестовое задание").message
   } finally {
     actionLoading.value = false
   }
@@ -338,8 +339,8 @@ const sendInvite = async (candidateId: string) => {
       inviteForm.message = ""
       await loadData()
     }
-  } catch {
-    error.value = "Не удалось отправить приглашение"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось отправить приглашение").message
   } finally {
     actionLoading.value = false
   }

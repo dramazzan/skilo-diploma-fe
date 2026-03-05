@@ -9,6 +9,7 @@ import {
   type VacancyTaskSubmissionPayload
 } from "@/features/vacancies/api/vacancies.api"
 import { useAuthStore } from "@/features/auth/store/auth"
+import { isNotFoundError, resolveApiError } from "@/shared/utils/resolveApiError"
 
 const route = useRoute()
 const router = useRouter()
@@ -122,8 +123,8 @@ const submitTask = async (taskId: string) => {
       item.task.id === taskId ? { ...item, submission } : item
     )
     taskLeaderboard.value = await vacanciesApi.getVacancyTaskLeaderboard(vacancy.value.id, authStore.user?.id ?? null)
-  } catch {
-    taskErrors.value[taskId] = "Не удалось отправить решение"
+  } catch (err) {
+    taskErrors.value[taskId] = resolveApiError(err, "Не удалось отправить решение").message
   } finally {
     taskSubmitting.value[taskId] = false
   }
@@ -139,8 +140,13 @@ const loadVacancy = async () => {
     } else {
       await loadTasks(vacancy.value.id)
     }
-  } catch {
-    error.value = "Не удалось загрузить подготовку по вакансии"
+  } catch (err) {
+    if (isNotFoundError(err)) {
+      error.value = "404: такой адрес не существует или вакансия удалена."
+      return
+    }
+
+    error.value = resolveApiError(err, "Не удалось загрузить подготовку по вакансии").message
   } finally {
     loading.value = false
   }

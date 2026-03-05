@@ -3,6 +3,7 @@ import { computed, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useAuthStore } from "@/features/auth/store/auth"
 import type { UserRole } from "@/shared/api/client"
+import { resolveApiError } from "@/shared/utils/resolveApiError"
 
 const email = ref("")
 const password = ref("")
@@ -101,8 +102,8 @@ const handleRegister = async () => {
     } else {
       router.push("/roadmaps")
     }
-  } catch (err: any) {
-    error.value = err?.message || "Не удалось зарегистрироваться"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось зарегистрироваться").message
   } finally {
     loading.value = false
   }

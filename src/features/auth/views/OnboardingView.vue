@@ -2,6 +2,7 @@
 import { ref } from "vue"
 import { useRouter } from "vue-router"
 import { useAuthStore } from "@/features/auth/store/auth"
+import { resolveApiError } from "@/shared/utils/resolveApiError"
 
 const interests = ref<string[]>([])
 const loading = ref(false)
@@ -36,8 +37,8 @@ const handleSubmit = async () => {
     error.value = null
     auth.setOnboardingDone()
     router.push("/roadmaps")
-  } catch (err: any) {
-    error.value = err.message
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось сохранить настройки").message
   } finally {
     loading.value = false
   }

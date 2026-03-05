@@ -4,7 +4,7 @@ import { useRouter } from "vue-router"
 import roadmapVisual from "@/assets/visual-roadmap.svg"
 import interviewVisual from "@/assets/visual-interview.svg"
 import communityVisual from "@/assets/visual-community.svg"
-import { primaryNavLinks } from "@/app/layout/config/navigation"
+import { primaryNavLinks, type NavigationLink } from "@/app/layout/config/navigation"
 import AmbientMotionLayer from "@/shared/ui/AmbientMotionLayer.vue"
 
 const router = useRouter()
@@ -159,7 +159,7 @@ const navJourneyCopyByPath: Record<string, NavJourneyCopy> = {
 }
 
 const navSequence = primaryNavLinks
-const navJourneyCards = navSequence.map((link: { to: string | number; label: string }) => {
+const navJourneyCards = navSequence.map((link: NavigationLink) => {
   const copy = navJourneyCopyByPath[link.to]
 
   return {
@@ -211,6 +211,7 @@ const shouldReduceMotion = () => {
 }
 
 const spawnHeroSparkles = (clientX: number, clientY: number, burst = 1) => {
+  // Hard limit keeps pointer animation smooth on low-end devices.
   if (shouldReduceMotion()) return
 
   const now = performance.now()

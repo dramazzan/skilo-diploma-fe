@@ -7,6 +7,7 @@ import { useRoadmapsStore } from "@/features/roadmaps/store/roadmaps"
 import { useSkillLevelsStore } from "@/features/skill-levels/store/skillLevels"
 import { profileApi, type UserActivityDay } from "@/features/profile/api/profile.api"
 import { useAuthStore } from "@/features/auth/store/auth"
+import { resolveApiError } from "@/shared/utils/resolveApiError"
 
 interface CertificatePreview {
   fullName: string
@@ -364,8 +365,8 @@ const fetchProfile = async () => {
     await roadmapsStore.loadRoadmapProgress(null)
     await loadActivity()
     await loadProfilePoints()
-  } catch (err: any) {
-    error.value = "Не удалось загрузить профиль"
+  } catch (err) {
+    error.value = resolveApiError(err, "Не удалось загрузить профиль").message
   } finally {
     loading.value = false
   }

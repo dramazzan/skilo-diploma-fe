@@ -1,4 +1,20 @@
-export const primaryNavLinks: any[] = [
+export interface NavigationLink {
+  to: string
+  label: string
+  iconPaths: string[]
+}
+
+export interface FooterColumnLink {
+  label: string
+  to: string
+}
+
+export interface FooterColumn {
+  title: string
+  links: FooterColumnLink[]
+}
+
+export const primaryNavLinks: NavigationLink[] = [
   {
     to: "/",
     label: "О проекте",
@@ -61,7 +77,7 @@ export const primaryNavLinks: any[] = [
   }
 ]
 
-export const footerColumns = [
+export const footerColumns: FooterColumn[] = [
   {
     title: "Платформа",
     links: [
