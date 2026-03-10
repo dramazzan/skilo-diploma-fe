@@ -1,12 +1,9 @@
 import { computed, ref } from "vue"
 import { defineStore } from "pinia"
 
-export type DirectionSkillLevel =
-  | "Junior"
-  | "Junior Strong"
-  | "Middle"
-  | "Middle Strong"
-  | "Senior"
+import { skillLevelsApi } from "@/features/skill-levels/api/skillLevels.api"
+
+export type DirectionSkillLevel = "Junior" | "Junior Strong" | "Middle" | "Middle Strong" | "Senior"
 
 export interface DirectionLevelResult {
   roadmapId: string
@@ -16,51 +13,59 @@ export interface DirectionLevelResult {
   updatedAt: string
 }
 
-const SKILL_LEVELS_STORAGE_KEY = "user_skill_levels_v1"
-
-const parseJson = <T>(value: string | null, fallback: T): T => {
-  if (!value) return fallback
-
-  try {
-    return JSON.parse(value) as T
-  } catch {
-    return fallback
-  }
-}
-
 export const useSkillLevelsStore = defineStore("skillLevels", () => {
-  const levelsByRoadmap = ref<Record<string, DirectionLevelResult>>(
-    parseJson<Record<string, DirectionLevelResult>>(localStorage.getItem(SKILL_LEVELS_STORAGE_KEY), {})
-  )
+  const levelsByRoadmap = ref<Record<string, DirectionLevelResult>>({})
+  const loading = ref(false)
+  const loaded = ref(false)
 
-  const persist = () => {
-    localStorage.setItem(SKILL_LEVELS_STORAGE_KEY, JSON.stringify(levelsByRoadmap.value))
+  const allLevels = computed(() => {
+    return Object.values(levelsByRoadmap.value).sort((first, second) => second.updatedAt.localeCompare(first.updatedAt))
+  })
+
+  const setLevels = (items: DirectionLevelResult[]) => {
+    levelsByRoadmap.value = items.reduce<Record<string, DirectionLevelResult>>((acc, item) => {
+      acc[item.roadmapId] = item
+      return acc
+    }, {})
   }
 
-  const setLevel = (result: DirectionLevelResult) => {
-    levelsByRoadmap.value[result.roadmapId] = result
-    persist()
+  const loadLevels = async (userId: number | null, force = false) => {
+    if (loaded.value && !force) return
+
+    loading.value = true
+
+    try {
+      const levels = await skillLevelsApi.getLevels(userId)
+      setLevels(levels)
+      loaded.value = true
+    } finally {
+      loading.value = false
+    }
   }
 
-  const clearLevel = (roadmapId: string) => {
-    if (!levelsByRoadmap.value[roadmapId]) return
+  const setLevel = async (result: DirectionLevelResult, userId: number | null) => {
+    const saved = await skillLevelsApi.upsertLevel(userId, result.roadmapId, result)
+    levelsByRoadmap.value[saved.roadmapId] = saved
+    loaded.value = true
+    return saved
+  }
+
+  const clearLevel = async (roadmapId: string, userId: number | null) => {
+    await skillLevelsApi.deleteLevel(userId, roadmapId)
     delete levelsByRoadmap.value[roadmapId]
-    persist()
   }
 
   const getLevel = (roadmapId: string): DirectionLevelResult | null => {
     return levelsByRoadmap.value[roadmapId] ?? null
   }
 
-  const allLevels = computed(() => {
-    return Object.values(levelsByRoadmap.value).sort((first, second) =>
-      second.updatedAt.localeCompare(first.updatedAt)
-    )
-  })
-
   return {
     levelsByRoadmap,
     allLevels,
+    loading,
+    loaded,
+    setLevels,
+    loadLevels,
     setLevel,
     clearLevel,
     getLevel

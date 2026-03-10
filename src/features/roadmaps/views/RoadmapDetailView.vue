@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue"
+import { computed, onMounted, ref, watch } from "vue"
 import { useRoute } from "vue-router"
-import {
-  mockRoadmaps,
-  mockRoadmapTrees
-} from "@/shared/mocks/mockRoadmaps"
+
+import { useAuthStore } from "@/features/auth/store/auth"
 import RoadmapTree from "@/features/roadmaps/components/RoadmapTree.vue"
 import RoadmapListNode from "@/features/roadmaps/components/RoadmapListNode.vue"
+import { useRoadmapsStore } from "@/features/roadmaps/store/roadmaps"
 import { useTopicProgressStore } from "@/features/roadmaps/store/topicProgress"
 import { mapRoadmapTreeWithProgress } from "@/features/roadmaps/utils/roadmapProgress"
 
@@ -14,14 +13,31 @@ type RoadmapViewMode = "skill_tree" | "classic_list"
 const VIEW_MODE_KEY = "roadmap_view_mode"
 
 const route = useRoute()
+const authStore = useAuthStore()
+const roadmapsStore = useRoadmapsStore()
 const topicProgress = useTopicProgressStore()
-const roadmapId = route.params.id as string
+const roadmapId = computed(() => String(route.params.id ?? ""))
+const loading = ref(true)
 
-const roadmap = mockRoadmaps.find(r => r.id === roadmapId)
+const roadmap = computed(() => roadmapsStore.roadmaps.find((item) => item.id === roadmapId.value))
 const tree = computed(() => {
-  const baseTree = mockRoadmapTrees[roadmapId] ?? []
+  const baseTree = roadmapsStore.getRoadmapTreeById(roadmapId.value)
   return mapRoadmapTreeWithProgress(baseTree, topicProgress.getResult)
 })
+
+const loadRoadmapData = async () => {
+  loading.value = true
+
+  try {
+    await Promise.all([
+      roadmapsStore.loadRoadmaps(),
+      roadmapsStore.loadRoadmapTree(roadmapId.value),
+      topicProgress.loadResults(authStore.user?.id ?? null)
+    ])
+  } finally {
+    loading.value = false
+  }
+}
 
 const collectLeafNodes = (nodes: typeof tree.value): typeof tree.value => {
   return nodes.flatMap((node) => {
@@ -58,11 +74,23 @@ const viewMode = ref<RoadmapViewMode>(getStoredMode())
 watch(viewMode, (value) => {
   localStorage.setItem(VIEW_MODE_KEY, value)
 })
+
+watch(roadmapId, () => {
+  void loadRoadmapData()
+})
+
+onMounted(() => {
+  void loadRoadmapData()
+})
 </script>
 
 <template>
   <div class="page roadmap-page">
-    <div v-if="!roadmap" class="empty-state">
+    <div v-if="loading" class="empty-state">
+      <h2>Загрузка roadmap...</h2>
+    </div>
+
+    <div v-else-if="!roadmap" class="empty-state">
       <h2>Roadmap не найден</h2>
     </div>
 

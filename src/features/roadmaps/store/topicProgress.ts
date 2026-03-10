@@ -1,48 +1,73 @@
 import { ref } from "vue"
 import { defineStore } from "pinia"
-
-export interface TopicResult {
-  score: number
-  passed: boolean
-  updatedAt: string
-}
-
-const TOPIC_RESULTS_KEY = "topic_test_results"
-
-const parseResults = (): Record<string, TopicResult> => {
-  const raw = localStorage.getItem(TOPIC_RESULTS_KEY)
-  if (!raw) return {}
-
-  try {
-    return JSON.parse(raw) as Record<string, TopicResult>
-  } catch {
-    return {}
-  }
-}
+import { roadmapsApi, type TopicResultUpdateResponse } from "@/features/roadmaps/api/roadmaps.api"
+import type { TopicResult } from "@/shared/api/client"
 
 export const useTopicProgressStore = defineStore("topic-progress", () => {
-  const results = ref<Record<string, TopicResult>>(parseResults())
+  const results = ref<Record<string, TopicResult>>({})
+  const loading = ref(false)
+  const loaded = ref(false)
+  const activeUserId = ref<number | null>(null)
 
-  const persist = () => {
-    localStorage.setItem(TOPIC_RESULTS_KEY, JSON.stringify(results.value))
+  const syncUserContext = (userId: number | null) => {
+    const nextUserId = typeof userId === "number" ? userId : null
+    if (activeUserId.value === nextUserId) return
+
+    activeUserId.value = nextUserId
+    results.value = {}
+    loaded.value = false
   }
 
-  const setResult = (topicId: string, score: number, passed: boolean) => {
-    results.value[topicId] = {
-      score,
-      passed,
-      updatedAt: new Date().toISOString()
+  const setResults = (items: TopicResult[]) => {
+    results.value = items.reduce<Record<string, TopicResult>>((acc, item) => {
+      acc[item.topicId] = item
+      return acc
+    }, {})
+  }
+
+  const loadResults = async (userId: number | null, force = false) => {
+    syncUserContext(userId)
+    if (loaded.value && !force) return
+
+    loading.value = true
+
+    try {
+      const items = await roadmapsApi.getTopicResults(userId)
+      setResults(items)
+      loaded.value = true
+    } finally {
+      loading.value = false
     }
-
-    persist()
   }
 
-  const getResult = (topicId: string): TopicResult | null => {
-    return results.value[topicId] ?? null
+  const applyResult = (result: TopicResult) => {
+    results.value = {
+      ...results.value,
+      [result.topicId]: result
+    }
   }
+
+  const setResult = async (
+    topicId: string,
+    score: number,
+    passed: boolean,
+    userId: number | null
+  ): Promise<TopicResultUpdateResponse> => {
+    syncUserContext(userId)
+    const response = await roadmapsApi.upsertTopicResult(userId, topicId, { score, passed })
+    applyResult(response.result)
+    loaded.value = true
+    return response
+  }
+
+  const getResult = (topicId: string): TopicResult | null => results.value[topicId] ?? null
 
   return {
     results,
+    loading,
+    loaded,
+    setResults,
+    loadResults,
     setResult,
     getResult
   }

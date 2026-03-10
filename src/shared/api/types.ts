@@ -1,5 +1,3 @@
-import type { VacancyItem, VacancyTask as MockVacancyTask } from "@/shared/mocks/mockVacancies"
-
 export type UserRole = "student" | "company"
 
 export interface CompanyProfile {
@@ -43,6 +41,7 @@ export interface User {
   city: string
   university: string
   companyProfile: CompanyProfile | null
+  fullName?: string
 }
 
 export interface AuthResponse {
@@ -50,11 +49,85 @@ export interface AuthResponse {
   user: Omit<User, "password">
 }
 
+export type RoadmapLevel = "Beginner" | "Intermediate" | "Advanced"
+
+export interface Roadmap {
+  id: string
+  title: string
+  description: string
+  level: RoadmapLevel
+  recommended: boolean
+}
+
+export type TopicStatus = "not_started" | "in_progress" | "completed" | "locked"
+
+export interface RoadmapNode {
+  id: string
+  title: string
+  status: TopicStatus
+  children?: RoadmapNode[]
+}
+
+export interface AssessmentOption {
+  id: string
+  label: string
+  score: number
+}
+
+export interface AssessmentQuestion {
+  id: string
+  text: string
+  options: AssessmentOption[]
+}
+
+export interface RoadmapAssessment {
+  roadmapId: string
+  title: string
+  questions: AssessmentQuestion[]
+}
+
 export interface RoadmapProgressItem {
   roadmapId: string
   completionPercent: number
   completedTopics: number
   totalTopics: number
+}
+
+export interface RoadmapTopic {
+  id: string
+  roadmapId: string
+  title: string
+  description: string
+  level: "beginner" | "intermediate" | "advanced"
+}
+
+export interface TopicContent {
+  topicId: string
+  theory: string
+}
+
+export interface TestQuestion {
+  id: string
+  question: string
+  options: string[]
+  correctAnswerIndex: number
+}
+
+export interface TopicTest {
+  topicId: string
+  questions: TestQuestion[]
+}
+
+export interface TopicResult {
+  topicId: string
+  score: number
+  passed: boolean
+  updatedAt: string
+}
+
+export interface TopicResultUpdateResponse {
+  result: TopicResult
+  progress: RoadmapProgressItem
 }
 
 export interface InterviewQuestionItem {
@@ -67,6 +140,21 @@ export interface InterviewQuestionItem {
 export interface UserActivityDay {
   date: string
   level: 0 | 1 | 2 | 3 | 4
+}
+
+export interface ProfileResponse {
+  id: number
+  fullName: string
+  email: string
+  createdAt: string
+  joinedAt: string
+  country: string
+  city: string
+  university: string
+  firstLogin: boolean
+  completedTests: number
+  skills: string[]
+  achievements: string[]
 }
 
 export interface LeaderboardEntry {
@@ -147,7 +235,14 @@ export interface VacancyPreparation {
   test: VacancyTestQuestion[]
 }
 
-export interface VacancyTask extends MockVacancyTask {}
+export interface VacancyTask {
+  id: string
+  title: string
+  brief: string
+  requirements: string[]
+  deliverables: string[]
+  estimatedHours: number
+}
 
 export interface VacancyTaskSubmissionPayload {
   solutionUrl: string
@@ -164,8 +259,18 @@ export interface VacancyTaskSubmission {
   submittedAt: string
 }
 
-export interface Vacancy extends Omit<VacancyItem, "preparation"> {
+export interface Vacancy {
+  id: string
+  company: string
+  title: string
+  level: "junior" | "middle" | "senior"
+  location: string
+  employment: "full-time" | "part-time" | "internship" | "remote"
+  salaryRange: string
+  tags: string[]
+  summary: string
   preparation: VacancyPreparation
+  realTasks: VacancyTask[]
 }
 
 export interface CompanyVacancyPayload {
@@ -323,4 +428,117 @@ export interface FriendChallengeNotification {
   challengeId: string
   message: string
   createdAt: string
+}
+
+export type DirectionSkillLevel = "Junior" | "Junior Strong" | "Middle" | "Middle Strong" | "Senior"
+
+export interface DirectionLevelResult {
+  roadmapId: string
+  roadmapTitle: string
+  levelLabel: DirectionSkillLevel
+  score: number
+  updatedAt: string
+}
+
+export interface CustomRoadmapDraft {
+  id: string
+  title: string
+  goal: string
+  directionIds: string[]
+  generationMode: "single" | "multiple"
+  milestones: string[]
+  createdAt: string
+}
+
+export interface GenerateCustomTrackPayload {
+  title: string
+  goal: string
+  selectedDirectionIds: string[]
+  generationMode: "single" | "multiple"
+  interests?: string[]
+}
+
+export type CommunityAuthorType = "developer" | "company"
+export type CommunityModerationStatus = "pending" | "approved" | "rejected"
+
+export interface CommunityComment {
+  id: string
+  authorName: string
+  authorType: CommunityAuthorType
+  authorUserId: number | null
+  text: string
+  createdAt: string
+}
+
+export interface CommunityPost {
+  id: string
+  title: string
+  content: string
+  focusArea: string
+  tags: string[]
+  authorName: string
+  authorType: CommunityAuthorType
+  authorUserId: number | null
+  createdAt: string
+  publishedAt: string | null
+  moderationStatus: CommunityModerationStatus
+  moderationNote: string | null
+  likes: number
+  likedByUserIds: number[]
+  comments: CommunityComment[]
+}
+
+export type VerificationMode = "online" | "offline"
+export type VerificationStatus = "scheduled" | "completed"
+
+export interface VerificationSlot {
+  id: string
+  date: string
+  time: string
+  mode: VerificationMode
+  location: string
+  assessor: string
+  seats: number
+}
+
+export interface VerificationBooking {
+  id: string
+  slotId: string
+  roadmapId: string
+  roadmapTitle: string
+  mode: VerificationMode
+  date: string
+  time: string
+  dateTimeIso: string
+  location: string
+  assessor: string
+  status: VerificationStatus
+  bookedAt: string
+  completedAt: string | null
+  certificateId: string | null
+}
+
+export interface DailyTaskItem {
+  id: string
+  date: string
+  roadmapId: string
+  roadmapTitle: string
+  nodeId: string
+  nodeTitle: string
+  description: string
+  points: number
+  completed: boolean
+  completedAt: string | null
+}
+
+export interface DailyTaskQuizOption {
+  id: string
+  label: string
+}
+
+export interface DailyTaskQuiz {
+  taskId: string
+  question: string
+  options: DailyTaskQuizOption[]
+  correctOptionId: string
 }

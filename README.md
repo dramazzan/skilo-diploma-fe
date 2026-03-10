@@ -8,7 +8,7 @@ The project uses a **feature-based structure**:
 
 - `src/app` - app-level bootstrap concerns (router setup).
 - `src/features/*` - domain modules (views, stores, feature API layer, feature components/utils).
-- `src/shared/*` - reusable cross-feature modules (UI primitives, base API client, mocks, shared types).
+- `src/shared/*` - reusable cross-feature modules (UI primitives, base API client, shared types).
 
 Current high-level structure:
 
@@ -32,7 +32,6 @@ src/
   shared/
     api/
     ui/
-    mocks/
     types/
 ```
 
@@ -54,6 +53,22 @@ npm install
 
 ```sh
 npm run dev
+```
+
+## Backend connection
+
+The frontend expects real backend API responses.
+
+Create `.env` from `.env.example`:
+
+```sh
+cp .env.example .env
+```
+
+Set API URL:
+
+```env
+VITE_API_BASE_URL=http://localhost:4000/api
 ```
 
 ## Build (prod)

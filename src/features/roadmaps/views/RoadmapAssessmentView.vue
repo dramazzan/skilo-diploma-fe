@@ -1,31 +1,45 @@
 <script setup lang="ts">
-import { computed, ref } from "vue"
+import { computed, onMounted, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
-import { mockRoadmaps, mockRoadmapAssessments, type RoadmapLevel } from "@/shared/mocks/mockRoadmaps"
+
 import { useRoadmapsStore } from "@/features/roadmaps/store/roadmaps"
 import { useAuthStore } from "@/features/auth/store/auth"
+import { roadmapsApi, type RoadmapAssessment } from "@/features/roadmaps/api/roadmaps.api"
+import type { RoadmapLevel } from "@/shared/api/client"
 
 const route = useRoute()
 const router = useRouter()
 const roadmapsStore = useRoadmapsStore()
 const authStore = useAuthStore()
 
-const roadmapId = route.params.id as string
-const roadmap = mockRoadmaps.find((item) => item.id === roadmapId)
-const assessment = mockRoadmapAssessments[roadmapId]
+const roadmapId = computed(() => String(route.params.id ?? ""))
+const roadmap = computed(() => roadmapsStore.roadmaps.find((item) => item.id === roadmapId.value))
+const assessment = ref<RoadmapAssessment | null>(null)
+const loading = ref(true)
+
+const loadAssessment = async () => {
+  loading.value = true
+
+  try {
+    await roadmapsStore.loadRoadmaps()
+    assessment.value = await roadmapsApi.getRoadmapAssessment(roadmapId.value)
+  } finally {
+    loading.value = false
+  }
+}
 
 const answers = ref<Record<string, number>>({})
 const completed = ref(false)
 const detectedLevel = ref<RoadmapLevel | null>(null)
 
 const allAnswered = computed(() => {
-  if (!assessment) return false
-  return assessment.questions.every((question) => answers.value[question.id] !== undefined)
+  if (!assessment.value) return false
+  return assessment.value.questions.every((question) => answers.value[question.id] !== undefined)
 })
 
 const answeredCount = computed(() => {
-  if (!assessment) return 0
-  return assessment.questions.filter((q) => answers.value[q.id] !== undefined).length
+  if (!assessment.value) return 0
+  return assessment.value.questions.filter((q) => answers.value[q.id] !== undefined).length
 })
 
 const evaluateLevel = (avgScore: number): RoadmapLevel => {
@@ -35,29 +49,41 @@ const evaluateLevel = (avgScore: number): RoadmapLevel => {
 }
 
 const submitAssessment = async () => {
-  if (!assessment || !allAnswered.value) return
+  if (!assessment.value || !allAnswered.value) return
 
-  const total = assessment.questions.reduce((sum, question) => {
+  const total = assessment.value.questions.reduce((sum, question) => {
     return sum + (answers.value[question.id] ?? 1)
   }, 0)
 
-  const avgScore = total / assessment.questions.length
+  const avgScore = total / assessment.value.questions.length
   const level = evaluateLevel(avgScore)
 
   detectedLevel.value = level
-  await roadmapsStore.addRoadmapWithLevel(roadmapId, level, authStore.user?.id ?? null)
+  await roadmapsStore.addRoadmapWithLevel(roadmapId.value, level, authStore.user?.id ?? null)
   completed.value = true
 }
 
 const goToRoadmap = () => {
-  router.push(`/roadmaps/${roadmapId}`)
+  router.push(`/roadmaps/${roadmapId.value}`)
 }
+
+watch(roadmapId, () => {
+  void loadAssessment()
+})
+
+onMounted(() => {
+  void loadAssessment()
+})
 </script>
 
 <template>
   <div class="assessment-page">
     <!-- Not found -->
-    <div v-if="!roadmap || !assessment" class="state-view">
+    <div v-if="loading" class="state-view">
+      <p>Загрузка...</p>
+    </div>
+
+    <div v-else-if="!roadmap || !assessment" class="state-view">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
       <p>Оценка не найдена</p>
     </div>

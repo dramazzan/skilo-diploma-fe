@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue"
 import { useDailyTasksStore, type DailyTaskItem } from "@/features/daily-tasks/store/dailyTasks"
+import type { DailyTaskQuiz } from "@/features/daily-tasks/api/dailyTasks.api"
 
 type TaskFilter = "all" | "pending" | "completed"
 
@@ -15,6 +16,8 @@ interface RoadmapTaskGroup {
 const dailyTasksStore = useDailyTasksStore()
 const activeFilter = ref<TaskFilter>("all")
 const quizTaskId = ref<string | null>(null)
+const activeQuiz = ref<DailyTaskQuiz | null>(null)
+const quizLoading = ref(false)
 const selectedQuizOptionId = ref<string>("")
 const quizError = ref<string | null>(null)
 
@@ -34,11 +37,6 @@ const filteredGlobalTask = computed(() => {
   const globalTask = dailyTasksStore.globalTodayTask
   if (!globalTask) return null
   return taskMatchesFilter(globalTask) ? globalTask : null
-})
-
-const activeQuiz = computed(() => {
-  if (!quizTaskId.value) return null
-  return dailyTasksStore.getQuizForTask(quizTaskId.value)
 })
 
 const roadmapGroups = computed<RoadmapTaskGroup[]>(() => {
@@ -121,19 +119,30 @@ const formatHistoryDate = (date: string) => {
   })
 }
 
-const openTaskTest = (taskId: string) => {
+const openTaskTest = async (taskId: string) => {
+  quizLoading.value = true
   quizTaskId.value = taskId
   selectedQuizOptionId.value = ""
   quizError.value = null
+
+  try {
+    activeQuiz.value = await dailyTasksStore.getQuizForTask(taskId)
+  } catch {
+    activeQuiz.value = null
+    quizError.value = "Не удалось загрузить тест. Попробуйте еще раз."
+  } finally {
+    quizLoading.value = false
+  }
 }
 
 const closeTaskTest = () => {
   quizTaskId.value = null
+  activeQuiz.value = null
   selectedQuizOptionId.value = ""
   quizError.value = null
 }
 
-const submitTaskTest = () => {
+const submitTaskTest = async () => {
   if (!activeQuiz.value) return
 
   if (!selectedQuizOptionId.value) {
@@ -141,7 +150,7 @@ const submitTaskTest = () => {
     return
   }
 
-  const passed = dailyTasksStore.submitTaskAnswer(activeQuiz.value.taskId, selectedQuizOptionId.value)
+  const passed = await dailyTasksStore.submitTaskAnswer(activeQuiz.value.taskId, selectedQuizOptionId.value)
 
   if (!passed) {
     quizError.value = "Неверно. Попробуйте еще раз."
@@ -152,7 +161,7 @@ const submitTaskTest = () => {
 }
 
 onMounted(() => {
-  dailyTasksStore.ensureTodayTasks()
+  void dailyTasksStore.ensureTodayTasks()
 })
 </script>
 
@@ -308,13 +317,15 @@ onMounted(() => {
     </section>
 
     <transition name="quiz-fade">
-      <div v-if="activeQuiz" class="quiz-overlay" @click.self="closeTaskTest">
+      <div v-if="quizTaskId" class="quiz-overlay" @click.self="closeTaskTest">
         <div class="quiz-modal">
           <p class="quiz-kicker">Мини-тест</p>
-          <h3>{{ activeQuiz.question }}</h3>
+          <h3 v-if="activeQuiz">{{ activeQuiz.question }}</h3>
+          <h3 v-else-if="quizLoading">Загрузка...</h3>
+          <h3 v-else>Тест недоступен</h3>
 
           <label
-            v-for="option in activeQuiz.options"
+            v-for="option in activeQuiz?.options ?? []"
             :key="option.id"
             class="quiz-option"
           >
@@ -333,7 +344,7 @@ onMounted(() => {
             <button type="button" class="quiz-btn quiz-btn--ghost" @click="closeTaskTest">
               Отмена
             </button>
-            <button type="button" class="quiz-btn" @click="submitTaskTest">
+            <button type="button" class="quiz-btn" :disabled="quizLoading || !activeQuiz" @click="submitTaskTest">
               Проверить
             </button>
           </div>

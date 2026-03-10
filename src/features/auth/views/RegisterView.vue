@@ -68,6 +68,11 @@ const handleRegister = async () => {
       return
     }
 
+    if (password.value.length < 6) {
+      error.value = "Пароль должен содержать минимум 6 символов"
+      return
+    }
+
     if (selectedRole.value === "company") {
       if (!companyName.value.trim() || !bin.value.trim() || !industry.value.trim() || !contactPerson.value.trim() || !phone.value.trim()) {
         error.value = "Для компании заполните обязательные поля."

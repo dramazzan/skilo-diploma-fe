@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue"
 import { useRouter } from "vue-router"
-import type { RoadmapNode as RoadmapTreeNode, TopicStatus } from "@/shared/mocks/mockRoadmaps"
+import type { RoadmapNode as RoadmapTreeNode, TopicStatus } from "@/shared/api/client"
 import RoadmapNode from "@/features/roadmaps/components/RoadmapNode.vue"
 import RoadmapConnection from "@/features/roadmaps/components/RoadmapConnection.vue"
 

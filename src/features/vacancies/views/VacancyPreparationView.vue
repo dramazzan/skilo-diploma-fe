@@ -263,7 +263,7 @@ onMounted(() => {
     <!-- Tasks -->
     <section v-if="vacancy && prepMode === 'tasks'" class="section-card">
       <h3 class="section-title">Реальные задачи</h3>
-      <p class="hint">Пока работает на mock-данных. В будущем компании смогут проверять решения.</p>
+      <p class="hint">Задачи загружаются из backend, а отправки сохраняются в профиле кандидата.</p>
 
       <div v-if="tasksLoading" class="hint">Загрузка задач...</div>
       <div v-else-if="!taskItems.length" class="hint">По этой вакансии пока нет задач.</div>

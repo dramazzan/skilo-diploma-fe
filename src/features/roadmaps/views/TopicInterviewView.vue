@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { computed, onMounted, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
+
 import { interviewApi, type InterviewQuestionItem } from "@/features/roadmaps/api/interview.api"
-import { mockRoadmap, type RoadmapTopic } from "@/shared/mocks/mockRoadmap"
+import { roadmapsApi, type RoadmapTopic } from "@/features/roadmaps/api/roadmaps.api"
 
 const route = useRoute()
 const router = useRouter()
 
-const topicId = route.params.id as string
-const topic: RoadmapTopic | undefined = mockRoadmap.find((item) => item.id === topicId)
+const topicId = computed(() => String(route.params.id ?? ""))
+const topic = ref<RoadmapTopic | null>(null)
 
 const loading = ref(true)
 const questions = ref<InterviewQuestionItem[]>([])
@@ -16,9 +17,19 @@ const openedQuestionId = ref<string | null>(null)
 
 const loadQuestions = async () => {
   loading.value = true
-  questions.value = await interviewApi.getTopicInterviewQuestions(topicId)
-  openedQuestionId.value = questions.value[0]?.id ?? null
-  loading.value = false
+
+  try {
+    const [topics, nextQuestions] = await Promise.all([
+      roadmapsApi.getTopics(),
+      interviewApi.getTopicInterviewQuestions(topicId.value)
+    ])
+
+    topic.value = topics.find((item) => item.id === topicId.value) ?? null
+    questions.value = nextQuestions
+    openedQuestionId.value = questions.value[0]?.id ?? null
+  } finally {
+    loading.value = false
+  }
 }
 
 const toggleAnswer = (questionId: string) => {
@@ -31,10 +42,14 @@ const goBack = () => {
     return
   }
 
-  router.push(`/topics/${topicId}`)
+  router.push(`/topics/${topicId.value}`)
 }
 
 onMounted(() => {
+  void loadQuestions()
+})
+
+watch(topicId, () => {
   void loadQuestions()
 })
 </script>
@@ -49,7 +64,9 @@ onMounted(() => {
       <router-link class="topic-tab" :to="`/topics/${topicId}/interview`">Вопросы интервью</router-link>
     </div>
 
-    <div v-if="!topic" class="empty-state">
+    <div v-if="loading" class="state-text">Загрузка вопросов...</div>
+
+    <div v-else-if="!topic" class="empty-state">
       <h2>Тема не найдена</h2>
     </div>
 
@@ -59,9 +76,7 @@ onMounted(() => {
         <p class="interview-subtitle">Часто задаваемые вопросы по этой теме.</p>
       </div>
 
-      <div v-if="loading" class="state-text">Загрузка вопросов...</div>
-
-      <div v-else-if="questions.length === 0" class="state-text">
+      <div v-if="questions.length === 0" class="state-text">
         Вопросов пока нет.
       </div>
 

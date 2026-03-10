@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue"
 import { useRouter } from "vue-router"
-import type { RoadmapNode } from "@/shared/mocks/mockRoadmaps"
+import type { RoadmapNode } from "@/shared/api/client"
 import { useTopicProgressStore } from "@/features/roadmaps/store/topicProgress"
 import { useDailyTasksStore } from "@/features/daily-tasks/store/dailyTasks"
 

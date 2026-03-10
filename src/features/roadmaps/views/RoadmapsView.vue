@@ -4,16 +4,7 @@ import { useRouter } from "vue-router"
 import { useRoadmapsStore } from "@/features/roadmaps/store/roadmaps"
 import { useAuthStore } from "@/features/auth/store/auth"
 import { useDailyTasksStore } from "@/features/daily-tasks/store/dailyTasks"
-
-interface CustomRoadmapDraft {
-  id: string
-  title: string
-  goal: string
-  directionIds: string[]
-  generationMode: "single" | "multiple"
-  milestones: string[]
-  createdAt: string
-}
+import { customTracksApi, type CustomRoadmapDraft } from "@/features/roadmaps/api/customTracks.api"
 
 const router = useRouter()
 const roadmapsStore = useRoadmapsStore()
@@ -24,7 +15,6 @@ const aiLoading = ref(false)
 const aiError = ref<string | null>(null)
 const generatedTracks = ref<CustomRoadmapDraft[]>([])
 const customTracks = ref<CustomRoadmapDraft[]>([])
-const CUSTOM_TRACKS_STORAGE_KEY = "custom_ai_tracks"
 
 const aiForm = ref({
   title: "",
@@ -173,18 +163,11 @@ const dailyTasksSummary = computed(() => {
 })
 
 onMounted(() => {
+  void roadmapsStore.loadRoadmaps()
   void roadmapsStore.loadUserRoadmapCollection(authStore.user?.id ?? null)
   void roadmapsStore.loadRoadmapProgress(authStore.user?.id ?? null)
-  dailyTasksStore.ensureTodayTasks()
-
-  const rawTracks = localStorage.getItem(CUSTOM_TRACKS_STORAGE_KEY)
-  if (!rawTracks) return
-
-  try {
-    customTracks.value = JSON.parse(rawTracks) as CustomRoadmapDraft[]
-  } catch {
-    customTracks.value = []
-  }
+  void dailyTasksStore.ensureTodayTasks()
+  void loadCustomTracks()
 })
 
 const removeRoadmap = async (roadmapId: string) => {
@@ -193,8 +176,8 @@ const removeRoadmap = async (roadmapId: string) => {
   removingRoadmapId.value = null
 }
 
-const persistCustomTracks = () => {
-  localStorage.setItem(CUSTOM_TRACKS_STORAGE_KEY, JSON.stringify(customTracks.value))
+const loadCustomTracks = async () => {
+  customTracks.value = await customTracksApi.list(authStore.user?.id ?? null)
 }
 
 const isDirectionSelected = (roadmapId: string) => {
@@ -229,62 +212,22 @@ const generateCustomTrack = async () => {
   aiLoading.value = true
 
   try {
-    await new Promise((resolve) => setTimeout(resolve, 650))
-
     const interests = splitInterests(aiForm.value.interests)
-    const selectedTitles = selectedDirections.value.map((item) => item.title)
+    const userId = authStore.user?.id ?? null
 
-    if (aiForm.value.generationMode === "single") {
-      const milestones = [
-        `Собранная база направлений: ${selectedTitles.join(" + ")}`,
-        "Кросс-доменная практика: проекты, объединяющие выбранные направления",
-        interests.length
-          ? `Фокус интересов: ${interests.join(", ")}`
-          : "Фокус интересов: практика, тесты, интервью",
-        weakCompatibilityPairs.value.length
-          ? `Проверьте слабые связки: ${weakCompatibilityPairs.value.join("; ")}`
-          : "Связки направлений совместимы и формируют единый трек"
-      ]
+    const savedTracks = await customTracksApi.generate(userId, {
+      title: aiForm.value.title.trim(),
+      goal: aiForm.value.goal.trim(),
+      selectedDirectionIds: [...aiForm.value.selectedDirectionIds],
+      generationMode: aiForm.value.generationMode,
+      interests
+    })
 
-      const track: CustomRoadmapDraft = {
-        id: `custom-${Date.now()}`,
-        title: aiForm.value.title.trim(),
-        goal: aiForm.value.goal.trim(),
-        directionIds: [...aiForm.value.selectedDirectionIds],
-        generationMode: "single",
-        milestones,
-        createdAt: new Date().toISOString()
-      }
-
-      generatedTracks.value = [track]
-      customTracks.value = [track, ...customTracks.value]
-    } else {
-      const tracks = selectedDirections.value.map((direction, index) => {
-        const milestones = [
-          `База по направлению: ${direction.title}`,
-          "Практика ключевых тем и выполнение тестов",
-          interests.length
-            ? `Доп. интересы: ${interests.join(", ")}`
-            : "Доп. фокус: интервью и прикладные задачи",
-          "Сравнение прогресса с другими выбранными направлениями"
-        ]
-
-        return {
-          id: `custom-${Date.now()}-${index}`,
-          title: `${aiForm.value.title.trim()} · ${direction.title}`,
-          goal: aiForm.value.goal.trim(),
-          directionIds: [direction.id],
-          generationMode: "multiple" as const,
-          milestones,
-          createdAt: new Date().toISOString()
-        }
-      })
-
-      generatedTracks.value = tracks
-      customTracks.value = [...tracks, ...customTracks.value]
-    }
-
-    persistCustomTracks()
+    generatedTracks.value = savedTracks
+    customTracks.value = [...savedTracks, ...customTracks.value]
+  } catch {
+    aiError.value = "Не удалось сохранить трек. Попробуйте еще раз."
+    generatedTracks.value = []
   } finally {
     aiLoading.value = false
   }

@@ -13,6 +13,7 @@ interface User {
   city: string
   university: string
   companyProfile: CompanyProfile | null
+  fullName?: string
 }
 
 export const useAuthStore = defineStore('auth', () => {

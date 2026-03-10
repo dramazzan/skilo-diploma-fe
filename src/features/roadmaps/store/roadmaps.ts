@@ -1,37 +1,34 @@
 import { computed, ref } from "vue"
 import { defineStore } from "pinia"
-import { mockRoadmaps, mockRoadmapTrees, mockUserCollection, type RoadmapLevel, type RoadmapNode } from "@/shared/mocks/mockRoadmaps"
-import { roadmapsApi, type RoadmapProgressItem } from "@/features/roadmaps/api/roadmaps.api"
 
-const ROADMAP_IDS_STORAGE_KEY = "user_roadmap_ids"
-const ROADMAP_LEVELS_STORAGE_KEY = "user_roadmap_levels"
-const ROADMAP_PROGRESS_STORAGE_KEY = "user_roadmap_progress"
-
-const parseJson = <T>(value: string | null, fallback: T): T => {
-  if (!value) return fallback
-
-  try {
-    return JSON.parse(value) as T
-  } catch {
-    return fallback
-  }
-}
+import type { RoadmapLevel } from "@/shared/api/client"
+import { roadmapsApi, type Roadmap, type RoadmapNode, type RoadmapProgressItem } from "@/features/roadmaps/api/roadmaps.api"
 
 export const useRoadmapsStore = defineStore("roadmaps", () => {
-  const userRoadmapIds = ref<string[]>(
-    parseJson<string[]>(localStorage.getItem(ROADMAP_IDS_STORAGE_KEY), [...mockUserCollection])
-  )
+  const roadmaps = ref<Roadmap[]>([])
+  const roadmapsLoaded = ref(false)
+  const roadmapTrees = ref<Record<string, RoadmapNode[]>>({})
+  const roadmapTreeLoadedById = ref<Record<string, boolean>>({})
 
-  const userRoadmapLevels = ref<Record<string, RoadmapLevel>>(
-    parseJson<Record<string, RoadmapLevel>>(localStorage.getItem(ROADMAP_LEVELS_STORAGE_KEY), {})
-  )
-
-  const roadmapProgress = ref<Record<string, RoadmapProgressItem>>(
-    parseJson<Record<string, RoadmapProgressItem>>(localStorage.getItem(ROADMAP_PROGRESS_STORAGE_KEY), {})
-  )
+  const userRoadmapIds = ref<string[]>([])
+  const userRoadmapLevels = ref<Record<string, RoadmapLevel>>({})
+  const roadmapProgress = ref<Record<string, RoadmapProgressItem>>({})
 
   const progressLoaded = ref(false)
   const collectionLoaded = ref(false)
+  const activeUserId = ref<number | null>(null)
+
+  const syncUserContext = (userId: number | null) => {
+    const nextUserId = typeof userId === "number" ? userId : null
+    if (activeUserId.value === nextUserId) return
+
+    activeUserId.value = nextUserId
+    userRoadmapIds.value = []
+    userRoadmapLevels.value = {}
+    roadmapProgress.value = {}
+    progressLoaded.value = false
+    collectionLoaded.value = false
+  }
 
   const countLeafTopics = (nodes: RoadmapNode[] | undefined): number => {
     if (!nodes?.length) return 0
@@ -45,34 +42,53 @@ export const useRoadmapsStore = defineStore("roadmaps", () => {
     }, 0)
   }
 
-  const persist = () => {
-    localStorage.setItem(ROADMAP_IDS_STORAGE_KEY, JSON.stringify(userRoadmapIds.value))
-    localStorage.setItem(ROADMAP_LEVELS_STORAGE_KEY, JSON.stringify(userRoadmapLevels.value))
-    localStorage.setItem(ROADMAP_PROGRESS_STORAGE_KEY, JSON.stringify(roadmapProgress.value))
-  }
-
-  const setRoadmapProgress = (items: RoadmapProgressItem[]) => {
+  const setRoadmapProgress = (items: RoadmapProgressItem[], replace = false) => {
     const mapped = items.reduce<Record<string, RoadmapProgressItem>>((acc, item) => {
       acc[item.roadmapId] = item
       return acc
     }, {})
 
-    roadmapProgress.value = {
-      ...roadmapProgress.value,
-      ...mapped
-    }
+    roadmapProgress.value = replace ? mapped : { ...roadmapProgress.value, ...mapped }
 
     progressLoaded.value = true
-    persist()
   }
 
   const setUserRoadmapCollection = (roadmapIds: string[]) => {
     userRoadmapIds.value = [...new Set(roadmapIds)]
     collectionLoaded.value = true
-    persist()
+  }
+
+  const loadRoadmaps = async () => {
+    if (roadmapsLoaded.value) return
+    roadmaps.value = await roadmapsApi.getRoadmaps()
+    roadmapsLoaded.value = true
+  }
+
+  const loadRoadmapTree = async (roadmapId: string) => {
+    if (!roadmapId) return [] as RoadmapNode[]
+    if (roadmapTreeLoadedById.value[roadmapId]) return roadmapTrees.value[roadmapId] ?? []
+
+    const payload = await roadmapsApi.getRoadmapTree(roadmapId)
+    const nodes = Array.isArray(payload) ? payload : payload[roadmapId] ?? []
+
+    roadmapTrees.value = {
+      ...roadmapTrees.value,
+      [roadmapId]: nodes
+    }
+    roadmapTreeLoadedById.value = {
+      ...roadmapTreeLoadedById.value,
+      [roadmapId]: true
+    }
+
+    return nodes
+  }
+
+  const getRoadmapTreeById = (roadmapId: string) => {
+    return roadmapTrees.value[roadmapId] ?? []
   }
 
   const loadUserRoadmapCollection = async (userId: number | null) => {
+    syncUserContext(userId)
     if (collectionLoaded.value) return
 
     const roadmapIds = await roadmapsApi.getUserRoadmapCollection(userId)
@@ -80,18 +96,18 @@ export const useRoadmapsStore = defineStore("roadmaps", () => {
   }
 
   const loadRoadmapProgress = async (userId: number | null) => {
+    syncUserContext(userId)
     if (progressLoaded.value) return
 
     const items = await roadmapsApi.getRoadmapProgress(userId)
-    setRoadmapProgress(items)
+    setRoadmapProgress(items, true)
   }
 
   const isInCollection = (roadmapId: string) => userRoadmapIds.value.includes(roadmapId)
 
   const addRoadmapWithLevel = async (roadmapId: string, level: RoadmapLevel, userId: number | null) => {
-    const nextCollection = isInCollection(roadmapId)
-      ? userRoadmapIds.value
-      : [...userRoadmapIds.value, roadmapId]
+    syncUserContext(userId)
+    const nextCollection = isInCollection(roadmapId) ? userRoadmapIds.value : [...userRoadmapIds.value, roadmapId]
 
     const savedCollection = await roadmapsApi.updateUserRoadmapCollection(userId, nextCollection)
     setUserRoadmapCollection(savedCollection)
@@ -99,7 +115,9 @@ export const useRoadmapsStore = defineStore("roadmaps", () => {
     userRoadmapLevels.value[roadmapId] = level
 
     if (!roadmapProgress.value[roadmapId]) {
-      const totalTopics = countLeafTopics(mockRoadmapTrees[roadmapId])
+      const tree = await loadRoadmapTree(roadmapId)
+      const totalTopics = countLeafTopics(tree)
+
       roadmapProgress.value[roadmapId] = {
         roadmapId,
         completionPercent: 0,
@@ -107,11 +125,10 @@ export const useRoadmapsStore = defineStore("roadmaps", () => {
         totalTopics
       }
     }
-
-    persist()
   }
 
   const removeRoadmapFromCollection = async (roadmapId: string, userId: number | null) => {
+    syncUserContext(userId)
     const prevCollection = [...userRoadmapIds.value]
     const prevLevels = { ...userRoadmapLevels.value }
     const prevProgress = { ...roadmapProgress.value }
@@ -120,17 +137,14 @@ export const useRoadmapsStore = defineStore("roadmaps", () => {
     setUserRoadmapCollection(nextCollection)
     delete userRoadmapLevels.value[roadmapId]
     delete roadmapProgress.value[roadmapId]
-    persist()
 
     try {
       const savedCollection = await roadmapsApi.removeUserRoadmapFromCollection(userId, roadmapId)
       setUserRoadmapCollection(savedCollection)
-      persist()
     } catch (error) {
       userRoadmapIds.value = prevCollection
       userRoadmapLevels.value = prevLevels
       roadmapProgress.value = prevProgress
-      persist()
       throw error
     }
   }
@@ -143,15 +157,16 @@ export const useRoadmapsStore = defineStore("roadmaps", () => {
     return roadmapProgress.value[roadmapId] ?? null
   }
 
-  const myRoadmaps = computed(() =>
-    mockRoadmaps.filter((roadmap) => userRoadmapIds.value.includes(roadmap.id))
-  )
+  const myRoadmaps = computed(() => roadmaps.value.filter((roadmap) => userRoadmapIds.value.includes(roadmap.id)))
 
   const availableRoadmaps = computed(() =>
-    mockRoadmaps.filter((roadmap) => !userRoadmapIds.value.includes(roadmap.id))
+    roadmaps.value.filter((roadmap) => !userRoadmapIds.value.includes(roadmap.id))
   )
 
   return {
+    roadmaps,
+    roadmapsLoaded,
+    roadmapTrees,
     userRoadmapIds,
     userRoadmapLevels,
     roadmapProgress,
@@ -159,6 +174,9 @@ export const useRoadmapsStore = defineStore("roadmaps", () => {
     collectionLoaded,
     myRoadmaps,
     availableRoadmaps,
+    loadRoadmaps,
+    loadRoadmapTree,
+    getRoadmapTreeById,
     isInCollection,
     setUserRoadmapCollection,
     loadUserRoadmapCollection,

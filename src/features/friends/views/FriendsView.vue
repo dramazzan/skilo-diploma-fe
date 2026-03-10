@@ -7,7 +7,7 @@ import {
   type FriendProfile,
   type GlobalItMapResponse
 } from "@/features/friends/api/friends.api"
-import { mockRoadmapAssessments } from "@/shared/mocks/mockRoadmaps"
+import { roadmapsApi, type RoadmapAssessment } from "@/features/roadmaps/api/roadmaps.api"
 import { useAuthStore } from "@/features/auth/store/auth"
 import { resolveApiError } from "@/shared/utils/resolveApiError"
 
@@ -39,6 +39,7 @@ const challengeQuizAnswers = ref<Record<string, number>>({})
 const challengeQuizStartedAt = ref<number | null>(null)
 const challengeQuizSubmitting = ref(false)
 const challengeQuizError = ref<string | null>(null)
+const challengeAssessmentsByRoadmapId = ref<Record<string, RoadmapAssessment | null>>({})
 const challengeQuizRemainingSec = ref(0)
 const challengeQuizProtectionEnabled = ref(false)
 const challengeQuizModalRef = ref<HTMLElement | null>(null)
@@ -258,9 +259,24 @@ const getChallengeRoadmapId = (participantUserId: number) => {
   return fallback
 }
 
+const ensureChallengeAssessment = async (roadmapId: string) => {
+  if (!roadmapId) return null
+
+  if (challengeAssessmentsByRoadmapId.value[roadmapId] !== undefined) {
+    return challengeAssessmentsByRoadmapId.value[roadmapId] ?? null
+  }
+
+  const assessment = await roadmapsApi.getRoadmapAssessment(roadmapId)
+  challengeAssessmentsByRoadmapId.value = {
+    ...challengeAssessmentsByRoadmapId.value,
+    [roadmapId]: assessment
+  }
+  return assessment
+}
+
 const activeChallengeAssessment = computed(() => {
   if (!activeChallengeDraft.value) return null
-  return mockRoadmapAssessments[activeChallengeDraft.value.roadmapId] ?? null
+  return challengeAssessmentsByRoadmapId.value[activeChallengeDraft.value.roadmapId] ?? null
 })
 
 const challengeQuizAnsweredCount = computed(() => {
@@ -485,7 +501,18 @@ const openChallengeQuiz = async (participantUserId: number) => {
   challengeQuizAnswers.value = {}
   challengeQuizStartedAt.value = Date.now()
 
-  if (!activeChallengeAssessment.value) {
+  let assessment: RoadmapAssessment | null = null
+
+  try {
+    assessment = await ensureChallengeAssessment(roadmapId)
+  } catch (error) {
+    closeChallengeQuiz({ keepGlobalError: true })
+    challengeError.value = resolveApiError(error, "Не удалось загрузить тест для вызова").message
+    return
+  }
+
+  if (!assessment) {
+    closeChallengeQuiz({ keepGlobalError: true })
     challengeQuizError.value = "Для этого направления пока нет теста соревнования"
     return
   }
@@ -499,7 +526,7 @@ const openChallengeQuiz = async (participantUserId: number) => {
     return
   }
 
-  const totalQuestions = activeChallengeAssessment.value.questions.length
+  const totalQuestions = assessment.questions.length
   startChallengeQuizTimer(totalQuestions * CHALLENGE_QUIZ_SECONDS_PER_QUESTION)
   enableChallengeQuizProtection()
 }

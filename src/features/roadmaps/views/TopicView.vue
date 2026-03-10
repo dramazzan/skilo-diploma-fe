@@ -1,32 +1,43 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
+
+import { useAuthStore } from "@/features/auth/store/auth"
+import { useRoadmapsStore } from "@/features/roadmaps/store/roadmaps"
 import { useTopicProgressStore } from "@/features/roadmaps/store/topicProgress"
-import {
-  mockRoadmap,
-  mockTopicContent,
-  mockTests,
-  RoadmapTopic,
-  TopicTest
-} from "@/shared/mocks/mockRoadmap"
+import { roadmapsApi, type RoadmapTopic, type TopicContent, type TopicTest } from "@/features/roadmaps/api/roadmaps.api"
 
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
+const roadmapsStore = useRoadmapsStore()
 const topicProgress = useTopicProgressStore()
 
-const topicId = route.params.id as string
+const topicId = computed(() => String(route.params.id ?? ""))
 
-const topic: RoadmapTopic | undefined = mockRoadmap.find(
-  t => t.id === topicId
-)
+const loading = ref(true)
+const topic = ref<RoadmapTopic | null>(null)
+const content = ref<TopicContent | null>(null)
+const test = ref<TopicTest | null>(null)
 
-const content = mockTopicContent.find(
-  c => c.topicId === topicId
-)
+const loadTopicData = async () => {
+  loading.value = true
 
-const test: TopicTest | undefined = mockTests.find(
-  t => t.topicId === topicId
-)
+  try {
+    const [topics, nextContent, nextTest] = await Promise.all([
+      roadmapsApi.getTopics(),
+      roadmapsApi.getTopicContent(topicId.value),
+      roadmapsApi.getTopicTest(topicId.value),
+      topicProgress.loadResults(authStore.user?.id ?? null)
+    ])
+
+    topic.value = topics.find((item) => item.id === topicId.value) ?? null
+    content.value = nextContent
+    test.value = nextTest
+  } finally {
+    loading.value = false
+  }
+}
 
 const testStarted = ref(false)
 const selectedAnswers = ref<number[]>([])
@@ -36,7 +47,7 @@ const currentQuestionIndex = ref(0)
 const remainingSeconds = ref(0)
 let timerId: number | null = null
 
-const persistedResult = computed(() => topicProgress.getResult(topicId))
+const persistedResult = computed(() => topicProgress.getResult(topicId.value))
 
 const topicStatusLabel = computed(() => {
   if (testFinished.value) {
@@ -57,16 +68,16 @@ const topicStatusClass = computed(() => {
   return "status--neutral"
 })
 
-const totalQuestions = computed(() => test?.questions.length ?? 0)
+const totalQuestions = computed(() => test.value?.questions.length ?? 0)
 
 const currentQuestion = computed(() => {
-  if (!test) return null
-  return test.questions[currentQuestionIndex.value] ?? null
+  if (!test.value) return null
+  return test.value.questions[currentQuestionIndex.value] ?? null
 })
 
 const isLastQuestion = computed(() => {
-  if (!test) return false
-  return currentQuestionIndex.value >= test.questions.length - 1
+  if (!test.value) return false
+  return currentQuestionIndex.value >= test.value.questions.length - 1
 })
 
 const isCurrentQuestionAnswered = computed(() => {
@@ -95,7 +106,7 @@ const startTimer = () => {
     if (remainingSeconds.value <= 1) {
       remainingSeconds.value = 0
       clearTimer()
-      finishTest()
+      void finishTest()
       return
     }
 
@@ -104,38 +115,46 @@ const startTimer = () => {
 }
 
 const startTest = () => {
-  if (!test?.questions.length) return
+  if (!test.value?.questions.length) return
 
   testStarted.value = true
   selectedAnswers.value = []
   testFinished.value = false
   score.value = 0
   currentQuestionIndex.value = 0
-  remainingSeconds.value = test.questions.length * 45
+  remainingSeconds.value = test.value.questions.length * 45
   startTimer()
 }
 
 const nextQuestion = () => {
-  if (!test || !isCurrentQuestionAnswered.value || isLastQuestion.value) return
+  if (!test.value || !isCurrentQuestionAnswered.value || isLastQuestion.value) return
   currentQuestionIndex.value += 1
 }
 
-const finishTest = () => {
-  if (!test) return
+const finishTest = async () => {
+  if (!test.value) return
 
   clearTimer()
 
   let correct = 0
 
-  test.questions.forEach((q, index) => {
+  test.value.questions.forEach((q, index) => {
     if (selectedAnswers.value[index] === q.correctAnswerIndex) {
       correct++
     }
   })
 
-  score.value = Math.round((correct / test.questions.length) * 100)
+  score.value = Math.round((correct / test.value.questions.length) * 100)
   testFinished.value = true
-  topicProgress.setResult(topicId, score.value, score.value >= 70)
+
+  const passed = score.value >= 70
+
+  try {
+    const saved = await topicProgress.setResult(topicId.value, score.value, passed, authStore.user?.id ?? null)
+    roadmapsStore.setRoadmapProgress([saved.progress])
+  } catch {
+    // Result is still shown in UI from current attempt; sync will be retried on the next successful request.
+  }
 }
 
 const goBack = () => {
@@ -150,6 +169,21 @@ const goBack = () => {
 onBeforeUnmount(() => {
   clearTimer()
 })
+
+watch(topicId, () => {
+  testStarted.value = false
+  testFinished.value = false
+  selectedAnswers.value = []
+  score.value = 0
+  currentQuestionIndex.value = 0
+  remainingSeconds.value = 0
+  clearTimer()
+  void loadTopicData()
+})
+
+onMounted(() => {
+  void loadTopicData()
+})
 </script>
 
 <template>
@@ -163,7 +197,11 @@ onBeforeUnmount(() => {
       <router-link class="topic-tab" :to="`/topics/${topicId}/interview`">Вопросы интервью</router-link>
     </div>
 
-    <div v-if="!topic" class="empty-state">
+    <div v-if="loading" class="empty-state">
+      <h2>Загрузка темы...</h2>
+    </div>
+
+    <div v-else-if="!topic" class="empty-state">
       <h2>Тема не найдена</h2>
     </div>
 

@@ -1,15 +1,10 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue"
-import {
-  mockRoadmapAssessments,
-  mockRoadmaps,
-  type AssessmentOption,
-  type AssessmentQuestion,
-  type RoadmapLevel
-} from "@/shared/mocks/mockRoadmaps"
+import { computed, onMounted, ref, watch } from "vue"
 import { useAuthStore } from "@/features/auth/store/auth"
+import { roadmapsApi, type RoadmapAssessment } from "@/features/roadmaps/api/roadmaps.api"
 import { useRoadmapsStore } from "@/features/roadmaps/store/roadmaps"
 import { useSkillLevelsStore, type DirectionSkillLevel } from "@/features/skill-levels/store/skillLevels"
+import type { AssessmentOption, AssessmentQuestion, RoadmapLevel } from "@/shared/api/client"
 
 interface WrittenQuestion {
   id: string
@@ -239,19 +234,31 @@ const authStore = useAuthStore()
 const roadmapsStore = useRoadmapsStore()
 const skillLevelsStore = useSkillLevelsStore()
 
-const selectedRoadmapId = ref<string>(mockRoadmaps[0]?.id ?? "")
+const selectedRoadmapId = ref<string>("")
+const assessmentsByRoadmapId = ref<Record<string, RoadmapAssessment | null>>({})
 const answers = ref<Record<string, number>>({})
 const writtenAnswers = ref<Record<string, string>>({})
 const submitMessage = ref<string | null>(null)
 
 const selectedRoadmap = computed(() => {
-  return mockRoadmaps.find((roadmap) => roadmap.id === selectedRoadmapId.value) ?? null
+  return roadmapsStore.roadmaps.find((roadmap) => roadmap.id === selectedRoadmapId.value) ?? null
 })
 
 const selectedAssessment = computed(() => {
   if (!selectedRoadmapId.value) return null
-  return mockRoadmapAssessments[selectedRoadmapId.value] ?? null
+  return assessmentsByRoadmapId.value[selectedRoadmapId.value] ?? null
 })
+
+const ensureAssessment = async (roadmapId: string) => {
+  if (!roadmapId) return
+  if (assessmentsByRoadmapId.value[roadmapId] !== undefined) return
+
+  const assessment = await roadmapsApi.getRoadmapAssessment(roadmapId)
+  assessmentsByRoadmapId.value = {
+    ...assessmentsByRoadmapId.value,
+    [roadmapId]: assessment
+  }
+}
 
 const theoryQuestions = computed<AssessmentQuestion[]>(() => {
   if (!selectedRoadmapId.value) return []
@@ -372,6 +379,7 @@ const openDirection = (roadmapId: string) => {
 
 watch(selectedRoadmapId, () => {
   resetCurrentAnswers()
+  void ensureAssessment(selectedRoadmapId.value)
 })
 
 watch(
@@ -380,6 +388,23 @@ watch(
     if (submitMessage.value) submitMessage.value = null
   },
   { deep: true }
+)
+
+watch(
+  () => roadmapsStore.roadmaps,
+  (roadmaps) => {
+    if (!roadmaps.length) {
+      selectedRoadmapId.value = ""
+      return
+    }
+
+    if (selectedRoadmapId.value && roadmaps.some((roadmap) => roadmap.id === selectedRoadmapId.value)) {
+      return
+    }
+
+    selectedRoadmapId.value = roadmaps[0]?.id ?? ""
+  },
+  { immediate: true }
 )
 
 const submitDirectionAssessment = async () => {
@@ -404,13 +429,13 @@ const submitDirectionAssessment = async () => {
   const levelLabel = experienceLevelFromScore(totalScore)
   const updatedAt = new Date().toISOString()
 
-  skillLevelsStore.setLevel({
+  await skillLevelsStore.setLevel({
     roadmapId: selectedRoadmap.value.id,
     roadmapTitle: selectedRoadmap.value.title,
     levelLabel,
     score: totalScore,
     updatedAt
-  })
+  }, authStore.user?.id ?? null)
 
   await roadmapsStore.addRoadmapWithLevel(
     selectedRoadmap.value.id,
@@ -420,6 +445,14 @@ const submitDirectionAssessment = async () => {
 
   submitMessage.value = `Уровень для "${selectedRoadmap.value.title}" определен: ${levelLabel}. Теория: ${theoryScore}, письменная часть: ${writtenScore}.`
 }
+
+onMounted(async () => {
+  await roadmapsStore.loadRoadmaps()
+  await skillLevelsStore.loadLevels(authStore.user?.id ?? null)
+  if (selectedRoadmapId.value) {
+    await ensureAssessment(selectedRoadmapId.value)
+  }
+})
 </script>
 
 <template>
@@ -446,7 +479,7 @@ const submitDirectionAssessment = async () => {
       <aside class="direction-list">
         <h2>Направления</h2>
         <article
-          v-for="roadmap in mockRoadmaps"
+          v-for="roadmap in roadmapsStore.roadmaps"
           :key="roadmap.id"
           class="direction-card"
           :class="{ active: roadmap.id === selectedRoadmapId }"

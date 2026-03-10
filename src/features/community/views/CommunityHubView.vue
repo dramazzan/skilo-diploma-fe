@@ -111,12 +111,12 @@ const isLikedByCurrentUser = (post: CommunityPost) => {
   return post.likedByUserIds.includes(currentUserId.value)
 }
 
-const likePost = (post: CommunityPost) => {
+const likePost = async (post: CommunityPost) => {
   if (!hasAuthUser.value) return
-  communityStore.toggleLike(post.id, currentUserId.value)
+  await communityStore.toggleLike(post.id, currentUserId.value)
 }
 
-const submitComment = (postId: string) => {
+const submitComment = async (postId: string) => {
   const nextText = (commentInputs.value[postId] ?? "").trim()
   if (nextText.length < 2) {
     commentErrors.value[postId] = "Комментарий слишком короткий."
@@ -124,9 +124,10 @@ const submitComment = (postId: string) => {
   }
 
   commentErrors.value[postId] = ""
-  communityStore.addComment(postId, {
+  await communityStore.addComment(postId, {
     authorName: currentAuthorName.value,
     authorType: guessedAuthorType.value,
+    authorUserId: authStore.user?.id ?? null,
     text: nextText
   })
   commentInputs.value[postId] = ""
@@ -212,6 +213,7 @@ const submitPost = async () => {
 }
 
 onMounted(() => {
+  void communityStore.loadPosts()
   showComposerAlert.value = true
 })
 </script>

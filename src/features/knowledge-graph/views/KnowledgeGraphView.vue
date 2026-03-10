@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue"
+import { computed, onMounted, ref } from "vue"
 import { RouterLink } from "vue-router"
 import { useAuthStore } from "@/features/auth/store/auth"
 import { useRoadmapsStore } from "@/features/roadmaps/store/roadmaps"
 import { useSkillLevelsStore } from "@/features/skill-levels/store/skillLevels"
 import { useTopicProgressStore } from "@/features/roadmaps/store/topicProgress"
 import { useDailyTasksStore } from "@/features/daily-tasks/store/dailyTasks"
+import { roadmapsApi, type RoadmapTopic } from "@/features/roadmaps/api/roadmaps.api"
 import { readLearningTelemetrySessions } from "@/features/knowledge-graph/lib/learningTelemetry"
-import { mockRoadmap } from "@/shared/mocks/mockRoadmap"
-import { mockRoadmaps } from "@/shared/mocks/mockRoadmaps"
 
 interface RiskDimensions {
   accuracy: number
@@ -53,9 +52,15 @@ const roadmapsStore = useRoadmapsStore()
 const skillLevelsStore = useSkillLevelsStore()
 const topicProgressStore = useTopicProgressStore()
 const dailyTasksStore = useDailyTasksStore()
+const topics = ref<RoadmapTopic[]>([])
 
-const roadmapById = new Map(mockRoadmaps.map((roadmap) => [roadmap.id, roadmap]))
-const topicById = new Map(mockRoadmap.map((topic) => [topic.id, topic]))
+const roadmapById = computed(() => {
+  return new Map(roadmapsStore.roadmaps.map((roadmap) => [roadmap.id, roadmap]))
+})
+
+const topicById = computed(() => {
+  return new Map(topics.value.map((topic) => [topic.id, topic]))
+})
 
 const clamp = (value: number, min: number, max: number) => {
   return Math.min(max, Math.max(min, value))
@@ -125,7 +130,7 @@ const roadmapInsights = computed<RoadmapWeaknessInsight[]>(() => {
   const roadmapIds = new Set<string>(roadmapsStore.userRoadmapIds)
 
   Object.keys(topicProgressStore.results).forEach((topicId) => {
-    const topic = topicById.get(topicId)
+    const topic = topicById.value.get(topicId)
     if (topic) roadmapIds.add(topic.roadmapId)
   })
 
@@ -140,11 +145,11 @@ const roadmapInsights = computed<RoadmapWeaknessInsight[]>(() => {
   const entries: RoadmapWeaknessInsight[] = []
 
   roadmapIds.forEach((roadmapId) => {
-    const roadmapTitle = roadmapById.get(roadmapId)?.title ?? roadmapId
+    const roadmapTitle = roadmapById.value.get(roadmapId)?.title ?? roadmapId
 
     const topicResults = Object.entries(topicProgressStore.results)
       .map(([topicId, result]) => ({
-        topic: topicById.get(topicId),
+        topic: topicById.value.get(topicId),
         result
       }))
       .filter((entry) => entry.topic?.roadmapId === roadmapId)
@@ -438,9 +443,14 @@ const platformTips = computed(() => {
 })
 
 onMounted(async () => {
-  await roadmapsStore.loadUserRoadmapCollection(authStore.user?.id ?? null)
-  await roadmapsStore.loadRoadmapProgress(authStore.user?.id ?? null)
-  dailyTasksStore.ensureTodayTasks()
+  const userId = authStore.user?.id ?? null
+
+  await roadmapsStore.loadRoadmaps()
+  await roadmapsStore.loadUserRoadmapCollection(userId)
+  await roadmapsStore.loadRoadmapProgress(userId)
+  await skillLevelsStore.loadLevels(userId)
+  await dailyTasksStore.ensureTodayTasks()
+  topics.value = await roadmapsApi.getTopics()
 })
 </script>
 

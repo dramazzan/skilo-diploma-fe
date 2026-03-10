@@ -1,5 +1,5 @@
-import type { RoadmapNode, TopicStatus } from "@/shared/mocks/mockRoadmaps"
-import type { TopicResult } from "@/features/roadmaps/store/topicProgress"
+import type { RoadmapNode, TopicStatus } from "@/shared/api/client"
+import type { TopicResult } from "@/shared/api/client"
 
 const resolveParentStatus = (children: RoadmapNode[]): TopicStatus => {
   if (children.every((child) => child.status === "completed")) {

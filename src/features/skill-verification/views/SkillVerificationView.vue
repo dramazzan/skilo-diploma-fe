@@ -1,41 +1,12 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
+import { computed, onMounted, ref, watch } from "vue"
 import { useRouter } from "vue-router"
-import { mockRoadmaps, type Roadmap } from "@/shared/mocks/mockRoadmaps"
+
 import { useAuthStore } from "@/features/auth/store/auth"
+import { verificationApi, type VerificationBooking, type VerificationSlot } from "@/features/skill-verification/api/verification.api"
 import { useRoadmapsStore } from "@/features/roadmaps/store/roadmaps"
 
-type VerificationMode = "online" | "offline"
-type VerificationStatus = "scheduled" | "completed"
-
-interface VerificationSlot {
-  id: string
-  date: string
-  time: string
-  mode: VerificationMode
-  location: string
-  assessor: string
-  seats: number
-}
-
-interface VerificationBooking {
-  id: string
-  slotId: string
-  roadmapId: string
-  roadmapTitle: string
-  mode: VerificationMode
-  date: string
-  time: string
-  dateTimeIso: string
-  location: string
-  assessor: string
-  status: VerificationStatus
-  bookedAt: string
-  completedAt: string | null
-  certificateId: string | null
-}
-
-const STORAGE_KEY = "skill_verification_bookings_v1"
+type VerificationMode = VerificationSlot["mode"]
 
 const router = useRouter()
 const roadmapsStore = useRoadmapsStore()
@@ -44,67 +15,6 @@ const authStore = useAuthStore()
 const modeLabel: Record<VerificationMode, string> = {
   online: "Онлайн",
   offline: "Офлайн"
-}
-
-const getUpcomingDates = (days: number): string[] => {
-  return Array.from({ length: days }, (_, index) => {
-    const date = new Date()
-    date.setHours(0, 0, 0, 0)
-    date.setDate(date.getDate() + index)
-    return date.toISOString().slice(0, 10)
-  })
-}
-
-const buildSlots = (dates: string[]): VerificationSlot[] => {
-  const onlineTimes = ["10:00", "12:00", "15:30", "18:00"]
-  const offlineTimes = ["11:00", "14:00", "16:30"]
-  const onlineAssessors = ["Aigerim B.", "Maksat T.", "Dias N."]
-  const offlineAssessors = ["Nurlybek K.", "Aruzhan S."]
-  const offlineLocations = ["Almaty Hub, офис 3.2", "Astana Campus, зал B", "Shymkent Center, аудитория 12"]
-
-  const slots: VerificationSlot[] = []
-
-  dates.forEach((date, dateIndex) => {
-    onlineTimes.forEach((time, timeIndex) => {
-      const seats = (dateIndex + timeIndex + 1) % 5 === 0 ? 0 : 1
-      slots.push({
-        id: `${date}-online-${time}`,
-        date,
-        time,
-        mode: "online",
-        location: "Google Meet",
-        assessor: onlineAssessors[(dateIndex + timeIndex) % onlineAssessors.length],
-        seats
-      })
-    })
-
-    offlineTimes.forEach((time, timeIndex) => {
-      const seats = (dateIndex + timeIndex + 2) % 4 === 0 ? 0 : 1
-      slots.push({
-        id: `${date}-offline-${time}`,
-        date,
-        time,
-        mode: "offline",
-        location: offlineLocations[(dateIndex + timeIndex) % offlineLocations.length],
-        assessor: offlineAssessors[(dateIndex + timeIndex) % offlineAssessors.length],
-        seats
-      })
-    })
-  })
-
-  return slots
-}
-
-const parseStoredBookings = (): VerificationBooking[] => {
-  const raw = localStorage.getItem(STORAGE_KEY)
-  if (!raw) return []
-
-  try {
-    const parsed = JSON.parse(raw) as VerificationBooking[]
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
-  }
 }
 
 const formatDay = (dateIso: string) => {
@@ -124,23 +34,24 @@ const formatSessionDate = (dateIso: string, time: string) => {
   })
 }
 
-const createCertificateId = () => {
-  return `SV-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
-}
-
-const slotDates = getUpcomingDates(7)
-const allSlots = ref<VerificationSlot[]>(buildSlots(slotDates))
+const allSlots = ref<VerificationSlot[]>([])
 const selectedMode = ref<VerificationMode>("online")
-const selectedDate = ref<string>(slotDates[0] ?? "")
+const selectedDate = ref<string>("")
 const selectedRoadmapId = ref<string>("")
 const selectedSlotId = ref<string>("")
 const formError = ref<string | null>(null)
 const successMessage = ref<string | null>(null)
-const bookings = ref<VerificationBooking[]>(parseStoredBookings())
-let bookingsPersistTimer: number | null = null
+const loading = ref(true)
+const submitting = ref(false)
+const bookings = ref<VerificationBooking[]>([])
 
-const directionOptions = computed<Roadmap[]>(() => {
-  return roadmapsStore.myRoadmaps.length ? roadmapsStore.myRoadmaps : mockRoadmaps
+const slotDates = computed(() => {
+  const dates = new Set(allSlots.value.map((slot) => slot.date))
+  return Array.from(dates).sort()
+})
+
+const directionOptions = computed(() => {
+  return roadmapsStore.myRoadmaps.length ? roadmapsStore.myRoadmaps : roadmapsStore.roadmaps
 })
 
 const activeSlotIds = computed(() => {
@@ -197,6 +108,20 @@ watch(
   { immediate: true }
 )
 
+watch(
+  slotDates,
+  (dates) => {
+    if (!dates.length) {
+      selectedDate.value = ""
+      return
+    }
+
+    if (selectedDate.value && dates.includes(selectedDate.value)) return
+    selectedDate.value = dates[0] ?? ""
+  },
+  { immediate: true }
+)
+
 watch([selectedMode, selectedDate], () => {
   formError.value = null
   successMessage.value = null
@@ -205,22 +130,24 @@ watch([selectedMode, selectedDate], () => {
   }
 })
 
-watch(
-  bookings,
-  (next) => {
-    if (bookingsPersistTimer) {
-      window.clearTimeout(bookingsPersistTimer)
-    }
+const loadVerificationData = async () => {
+  const userId = authStore.user?.id ?? null
+  loading.value = true
 
-    bookingsPersistTimer = window.setTimeout(() => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-      bookingsPersistTimer = null
-    }, 140)
-  },
-  { deep: true }
-)
+  try {
+    const [slots, loadedBookings] = await Promise.all([
+      verificationApi.getSlots(),
+      verificationApi.getBookings(userId)
+    ])
 
-const bookSession = () => {
+    allSlots.value = slots
+    bookings.value = loadedBookings
+  } finally {
+    loading.value = false
+  }
+}
+
+const bookSession = async () => {
   if (!selectedRoadmap.value) {
     formError.value = "Выберите направление."
     return
@@ -233,51 +160,46 @@ const bookSession = () => {
 
   formError.value = null
 
-  const booking: VerificationBooking = {
-    id: `booking-${Date.now()}`,
-    slotId: selectedSlot.value.id,
-    roadmapId: selectedRoadmap.value.id,
-    roadmapTitle: selectedRoadmap.value.title,
-    mode: selectedSlot.value.mode,
-    date: selectedSlot.value.date,
-    time: selectedSlot.value.time,
-    dateTimeIso: `${selectedSlot.value.date}T${selectedSlot.value.time}:00`,
-    location: selectedSlot.value.location,
-    assessor: selectedSlot.value.assessor,
-    status: "scheduled",
-    bookedAt: new Date().toISOString(),
-    completedAt: null,
-    certificateId: null
-  }
+  submitting.value = true
 
-  bookings.value = [booking, ...bookings.value]
-  successMessage.value = `Запись подтверждена: ${selectedRoadmap.value.title}, ${formatSessionDate(booking.date, booking.time)}.`
-  selectedSlotId.value = ""
+  try {
+    const booking = await verificationApi.createBooking(authStore.user?.id ?? null, {
+      slotId: selectedSlot.value.id,
+      roadmapId: selectedRoadmap.value.id,
+      roadmapTitle: selectedRoadmap.value.title,
+      mode: selectedSlot.value.mode,
+      date: selectedSlot.value.date,
+      time: selectedSlot.value.time,
+      location: selectedSlot.value.location,
+      assessor: selectedSlot.value.assessor
+    })
+
+    bookings.value = [booking, ...bookings.value]
+    successMessage.value = `Запись подтверждена: ${selectedRoadmap.value.title}, ${formatSessionDate(booking.date, booking.time)}.`
+    selectedSlotId.value = ""
+  } finally {
+    submitting.value = false
+  }
 }
 
-const markCompleted = (bookingId: string) => {
+const markCompleted = async (bookingId: string) => {
+  const updated = await verificationApi.completeBooking(authStore.user?.id ?? null, bookingId)
+
   bookings.value = bookings.value.map((booking) => {
-    if (booking.id !== bookingId) return booking
-    return {
-      ...booking,
-      status: "completed",
-      completedAt: new Date().toISOString(),
-      certificateId: booking.certificateId ?? createCertificateId()
-    }
+    return booking.id === bookingId ? updated : booking
   })
 }
 
-const cancelBooking = (bookingId: string) => {
+const cancelBooking = async (bookingId: string) => {
+  await verificationApi.cancelBooking(authStore.user?.id ?? null, bookingId)
   bookings.value = bookings.value.filter((booking) => booking.id !== bookingId)
 }
 
 onMounted(async () => {
-  await roadmapsStore.loadUserRoadmapCollection(authStore.user?.id ?? null)
-})
-
-onBeforeUnmount(() => {
-  if (!bookingsPersistTimer) return
-  window.clearTimeout(bookingsPersistTimer)
+  const userId = authStore.user?.id ?? null
+  await roadmapsStore.loadRoadmaps()
+  await roadmapsStore.loadUserRoadmapCollection(userId)
+  await loadVerificationData()
 })
 </script>
 
@@ -392,8 +314,8 @@ onBeforeUnmount(() => {
         <p v-if="formError" class="form-error">{{ formError }}</p>
         <p v-if="successMessage" class="form-success">{{ successMessage }}</p>
 
-        <button type="button" class="confirm-btn" @click="bookSession">
-          Записаться на подтверждение навыков
+        <button type="button" class="confirm-btn" :disabled="submitting || loading" @click="bookSession">
+          {{ submitting ? "Сохраняем..." : "Записаться на подтверждение навыков" }}
         </button>
       </section>
 

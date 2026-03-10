@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue"
-import type { RoadmapNode as RoadmapTreeNode, TopicStatus } from "@/shared/mocks/mockRoadmaps"
+import type { RoadmapNode as RoadmapTreeNode, TopicStatus } from "@/shared/api/client"
 import { useDailyTasksStore } from "@/features/daily-tasks/store/dailyTasks"
 
 const props = defineProps<{

@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
-import { mockProfileData, ProfileData } from "@/shared/mocks/mockProfile"
-import { mockRoadmaps } from "@/shared/mocks/mockRoadmaps"
 import { useRoadmapsStore } from "@/features/roadmaps/store/roadmaps"
 import { useSkillLevelsStore } from "@/features/skill-levels/store/skillLevels"
-import { profileApi, type UserActivityDay } from "@/features/profile/api/profile.api"
+import { profileApi, type ProfileResponse, type UserActivityDay } from "@/features/profile/api/profile.api"
 import { useAuthStore } from "@/features/auth/store/auth"
 import { resolveApiError } from "@/shared/utils/resolveApiError"
 
@@ -62,7 +60,7 @@ interface RadarAxisVisual extends KnowledgeAxis {
   labelPoint: { x: number; y: number }
 }
 
-const profile = ref<ProfileData | null>(null)
+const profile = ref<ProfileResponse | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 const generatingResume = ref(false)
@@ -160,13 +158,13 @@ const directionLevelsRows = computed(() => {
   return skillLevelsStore.allLevels
     .map((result) => ({
       ...result,
-      title: mockRoadmaps.find((roadmap) => roadmap.id === result.roadmapId)?.title ?? result.roadmapTitle
+      title: roadmapsStore.roadmaps.find((roadmap) => roadmap.id === result.roadmapId)?.title ?? result.roadmapTitle
     }))
     .sort((first, second) => first.title.localeCompare(second.title, "ru"))
 })
 
 const knowledgeAxes = computed<KnowledgeAxis[]>(() => {
-  return mockRoadmaps.map((roadmap) => {
+  return roadmapsStore.roadmaps.map((roadmap) => {
     const percent = roadmapsStore.getRoadmapProgress(roadmap.id)?.completionPercent ?? 0
     const normalized = Math.min(100, Math.max(0, percent))
 
@@ -359,10 +357,14 @@ const fetchProfile = async () => {
   try {
     loading.value = true
     error.value = null
-    await new Promise(resolve => setTimeout(resolve, 800))
-    profile.value = mockProfileData
-    await roadmapsStore.loadUserRoadmapCollection(null)
-    await roadmapsStore.loadRoadmapProgress(null)
+    const userId = authStore.user?.id ?? null
+
+    await roadmapsStore.loadRoadmaps()
+    await roadmapsStore.loadUserRoadmapCollection(userId)
+    await roadmapsStore.loadRoadmapProgress(userId)
+    await skillLevelsStore.loadLevels(userId)
+
+    profile.value = await profileApi.getProfile(userId)
     await loadActivity()
     await loadProfilePoints()
   } catch (err) {
@@ -380,7 +382,7 @@ const loadActivity = async () => {
 
 const loadProfilePoints = async () => {
   const leaderboard = await profileApi.getLeaderboard(authStore.user?.id ?? null)
-  profilePoints.value = leaderboard.currentUser.points
+  profilePoints.value = leaderboard.currentUser?.points ?? null
 }
 
 const toRuDate = (isoDate: string) => {
@@ -543,7 +545,7 @@ const handleResumeAction = async (action: "txt" | "copy") => {
 
 const buildResumeForDirection = async (roadmapId: string) => {
   const levelResult = skillLevelsStore.getLevel(roadmapId)
-  const roadmap = mockRoadmaps.find((item) => item.id === roadmapId)
+  const roadmap = roadmapsStore.roadmaps.find((item) => item.id === roadmapId)
   if (!levelResult || !roadmap) return
 
   const role = roleByRoadmapId[roadmapId] ?? "Developer"
