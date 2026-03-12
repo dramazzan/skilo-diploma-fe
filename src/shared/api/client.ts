@@ -4,6 +4,8 @@ import axios, { AxiosError } from "axios"
 
 import type {
   AuthResponse,
+  OnboardingSubmitRequest,
+  OnboardingSubmitResponse,
   CandidateWorkLeaderboardResponse,
   CompanyCandidate,
   CompanyVacancyPayload,
@@ -28,9 +30,13 @@ import type {
   RegisterPayload,
   Roadmap,
   RoadmapAssessment,
+  RoadmapAssessmentSubmitRequest,
+  RoadmapAssessmentSubmitResponse,
   RoadmapNode,
   RoadmapProgressItem,
   RoadmapTopic,
+  SkillLevelAssessment,
+  SkillLevelAssessmentSubmitRequest,
   TopicContent,
   TopicResult,
   TopicResultUpdateResponse,
@@ -49,7 +55,7 @@ const baseURL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api"
 
 const http = axios.create({
   baseURL,
-  timeout: 20_000
+  timeout: 60_000
 })
 
 http.interceptors.request.use((config) => {
@@ -60,11 +66,22 @@ http.interceptors.request.use((config) => {
   return config
 })
 
+class ApiError extends Error {
+  status: number
+  constructor(message: string, status: number) {
+    super(message)
+    this.status = status
+    this.statusCode = status
+  }
+  statusCode: number
+}
+
 const normalizeError = (error: unknown) => {
   if (error instanceof AxiosError) {
-    const message = (error.response?.data as { message?: string } | undefined)?.message
-    if (message) throw new Error(message)
-    throw new Error(error.message)
+    const status = error.response?.status ?? 0
+    const message =
+      (error.response?.data as { message?: string } | undefined)?.message ?? error.message
+    throw new ApiError(message, status)
   }
 
   if (error instanceof Error) throw error
@@ -104,6 +121,11 @@ export const api = {
     return request(http.post("/auth/register", payload))
   },
 
+  submitOnboarding(userId: number | null, payload: OnboardingSubmitRequest): Promise<OnboardingSubmitResponse> {
+    const resolved = ensureUserId(userId)
+    return request(http.patch(`/users/${resolved}/onboarding`, payload))
+  },
+
   getProfile(userId?: number): Promise<ProfileResponse> {
     return request(http.get("/profile", { params: { userId } }))
   },
@@ -118,6 +140,9 @@ export const api = {
 
   getRoadmapAssessment(roadmapId: string): Promise<RoadmapAssessment> {
     return request(http.get(`/roadmaps/${roadmapId}/assessment`))
+  },
+  submitRoadmapAssessment(roadmapId: string, payload: RoadmapAssessmentSubmitRequest): Promise<RoadmapAssessmentSubmitResponse> {
+    return request(http.post(`/roadmaps/${roadmapId}/assessment/submit`, payload))
   },
 
   getTopics(roadmapId?: string): Promise<RoadmapTopic[]> {
@@ -293,6 +318,14 @@ export const api = {
   getSkillLevels(userId: number | null): Promise<DirectionLevelResult[]> {
     const resolved = ensureUserId(userId)
     return request(http.get(`/users/${resolved}/skill-levels`))
+  },
+  getSkillLevelAssessment(userId: number | null, roadmapId: string): Promise<SkillLevelAssessment> {
+    const resolved = ensureUserId(userId)
+    return request(http.get(`/users/${resolved}/skill-levels/assessments`, { params: { roadmapId } }))
+  },
+  submitSkillLevelAssessment(userId: number | null, payload: SkillLevelAssessmentSubmitRequest): Promise<DirectionLevelResult> {
+    const resolved = ensureUserId(userId)
+    return request(http.post(`/users/${resolved}/skill-levels/assessments`, payload))
   },
 
   upsertSkillLevel(userId: number | null, roadmapId: string, payload: DirectionLevelResult): Promise<DirectionLevelResult> {

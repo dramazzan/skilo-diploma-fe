@@ -16,13 +16,19 @@ const roadmapId = computed(() => String(route.params.id ?? ""))
 const roadmap = computed(() => roadmapsStore.roadmaps.find((item) => item.id === roadmapId.value))
 const assessment = ref<RoadmapAssessment | null>(null)
 const loading = ref(true)
+const loadError = ref<string | null>(null)
+const submitError = ref<string | null>(null)
+const submitting = ref(false)
 
 const loadAssessment = async () => {
   loading.value = true
+  loadError.value = null
 
   try {
     await roadmapsStore.loadRoadmaps()
     assessment.value = await roadmapsApi.getRoadmapAssessment(roadmapId.value)
+  } catch (err) {
+    loadError.value = err instanceof Error ? err.message : "Не удалось загрузить вопросы"
   } finally {
     loading.value = false
   }
@@ -42,25 +48,26 @@ const answeredCount = computed(() => {
   return assessment.value.questions.filter((q) => answers.value[q.id] !== undefined).length
 })
 
-const evaluateLevel = (avgScore: number): RoadmapLevel => {
-  if (avgScore <= 1.5) return "Beginner"
-  if (avgScore <= 2.3) return "Intermediate"
-  return "Advanced"
-}
-
 const submitAssessment = async () => {
-  if (!assessment.value || !allAnswered.value) return
+  if (!assessment.value || !allAnswered.value || submitting.value) return
 
-  const total = assessment.value.questions.reduce((sum, question) => {
-    return sum + (answers.value[question.id] ?? 1)
-  }, 0)
+  submitting.value = true
+  submitError.value = null
 
-  const avgScore = total / assessment.value.questions.length
-  const level = evaluateLevel(avgScore)
+  try {
+    const response = await roadmapsApi.submitRoadmapAssessment(roadmapId.value, {
+      roadmapId: roadmapId.value,
+      answers: answers.value
+    })
 
-  detectedLevel.value = level
-  await roadmapsStore.addRoadmapWithLevel(roadmapId.value, level, authStore.user?.id ?? null)
-  completed.value = true
+    detectedLevel.value = response.level
+    await roadmapsStore.addRoadmapWithLevel(roadmapId.value, response.level, authStore.user?.id ?? null)
+    completed.value = true
+  } catch (err) {
+    submitError.value = err instanceof Error ? err.message : "Не удалось сохранить результат"
+  } finally {
+    submitting.value = false
+  }
 }
 
 const goToRoadmap = () => {
@@ -81,6 +88,12 @@ onMounted(() => {
     <!-- Not found -->
     <div v-if="loading" class="state-view">
       <p>Загрузка...</p>
+    </div>
+
+    <div v-else-if="loadError" class="state-view">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+      <p>{{ loadError }}</p>
+      <button class="btn-primary" style="margin-top:8px" @click="loadAssessment">Повторить</button>
     </div>
 
     <div v-else-if="!roadmap || !assessment" class="state-view">
@@ -138,15 +151,20 @@ onMounted(() => {
         </article>
       </div>
 
+      <p v-if="submitError" style="color:#b91c1c;font-size:14px;margin:0 0 8px">{{ submitError }}</p>
+
       <div class="submit-row">
         <button
           class="btn-primary"
-          :class="{ disabled: !allAnswered }"
-          :disabled="!allAnswered"
+          :class="{ disabled: !allAnswered || submitting }"
+          :disabled="!allAnswered || submitting"
           @click="submitAssessment"
         >
-          Добавить направление
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          <template v-if="submitting">Сохранение...</template>
+          <template v-else>
+            Добавить направление
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </template>
         </button>
       </div>
     </div>
